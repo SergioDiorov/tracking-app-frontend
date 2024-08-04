@@ -1,28 +1,19 @@
-import { SignInData, SignUpData } from "./authTypes";
+import { IAuthResponse, SignInData, SignUpData } from "./authTypes";
+import axios from "axios";
 
-const baseUrl = 'http://localhost:3001'
-const requestHeaders = {
-  'Content-Type': 'application/json',
-};
+const instance = axios.create({
+  baseURL: "http://localhost:3001/",
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
 
 export const authApi = {
-  async signUp(data: SignUpData) {
-    const response = await fetch(`${baseUrl}/signUp`, {
-      method: 'POST',
-      headers: requestHeaders,
-      body: JSON.stringify(data),
-    });
-
-    return response
+  signUp(data: SignUpData) {
+    return instance.post<IAuthResponse>(`signUp`, data);
   },
 
-  async signIn(data: SignInData) {
-    const response = await fetch(`${baseUrl}/signIn`, {
-      method: 'POST',
-      headers: requestHeaders,
-      body: JSON.stringify(data),
-    });
-
-    return response
+  signIn(data: SignInData) {
+    return instance.post<IAuthResponse>(`signIn`, data);
   }
 }

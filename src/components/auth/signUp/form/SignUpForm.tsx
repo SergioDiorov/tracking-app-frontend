@@ -19,18 +19,30 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
-//constants
+// redux
+import { useAppDispatch } from '@/redux/hooks';
+
+// constants
 import { countriesList } from '@/constants/location.constants';
+import { setUserLoginData } from '@/redux/user/userSlice';
+import { setLoginData } from '@/redux/auth/authSlice';
+
+// actions
+import { signUpUser } from './action';
+import { useMutation } from '@tanstack/react-query';
 
 // helpers
 import { z } from 'zod';
 import { signUpSchema } from './schema';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signUpUser } from './action';
+import { errorToast, successToast } from '@/helpers/toastActions';
 
 const SignUpForm = () => {
+  const dispatch = useAppDispatch();
+
   const ageOptions = Array.from({ length: 70 - 18 + 1 }, (_, i) => i + 18);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -49,9 +61,23 @@ const SignUpForm = () => {
     },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: z.infer<typeof signUpSchema>) => signUpUser(values),
+    mutationKey: ['signUp'],
+    onSuccess: (data: any) => {
+      if (data?.data) {
+        successToast('Registration successfully passed');
+        dispatch(setLoginData(data));
+        dispatch(setUserLoginData(data));
+      }
+    },
+    onError: () => {
+      errorToast('Error while sign up');
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
-    const res = await signUpUser(values);
-    console.log(res);
+    mutate(values);
   };
 
   return (
@@ -271,8 +297,13 @@ const SignUpForm = () => {
             </div>
           </div>
         </div>
-        <Button type='submit' className='w-full h-[40px] md:h-[32px] mt-10'>
-          Sign Up
+        <Button
+          type='submit'
+          className='w-full h-[40px] md:h-[32px] mt-10'
+          disabled={isPending}
+        >
+          {isPending ? 'Loading' : 'Sign Up'}
+          {isPending && <ReloadIcon className='ml-2 h-4 w-4 animate-spin' />}
         </Button>
       </form>
     </Form>
