@@ -1,4 +1,5 @@
 import axios from "axios";
+import store from '@/redux/store';
 
 import { IAuthResponse } from "@/api/users/usersTypes";
 
@@ -8,6 +9,22 @@ const instance = axios.create({
     'Content-Type': 'application/json',
   }
 });
+
+instance.interceptors.request.use(
+  (config) => {
+    const state = store.getState();
+    const token = state.auth.accessToken;
+
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const usersApi = {
   getUserById(userId: string) {
