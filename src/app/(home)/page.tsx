@@ -1,17 +1,25 @@
 'use client';
 
+// next
 import { useRouter } from 'next/navigation';
 
+// components
 import { Button } from '@/components/ui/button';
 
+// redux
 import { logout } from '@/redux/auth/authSlice';
 import { userLogout } from '@/redux/user/userSlice';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import userSelectors from '@/redux/user/userSelectors';
+
+// helpers
 import { successToast } from '@/helpers/toastActions';
 
 const Home = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const userData = useAppSelector(userSelectors.getUserData);
 
   const handleLogOut = () => {
     dispatch(logout());
@@ -30,6 +38,18 @@ const Home = () => {
       <Button className='w-[100px]' onClick={handleLogOut}>
         Sign Out
       </Button>
+
+      <div className='flex flex-col gap-2 mt-3'>
+        <p className='font-semibold text-left text-sm text-gray-600'>
+          User: {userData.firstName} {userData.lastName}
+        </p>
+        <p className='font-semibold text-left text-sm text-gray-600'>
+          Age: {userData.age}
+        </p>
+        <p className='font-semibold text-left text-sm text-gray-600'>
+          Location: {userData.country}, {userData.city}
+        </p>
+      </div>
     </div>
   );
 };

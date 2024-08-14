@@ -1,11 +1,15 @@
 'use client';
 
+import { useEffect } from 'react';
+
 // next
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 
 // redux
 import { useAuth } from '@/redux/hooks';
+
+// provider
+import { ProfileProvider } from '@/providers/ProfileProvider';
 
 export function PrivateProvider({ children }: { children: React.ReactNode }) {
   const isAuth = useAuth();
@@ -18,9 +22,8 @@ export function PrivateProvider({ children }: { children: React.ReactNode }) {
   }, [isAuth, router]);
 
   if (typeof window !== 'undefined' && !isAuth) {
-    router.push('/');
     return null;
   }
 
-  return <>{children}</>;
+  return isAuth ? <ProfileProvider>{children}</ProfileProvider> : null;
 }

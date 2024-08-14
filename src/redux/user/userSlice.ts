@@ -3,12 +3,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // types
 import { IAuthResponse } from '@/api/auth/authTypes';
 import { UserType } from '@/redux/user/userTypes';
+import { ProfileType } from '@/interfaces/response';
 
 const initialState = {
   id: '',
   email: '',
-  password: '',
-  confirmPassword: '',
   firstName: '',
   lastName: '',
   age: '',
@@ -21,8 +20,9 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUserData: (state, action: PayloadAction<any>) => {
-      return { ...state, ...action.payload.data.user }
+    setUserData: (state, action: PayloadAction<ProfileType>) => {
+      const { userId, id, ...restProfileData } = action.payload;
+      return { ...state, id: userId, ...restProfileData }
     },
     setUserLoginData: (state, action: PayloadAction<IAuthResponse>) => {
       state.id = action.payload.data.user.id;

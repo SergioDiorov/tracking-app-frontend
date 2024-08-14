@@ -1,6 +1,6 @@
-export type UserType = {
+export interface ProfileType {
   id: string;
-  email: string;
+  userId: string;
   firstName: string;
   lastName: string;
   age: string;
