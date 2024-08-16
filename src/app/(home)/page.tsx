@@ -60,7 +60,7 @@ const Home = () => {
   };
 
   return (
-    <div className='flex flex-col justify-center items-center w-screen h-screen bg-gray-300 gap-3'>
+    <div className='flex flex-col justify-center items-center h-full gap-3 mt-[100px]'>
       <h1 className='text-center text-gray-800 text-[40px] font-semibold'>
         Home page
       </h1>
