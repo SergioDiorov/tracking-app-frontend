@@ -14,6 +14,7 @@ const initialState = {
   country: '',
   city: '',
   workPreference: '',
+  avatar: null,
 } as UserType;
 
 export const userSlice = createSlice({
@@ -23,6 +24,9 @@ export const userSlice = createSlice({
     setUserData: (state, action: PayloadAction<ProfileType>) => {
       const { userId, id, ...restProfileData } = action.payload;
       return { ...state, id: userId, ...restProfileData }
+    },
+    setUserPartialData: (state, action: PayloadAction<Partial<ProfileType>>) => {
+      return { ...state, ...action.payload }
     },
     setUserLoginData: (state, action: PayloadAction<IAuthResponse>) => {
       state.id = action.payload.data.user.id;
@@ -38,6 +42,7 @@ export const {
   setUserData,
   setUserLoginData,
   userLogout,
+  setUserPartialData
 } = userSlice.actions;
 
 export default userSlice.reducer;

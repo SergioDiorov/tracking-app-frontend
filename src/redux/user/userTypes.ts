@@ -7,4 +7,5 @@ export type UserType = {
   country: string;
   city: string;
   workPreference: string;
+  avatar: string | null;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // ui components
 import { Input } from '@/components/ui/input';
@@ -26,7 +26,7 @@ import { useAppDispatch } from '@/redux/hooks';
 
 // constants
 import { countriesList } from '@/constants/location.constants';
-import { setUserLoginData } from '@/redux/user/userSlice';
+import { setUserLoginData, setUserPartialData } from '@/redux/user/userSlice';
 import { setLoginData } from '@/redux/auth/authSlice';
 
 // actions
@@ -39,8 +39,11 @@ import { signUpSchema } from './schema';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { errorToast, successToast } from '@/helpers/toastActions';
+import { usersApi } from '@/api/users/usersApi';
 
 const SignUpForm = () => {
+  const [file, setFile] = useState<File | null>(null);
+
   const dispatch = useAppDispatch();
 
   const ageOptions = Array.from({ length: 70 - 18 + 1 }, (_, i) => i + 18);
@@ -54,7 +57,6 @@ const SignUpForm = () => {
       firstName: '',
       lastName: '',
       city: '',
-      avatar: '',
       age: '',
       country: '',
       workPreference: '',
@@ -66,6 +68,7 @@ const SignUpForm = () => {
     mutationKey: ['signUp'],
     onSuccess: (data: any) => {
       if (data?.data) {
+        if (file) uploadAvatarRequest({ file, userId: data.data.user.id });
         successToast('Registration successfully passed');
         dispatch(setLoginData(data));
         dispatch(setUserLoginData(data));
@@ -73,6 +76,17 @@ const SignUpForm = () => {
     },
     onError: () => {
       errorToast('Error while sign up');
+    },
+  });
+
+  const { mutate: uploadAvatarRequest } = useMutation({
+    mutationFn: (data: { file: File; userId: string }) =>
+      usersApi.uploadAvatar(data),
+    mutationKey: ['uploadAvatar'],
+    onSuccess: (response) => {
+      if (response.data.data.avatarUrl) {
+        dispatch(setUserPartialData({ avatar: response.data.data.avatarUrl }));
+      }
     },
   });
 
@@ -254,13 +268,20 @@ const SignUpForm = () => {
 
           <div className='flex flex-col md:flex-row gap-4 md:gap-2'>
             <FormField
-              control={form.control}
               name='avatar'
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Avatar</FormLabel>
                   <FormControl>
-                    <Input placeholder='Avatar' type='file' {...field} />
+                    <Input
+                      placeholder='Avatar'
+                      type='file'
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          setFile(e.target.files[0]);
+                        }
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

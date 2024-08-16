@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from '@/redux/store';
 
-import { IAuthResponse } from "@/api/users/usersTypes";
+import { IAuthResponse, IUploadAvatarResponse } from "@/api/users/usersTypes";
 
 const instance = axios.create({
   baseURL: "http://localhost:3001/users/",
@@ -29,5 +29,16 @@ instance.interceptors.request.use(
 export const usersApi = {
   getUserById(userId: string) {
     return instance.get<IAuthResponse>(`${userId}`);
+  },
+
+  uploadAvatar({ file, userId }: { file: File, userId: string }) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return instance.post<IUploadAvatarResponse>(`${userId}/avatar`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   }
 }

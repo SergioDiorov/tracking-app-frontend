@@ -7,4 +7,5 @@ export interface ProfileType {
   country: string;
   city: string;
   workPreference: string;
+  avatar: string | null;
 }
