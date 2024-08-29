@@ -203,7 +203,7 @@ const ProfileSettingsForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Card className='w-full h-fit flex items-center justify-between gap-4 p-4 mb-4'>
+        <Card className='w-full h-fit flex flex-col mobile:flex-row items-start mobile:items-center justify-between gap-4 p-4 mb-4'>
           <div className='flex items-center gap-3'>
             {avatar ? (
               <img
@@ -233,9 +233,9 @@ const ProfileSettingsForm = () => {
               </p>
             </div>
           </div>
-          <div className='flex flex-col gap-3'>
+          <div className='flex mobile:flex-col gap-3 w-full mobile:w-auto'>
             <Button
-              className='h-[40px] md:h-[32px]'
+              className='h-[40px] md:h-[32px] w-full mobile:w-auto'
               variant='outline'
               type='button'
               onClick={handleLoadAvatarClick}
@@ -251,7 +251,7 @@ const ProfileSettingsForm = () => {
               className='hidden'
             />
             <Button
-              className='h-[40px] md:h-[32px]'
+              className='h-[40px] md:h-[32px] w-full mobile:w-auto'
               variant='secondary'
               onClick={handleDeleteAvatar}
               type='button'
@@ -489,11 +489,11 @@ const ProfileSettingsForm = () => {
             </div>
           </div>
 
-          <div className='mt-8 flex justify-between flex-wrap'>
-            <div>
+          <div className='mt-8 flex justify-between flex-wrap gap-4'>
+            <div className='w-full mobile:w-auto'>
               <Button
                 type='submit'
-                className='h-[40px] md:h-[32px] mr-4'
+                className='h-[40px] md:h-[32px] mr-4 mb-4 mobile:mb-0 w-full mobile:w-auto'
                 disabled={
                   isPending ||
                   !form.formState.isDirty ||
@@ -508,7 +508,7 @@ const ProfileSettingsForm = () => {
               </Button>
               <Button
                 type='button'
-                className='h-[40px] md:h-[32px]'
+                className='h-[40px] md:h-[32px] w-full mobile:w-auto'
                 disabled={
                   isPending ||
                   !form.formState.isDirty ||

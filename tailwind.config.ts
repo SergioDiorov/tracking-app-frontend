@@ -20,6 +20,7 @@ const config = {
     extend: {
       screens: {
         "xs": "650px",
+        "mobile": "480px",
       },
       colors: {
         border: "hsl(var(--border))",
