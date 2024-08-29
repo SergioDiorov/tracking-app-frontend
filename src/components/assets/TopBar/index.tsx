@@ -48,7 +48,7 @@ const TopBar = () => {
   };
 
   return (
-    <div className='fixed top-0 left-0 w-full h-[60px] bg-primary text-secondary-text flex justify-between items-center px-3 shadow-sm'>
+    <div className='fixed top-0 left-0 w-full h-[60px] bg-primary text-secondary-text flex justify-between items-center px-3 shadow-sm z-[60]'>
       <div className='min-[850px]:max-w-[205px] min-[850px]:w-full'>
         <Button
           variant='default'
@@ -87,7 +87,11 @@ const TopBar = () => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src={userData.avatar || ''} alt='Avatar' />
+              <AvatarImage
+                src={userData.avatar || ''}
+                alt='Avatar'
+                className='opacity-100 hover:opacity-80 transition'
+              />
               <AvatarFallback>
                 {userData.firstName[0] + userData.lastName[0]}
               </AvatarFallback>

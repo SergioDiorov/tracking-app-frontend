@@ -4,12 +4,14 @@
 import { useEffect } from 'react';
 
 // next
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 // redux
 import { useAppDispatch, useAppSelector, useAuth } from '@/redux/hooks';
 import userSelectors from '@/redux/user/userSelectors';
 import { setUserData } from '@/redux/user/userSlice';
+import { logout } from '@/redux/auth/authSlice';
+import { userLogout } from '@/redux/user/userSlice';
 
 // api
 import { useQuery } from '@tanstack/react-query';
@@ -22,8 +24,10 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
+  const path = usePathname();
 
   const userId = useAppSelector(userSelectors.getUserId);
+  const isPathAuth = path.includes('signUp') || path.includes('signIn');
 
   const { data, isSuccess, isLoading, isError, error } = useQuery({
     queryKey: ['getUserById'],
@@ -35,13 +39,15 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (data && isSuccess) {
       dispatch(setUserData(data.profile));
-      router.push('/');
+      isPathAuth && router.push('/');
     }
 
     if (isError && error) {
+      dispatch(logout());
+      dispatch(userLogout());
       !isAuth && router.push('/signIn');
     }
-  }, [data, isAuth]);
+  }, [data, isSuccess, isError, error, isAuth]);
 
   if (isLoading) {
     return <Loader full />;

@@ -232,7 +232,7 @@ const SignUpForm = () => {
                             <SelectTrigger>
                               <SelectValue placeholder='Country' />
                             </SelectTrigger>
-                            <SelectContent className='max-h-[500px] h-full'>
+                            <SelectContent className='max-h-[300px] h-full'>
                               <SelectGroup>
                                 {countriesList.map((country) => (
                                   <SelectItem key={country} value={country}>
@@ -288,7 +288,7 @@ const SignUpForm = () => {
               )}
             />
 
-            <div className='space-y-1.5 md:w-[50%]'>
+            <div className='space-y-1.5 w-full'>
               <FormField
                 control={form.control}
                 name='workPreference'

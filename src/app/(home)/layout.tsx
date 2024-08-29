@@ -8,7 +8,7 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
       <title>Home</title>
       <ReduxProvider>
         <PrivateProvider>
-          <div className='w-screen pt-[60px]'>
+          <div className='pt-[60px]'>
             <TopBar />
             <div className='py-6 px-4'>{children}</div>
           </div>

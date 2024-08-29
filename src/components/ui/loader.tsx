@@ -17,10 +17,10 @@ const loaderVariants = cva('flex items-center justify-center', {
 });
 
 const spinnerVariants = cva(
-  'animate-spin rounded-full border-4 border-gray-300 border-t-gray-900 h-12 w-12',
+  'animate-spin rounded-full border-4 border-transparent border-t-primary/80 h-12 w-12',
 );
 
-const textVariants = cva('text-gray-500 dark:text-gray-400');
+const textVariants = cva('text-primary-text');
 
 type LoaderProps = {
   full?: boolean;

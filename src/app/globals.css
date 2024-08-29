@@ -72,3 +72,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+body {
+  /* background: radial-gradient(
+    circle at 18.7% 37.8%,
+    rgb(250, 250, 250) 0%,
+    rgb(225, 234, 238) 90%
+  ); */
+  background: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
+  min-height: 100vh;
+}

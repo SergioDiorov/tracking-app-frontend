@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from '@/redux/store';
 
-import { IAuthResponse, IUploadAvatarResponse } from "@/api/users/usersTypes";
+import { IGetUserByIdResponse, IUploadAvatarResponse, IUpdateProfileResponse, IUpdateProfileData } from "@/api/users/usersTypes";
 
 const instance = axios.create({
   baseURL: "http://localhost:3001/users/",
@@ -28,7 +28,11 @@ instance.interceptors.request.use(
 
 export const usersApi = {
   getUserById(userId: string) {
-    return instance.get<IAuthResponse>(`${userId}`);
+    return instance.get<IGetUserByIdResponse>(`${userId}`);
+  },
+
+  updateProfileById({ userId, updateProfileData }: IUpdateProfileData) {
+    return instance.patch<IUpdateProfileResponse>(`${userId}`, updateProfileData);
   },
 
   uploadAvatar({ file, userId }: { file: File, userId: string }) {
@@ -40,5 +44,9 @@ export const usersApi = {
         'Content-Type': 'multipart/form-data'
       }
     });
+  },
+
+  deleteAvatar({ userId }: { userId: string }) {
+    return instance.delete<IUploadAvatarResponse>(`${userId}/avatar`);
   }
 }
