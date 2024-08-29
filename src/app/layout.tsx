@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <link rel='shortcut icon' href='/favicon.ico' type='image/x-icon' />
-      <body className='bg-secondary'>
+      <body className='bg-secondary' suppressHydrationWarning={true}>
         <TanstackProvider>
           {children}
           <Toaster />
