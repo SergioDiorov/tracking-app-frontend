@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+import { TanstackProvider } from '@/providers/TanstackProvider';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
   title: 'HR Toolkit',
@@ -15,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body className={inter.className}>{children}</body>
+      <link rel='shortcut icon' href='/favicon.ico' type='image/x-icon' />
+      <body className='bg-secondary' suppressHydrationWarning={true}>
+        <TanstackProvider>
+          {children}
+          <Toaster />
+        </TanstackProvider>
+      </body>
     </html>
   );
 }

@@ -1,11 +1,17 @@
-import { signInSchema } from "@/components/auth/signIn/form/schema";
-import { signUpSchema } from "@/components/auth/signUp/form/schema";
 import { z } from "zod";
 
-export interface SignUpData {
-  data: z.infer<typeof signUpSchema>
-}
+import { IResponse } from "@/interfaces/http";
 
-export interface SignInData {
-  data: z.infer<typeof signInSchema>
-}
+import { signInSchema } from "@/components/auth/signIn/form/schema";
+import { signUpSchema } from "@/components/auth/signUp/form/schema";
+import { UserType } from "@/redux/user/userTypes";
+
+export type SignUpData = z.infer<typeof signUpSchema>;
+
+export type SignInData = z.infer<typeof signInSchema>;
+
+export interface IAuthResponse extends IResponse<{
+  user: UserType;
+  access_token: string;
+  refresh_token: string;
+}> { }
