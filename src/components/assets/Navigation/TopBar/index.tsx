@@ -33,6 +33,7 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import userSelectors from '@/redux/user/userSelectors';
 import { logout } from '@/redux/auth/authSlice';
 import { userLogout } from '@/redux/user/userSlice';
+import { clearOrganizationData } from '@/redux/organization/organizationSlice';
 import { successToast } from '@/helpers/toastActions';
 
 interface ITopbarProps {
@@ -50,6 +51,7 @@ const TopBar: FC<ITopbarProps> = ({ openMenu }) => {
     successToast('Successful sign out');
     dispatch(logout());
     dispatch(userLogout());
+    dispatch(clearOrganizationData());
   };
 
   return (
@@ -89,7 +91,7 @@ const TopBar: FC<ITopbarProps> = ({ openMenu }) => {
         ))}
       </div>
 
-      <div className='flex items-center gap-2 min-[850px]:max-w-[205px] min-[850px]:w-full'>
+      <div className='flex items-center justify-end gap-2 min-[850px]:max-w-[205px] min-[850px]:w-full'>
         <div className='flex flex-col justify-center items-end'>
           <p className='text-[12px]'>
             {userData.firstName + ' ' + userData.lastName}

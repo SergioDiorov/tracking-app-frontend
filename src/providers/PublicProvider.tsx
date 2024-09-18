@@ -17,6 +17,8 @@ import { usersApi } from '@/api/users/usersApi';
 
 // components
 import { Loader } from '@/components/ui/loader';
+import { organizationsApi } from '@/api/organizations/organizationsApi';
+import { setOrganizationData } from '@/redux/organization/organizationSlice';
 
 export function PublicProvider({ children }: { children: React.ReactNode }) {
   const isAuth = useAuth();
@@ -25,18 +27,26 @@ export function PublicProvider({ children }: { children: React.ReactNode }) {
 
   const userId = useAppSelector(userSelectors.getUserId);
 
-  const { data, isSuccess, isLoading } = useQuery({
+  const userData = useQuery({
     queryKey: ['getUserById'],
     queryFn: () => usersApi.getUserById(userId),
     select: (res) => res.data.data,
     enabled: !!userId,
   });
 
-  const isAuthWithProfile = isAuth && userId && data && isSuccess;
+  const organizationData = useQuery({
+    queryKey: ['getUserOrganization'],
+    queryFn: () => organizationsApi.getUserOrganization(userId),
+    select: (res) => res.data.data,
+    enabled: !!userId,
+  });
+
+  const isAuthWithProfile =
+    isAuth && userId && userData.data && userData.isSuccess;
 
   useEffect(() => {
-    if (data) dispatch(setUserData(data.profile));
-  }, [data]);
+    if (userData.data) dispatch(setUserData(userData.data.profile));
+  }, [userData.data]);
 
   useEffect(() => {
     if (isAuthWithProfile) {
@@ -44,7 +54,15 @@ export function PublicProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthWithProfile, router]);
 
-  if (isLoading) {
+  useEffect(() => {
+    const { data, isSuccess } = organizationData;
+
+    if (data && isSuccess) {
+      dispatch(setOrganizationData(data.organization));
+    }
+  }, [organizationData.data, organizationData.isSuccess, isAuth]);
+
+  if (userData.isLoading) {
     return <Loader full />;
   }
 

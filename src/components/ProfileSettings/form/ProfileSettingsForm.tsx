@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { logout } from '@/redux/auth/authSlice';
 import { setUserData, userLogout } from '@/redux/user/userSlice';
 import userSelectors from '@/redux/user/userSelectors';
+import { clearOrganizationData } from '@/redux/organization/organizationSlice';
 
 // constants
 import { countriesList } from '@/constants/location.constants';
@@ -175,6 +176,7 @@ const ProfileSettingsForm = () => {
   const handleLogOut = () => {
     dispatch(logout());
     dispatch(userLogout());
+    dispatch(clearOrganizationData());
     successToast('Successful sign out');
   };
 

@@ -15,10 +15,12 @@ import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
 // reducers
 import authReducer from '@/redux/auth/authSlice';
 import userReducer from '@/redux/user/userSlice';
+import organizationSlice from '@/redux/organization/organizationSlice';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
+  organization: organizationSlice,
 });
 
 
