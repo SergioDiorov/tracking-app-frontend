@@ -1,8 +1,10 @@
-import { IAuthResponse, SignInData, SignUpData } from "./authTypes";
 import axios from "axios";
 
+import environment from "@/config";
+import { IAuthResponse, SignInData, SignUpData } from "./authTypes";
+
 const instance = axios.create({
-  baseURL: "http://localhost:3001/",
+  baseURL: `${environment.BASE_URL}/`,
   headers: {
     'Content-Type': 'application/json',
   }

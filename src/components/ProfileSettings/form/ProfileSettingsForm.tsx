@@ -4,14 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 // ui components
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import Select from '@/components/ui/custom/select';
 import {
   Form,
   FormControl,
@@ -34,6 +27,7 @@ import { clearOrganizationData } from '@/redux/organization/organizationSlice';
 // constants
 import { countriesList } from '@/constants/location.constants';
 import { setUserPartialData } from '@/redux/user/userSlice';
+import { workPreferenceList } from '@/components/auth/constants';
 
 // helpers
 import { profileSettingsSchema, ProfileSchemaType } from './schema';
@@ -51,7 +45,10 @@ const ProfileSettingsForm = () => {
   const [avatar, setAvatar] = useState<string | null>(userData.avatar);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const ageOptions = Array.from({ length: 70 - 18 + 1 }, (_, i) => i + 18);
+  const ageOptions = Array.from({ length: 70 - 18 + 1 }, (_, i) => ({
+    value: (i + 18).toString(),
+    label: (i + 18).toString(),
+  }));
 
   const form = useForm<ProfileSchemaType>({
     resolver: zodResolver(profileSettingsSchema),
@@ -381,21 +378,10 @@ const ProfileSettingsForm = () => {
                         <FormControl>
                           <Select
                             value={field.value}
-                            onValueChange={(value) => field.onChange(value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder='Age' />
-                            </SelectTrigger>
-                            <SelectContent className='max-h-[200px] h-full'>
-                              <SelectGroup>
-                                {ageOptions.map((age) => (
-                                  <SelectItem key={age} value={age.toString()}>
-                                    {age}
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
+                            onChange={(value) => field.onChange(value)}
+                            placeholder='Age'
+                            options={ageOptions}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -420,21 +406,11 @@ const ProfileSettingsForm = () => {
                           render={({ field }) => (
                             <Select
                               value={field.value}
-                              onValueChange={(value) => field.onChange(value)}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder='Country' />
-                              </SelectTrigger>
-                              <SelectContent className='max-h-[300px] h-full'>
-                                <SelectGroup>
-                                  {countriesList.map((country) => (
-                                    <SelectItem key={country} value={country}>
-                                      {country}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                              onChange={(value) => field.onChange(value)}
+                              placeholder='Country'
+                              options={countriesList}
+                              selectContentStyle={'max-h-[300px]'}
+                            />
                           )}
                         />
                       </FormControl>
@@ -470,18 +446,10 @@ const ProfileSettingsForm = () => {
                       <FormControl>
                         <Select
                           value={field.value}
-                          onValueChange={(value) => field.onChange(value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder='Work preference' />
-                          </SelectTrigger>
-                          <SelectContent className='max-h-[200px] h-full'>
-                            <SelectGroup>
-                              <SelectItem value='office'>Office</SelectItem>
-                              <SelectItem value='remote'>Remote</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                          onChange={(value) => field.onChange(value)}
+                          placeholder='Work preference'
+                          options={workPreferenceList}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

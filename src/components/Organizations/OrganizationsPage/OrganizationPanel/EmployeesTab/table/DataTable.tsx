@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 
-interface DataTableProps<TData> {
+interface IDataTableProps<TData> {
   columns: ColumnDef<TData>[];
   data: TData[];
   currentPage: number;
@@ -36,7 +36,7 @@ export function DataTable<TData>({
   isFetching,
   setPreviousPage,
   setNextPage,
-}: DataTableProps<TData>) {
+}: IDataTableProps<TData>) {
   const table = useReactTable({
     data,
     columns,

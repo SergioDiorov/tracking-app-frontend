@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // types
-import { OrganizationType } from '@/interfaces/organization';
+import { IndustryType, IOrganizationType } from '@/interfaces/organization';
 
 const initialState = {
   id: '',
   name: '',
-  industry: '',
+  industry: '' as IndustryType,
   registrationCountry: '',
   website: '',
   corporateEmail: '',
@@ -15,13 +15,13 @@ const initialState = {
   createdAt: '',
   updatedAt: '',
   avatar: null,
-} as Omit<OrganizationType, 'industry'> & { industry: any };
+} as IOrganizationType;
 
 export const organizationSlice = createSlice({
   name: "organization",
   initialState,
   reducers: {
-    setOrganizationData: (state, action: PayloadAction<OrganizationType>) => ({ ...state, ...action.payload }),
+    setOrganizationData: (state, action: PayloadAction<IOrganizationType>) => ({ ...state, ...action.payload }),
     clearOrganizationData: (state) => Object.assign(state, initialState),
   },
 });

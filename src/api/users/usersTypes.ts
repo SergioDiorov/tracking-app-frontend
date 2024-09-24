@@ -1,12 +1,12 @@
 import { IResponse } from "@/interfaces/http";
-import { ProfileType } from "@/interfaces/response";
+import { IProfileType } from "@/interfaces/response";
 
 export interface IGetUserByIdResponse extends IResponse<{
-  profile: ProfileType;
+  profile: IProfileType;
 }> { }
 
 export interface IUpdateProfileResponse extends IResponse<{
-  profile: ProfileType;
+  profile: IProfileType;
 }> { }
 
 export interface IUpdateProfileData {

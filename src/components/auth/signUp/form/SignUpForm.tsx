@@ -3,14 +3,6 @@ import React, { useEffect, useState } from 'react';
 // ui components
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Form,
   FormControl,
   FormField,
@@ -20,6 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import Select from '@/components/ui/custom/select';
 
 // redux
 import { useAppDispatch } from '@/redux/hooks';
@@ -40,13 +33,17 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { errorToast, successToast } from '@/helpers/toastActions';
 import { usersApi } from '@/api/users/usersApi';
+import { workPreferenceList } from '../../constants';
 
 const SignUpForm = () => {
   const [file, setFile] = useState<File | null>(null);
 
   const dispatch = useAppDispatch();
 
-  const ageOptions = Array.from({ length: 70 - 18 + 1 }, (_, i) => i + 18);
+  const ageOptions = Array.from({ length: 70 - 18 + 1 }, (_, i) => ({
+    value: (i + 18).toString(),
+    label: (i + 18).toString(),
+  }));
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -190,21 +187,10 @@ const SignUpForm = () => {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={(value) => field.onChange(value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Age' />
-                        </SelectTrigger>
-                        <SelectContent className='max-h-[200px] h-full'>
-                          <SelectGroup>
-                            {ageOptions.map((age) => (
-                              <SelectItem key={age} value={age.toString()}>
-                                {age}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                        onChange={(value) => field.onChange(value)}
+                        placeholder='Age'
+                        options={ageOptions}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -227,21 +213,11 @@ const SignUpForm = () => {
                         render={({ field }) => (
                           <Select
                             value={field.value}
-                            onValueChange={(value) => field.onChange(value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder='Country' />
-                            </SelectTrigger>
-                            <SelectContent className='max-h-[300px] h-full'>
-                              <SelectGroup>
-                                {countriesList.map((country) => (
-                                  <SelectItem key={country} value={country}>
-                                    {country}
-                                  </SelectItem>
-                                ))}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
+                            onChange={(value) => field.onChange(value)}
+                            placeholder='Country'
+                            options={countriesList}
+                            selectContentStyle={'max-h-[300px]'}
+                          />
                         )}
                       />
                     </FormControl>
@@ -298,18 +274,10 @@ const SignUpForm = () => {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={(value) => field.onChange(value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder='Work preference' />
-                        </SelectTrigger>
-                        <SelectContent className='max-h-[200px] h-full'>
-                          <SelectGroup>
-                            <SelectItem value='office'>Office</SelectItem>
-                            <SelectItem value='remote'>Remote</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
+                        onChange={(value) => field.onChange(value)}
+                        placeholder='Work preference'
+                        options={workPreferenceList}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

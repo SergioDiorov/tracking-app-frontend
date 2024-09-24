@@ -2,23 +2,24 @@ import { z } from 'zod';
 
 import { lettersAndSpacesRegex } from '@/constants/regex';
 import { industry, IndustryEnum, IndustryType } from '@/interfaces/organization';
+import { defaultConstants, organizationDescriptionConstants, organizationNameConstants } from '@/constants/schemaConstants';
 
 export const createOrganizationSchema = z.object({
   name: z
     .string()
-    .min(1, { message: 'Name is required' })
-    .max(100, { message: 'Name is too long' })
+    .min(organizationNameConstants.minLength, { message: 'Name is required' })
+    .max(organizationNameConstants.maxLength, { message: 'Name is too long' })
     .regex(lettersAndSpacesRegex, { message: 'Name must be only letters and spaces' })
     .trim(),
   industry: z
     .enum(Object.values(IndustryEnum) as [IndustryType, ...IndustryType[]])
-    .refine((value: any) => industry.includes(value), {
+    .refine((value: IndustryType) => industry.includes(value), {
       message: `Industry must be one of the following: ${industry.join(', ')}`,
     }),
   registrationCountry: z
     .string()
-    .min(1, { message: 'Registration country is required' })
-    .max(100, { message: 'Registration country is too long' })
+    .min(defaultConstants.minLength, { message: 'Registration country is required' })
+    .max(defaultConstants.maxLength, { message: 'Registration country is too long' })
     .trim(),
   website: z
     .string()
@@ -29,7 +30,7 @@ export const createOrganizationSchema = z.object({
     .email({ message: 'Corporate email must be a valid email address' }),
   description: z
     .string()
-    .max(500, { message: 'Description is too long' })
+    .max(organizationDescriptionConstants.maxLength, { message: 'Description is too long' })
     .optional(),
 })
 

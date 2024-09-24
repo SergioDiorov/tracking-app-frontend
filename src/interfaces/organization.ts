@@ -1,6 +1,6 @@
-import { ProfileType } from '@/interfaces/response';
+import { IProfileType } from '@/interfaces/response';
 
-export interface OrganizationType {
+export interface IOrganizationType {
   id: string,
   name: string,
   industry: IndustryType,
@@ -14,13 +14,20 @@ export interface OrganizationType {
   updatedAt: string
 };
 
-export interface OrganizationMemberType {
+export interface IOrganizationMemberType {
   id: string,
   user: string,
-  joined: string,
-  role: OrganizationRoleType,
   organizationId: string,
-  userProfile: Pick<ProfileType, 'age' | 'avatar' | 'country' | 'firstName' | 'lastName'>;
+  joined: string,
+  email: string,
+  position: OrganizationUserPositionType,
+  workSchedule: string,
+  workHours: number,
+  salary: number,
+  type: OrganizationUserTypeType,
+  workExperienceMonth: number,
+  role: OrganizationUserRoleType,
+  userProfile?: Pick<IProfileType, 'age' | 'avatar' | 'country' | 'firstName' | 'lastName'>;
 };
 
 // Organization industry 
@@ -41,32 +48,52 @@ export type IndustryType =
 
 export const industry: IndustryType[] = [IndustryEnum.ENGINEERING, IndustryEnum.ENTERTAINMENT, IndustryEnum.IT, IndustryEnum.MANAGEMENT, IndustryEnum.OTHER]
 
-// Organization member roles 
-export enum OrganizationRoleEnum {
-  MARKETING_MANAGER = 'MarketingManager',
-  SALES_MANAGER = 'SalesManager',
-  PRODUCT_MANAGER = 'ProductManager',
-  HR_MANAGER = 'HRManager',
-  PROJECT_MANAGER = 'ProjectManager',
-  BUSINESS_ANALYST = 'BusinessAnalyst',
-  IT_MANAGER = 'ITManager',
+// Organization user role
+export enum OrganizationUserRoleEnum {
+  ADMIN = 'Admin',
+  WORKER = 'Worker',
 }
 
-export type OrganizationRoleType =
-  OrganizationRoleEnum.MARKETING_MANAGER |
-  OrganizationRoleEnum.SALES_MANAGER |
-  OrganizationRoleEnum.PRODUCT_MANAGER |
-  OrganizationRoleEnum.HR_MANAGER |
-  OrganizationRoleEnum.PROJECT_MANAGER |
-  OrganizationRoleEnum.BUSINESS_ANALYST |
-  OrganizationRoleEnum.IT_MANAGER;
+export type OrganizationUserRoleType = OrganizationUserRoleEnum.ADMIN | OrganizationUserRoleEnum.WORKER;
 
-export const organizationRole: OrganizationRoleType[] = [
-  OrganizationRoleEnum.MARKETING_MANAGER,
-  OrganizationRoleEnum.SALES_MANAGER,
-  OrganizationRoleEnum.PRODUCT_MANAGER,
-  OrganizationRoleEnum.HR_MANAGER,
-  OrganizationRoleEnum.PROJECT_MANAGER,
-  OrganizationRoleEnum.BUSINESS_ANALYST,
-  OrganizationRoleEnum.IT_MANAGER,
+export const organizationUserRole: OrganizationUserRoleType[] = [OrganizationUserRoleEnum.ADMIN, OrganizationUserRoleEnum.WORKER];
+
+// Organization user position
+export enum OrganizationUserPositionEnum {
+  MARKETINGMANAGER = 'MarketingManager',
+  SALESMANAGER = 'SalesManager',
+  PRODUCTMANAGER = 'ProductManager',
+  HRMANAGER = 'HRManager',
+  PROJECTMANAGER = 'ProjectManager',
+  BUSINESSANALYST = 'BusinessAnalyst',
+  ITMANAGER = 'ITManager',
+}
+
+export type OrganizationUserPositionType =
+  OrganizationUserPositionEnum.MARKETINGMANAGER |
+  OrganizationUserPositionEnum.SALESMANAGER |
+  OrganizationUserPositionEnum.PRODUCTMANAGER |
+  OrganizationUserPositionEnum.HRMANAGER |
+  OrganizationUserPositionEnum.PROJECTMANAGER |
+  OrganizationUserPositionEnum.BUSINESSANALYST |
+  OrganizationUserPositionEnum.ITMANAGER;
+
+export const organizationUserPosition: OrganizationUserPositionType[] = [
+  OrganizationUserPositionEnum.MARKETINGMANAGER,
+  OrganizationUserPositionEnum.SALESMANAGER,
+  OrganizationUserPositionEnum.PRODUCTMANAGER,
+  OrganizationUserPositionEnum.HRMANAGER,
+  OrganizationUserPositionEnum.PROJECTMANAGER,
+  OrganizationUserPositionEnum.BUSINESSANALYST,
+  OrganizationUserPositionEnum.ITMANAGER,
 ]
+
+// Organization user type
+export enum OrganizationUserTypeEnum {
+  CONTRACTOR = 'Contractor',
+  PERMANENT = 'Permanent',
+}
+
+export type OrganizationUserTypeType = OrganizationUserTypeEnum.CONTRACTOR | OrganizationUserTypeEnum.PERMANENT;
+
+export const organizationUserType: OrganizationUserTypeType[] = [OrganizationUserTypeEnum.CONTRACTOR, OrganizationUserTypeEnum.PERMANENT]

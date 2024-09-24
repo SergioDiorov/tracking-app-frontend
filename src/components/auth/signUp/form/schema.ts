@@ -1,36 +1,37 @@
 import { z } from 'zod';
 
 import { lettersAndSpacesRegex } from '@/constants/regex';
+import { defaultConstants, emailConstants, nameConstants, passwordConstants } from '@/constants/schemaConstants';
 
 export const signUpSchema = z.object({
   email: z
     .string()
     .email()
-    .min(1, { message: 'Email is required' })
-    .max(64, { message: 'Email is too long' })
+    .min(emailConstants.minLength, { message: 'Email is required' })
+    .max(emailConstants.maxLength, { message: 'Email is too long' })
     .trim(),
   password: z
     .string()
-    .min(8, { message: 'Password must be at least 8 characters long' })
-    .max(64, { message: 'Password is too long' })
+    .min(passwordConstants.minLength, { message: 'Password must be at least 8 characters long' })
+    .max(passwordConstants.minLength, { message: 'Password is too long' })
     .trim(),
   confirmPassword: z
     .string()
-    .min(8, { message: 'Confirm password must be at least 8 characters long' })
-    .max(64, { message: 'Confirm password is too long' })
+    .min(passwordConstants.minLength, { message: 'Confirm password must be at least 8 characters long' })
+    .max(passwordConstants.minLength, { message: 'Confirm password is too long' })
     .trim(),
   firstName: z
     .string()
-    .min(1, { message: 'First name is required' })
-    .max(64, { message: 'First name is too long' })
+    .min(nameConstants.minLength, { message: 'First name is required' })
+    .max(nameConstants.maxLength, { message: 'First name is too long' })
     .regex(lettersAndSpacesRegex, {
       message: 'Name must be only letters',
     })
     .trim(),
   lastName: z
     .string()
-    .min(1, { message: 'Last name is required' })
-    .max(64, { message: 'Last name is too long' })
+    .min(nameConstants.minLength, { message: 'Last name is required' })
+    .max(nameConstants.maxLength, { message: 'Last name is too long' })
     .regex(lettersAndSpacesRegex, {
       message: 'Name must be only letters',
     })
@@ -43,20 +44,20 @@ export const signUpSchema = z.object({
     .trim(),
   country: z
     .string()
-    .min(1, { message: 'Country is required' })
-    .max(64, { message: 'Country name is too long' })
+    .min(defaultConstants.minLength, { message: 'Country is required' })
+    .max(defaultConstants.maxLength, { message: 'Country name is too long' })
     .trim(),
   city: z
     .string()
-    .min(1, { message: 'City is required' })
-    .max(64, { message: 'City name is too long' })
+    .min(defaultConstants.minLength, { message: 'City is required' })
+    .max(defaultConstants.maxLength, { message: 'City name is too long' })
     .trim(), avatar: z
       .string()
       .optional(),
   workPreference: z
     .string()
-    .min(1, { message: 'Work preference is required' })
-    .max(64, { message: 'Work preference is too long' })
+    .min(defaultConstants.minLength, { message: 'Work preference is required' })
+    .max(defaultConstants.maxLength, { message: 'Work preference is too long' })
     .trim(),
 }).refine(data => data.password === data.confirmPassword, {
   message: "Passwords don't match",

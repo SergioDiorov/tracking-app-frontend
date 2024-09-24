@@ -54,7 +54,7 @@ const Modal: FC<IModalProps> = ({
                 onCancel && onCancel();
               }}
             >
-              {cancelButtonText ? cancelButtonText : 'Cancel'}
+              {cancelButtonText ?? 'Cancel'}
             </Button>
           )}
           {!disableAcceptButton && (
@@ -64,7 +64,7 @@ const Modal: FC<IModalProps> = ({
                 onAccept && onAccept();
               }}
             >
-              {acceptButtonText ? acceptButtonText : 'Accept'}
+              {acceptButtonText ?? 'Accept'}
             </Button>
           )}
         </DialogFooter>

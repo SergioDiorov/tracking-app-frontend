@@ -1,10 +1,11 @@
 import axios from "axios";
 import store from '@/redux/store';
 
+import environment from "@/config";
 import { IGetUserByIdResponse, IUploadAvatarResponse, IUpdateProfileResponse, IUpdateProfileData } from "@/api/users/usersTypes";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3001/users/",
+  baseURL: `${environment.BASE_URL}/users/`,
   headers: {
     'Content-Type': 'application/json',
   }

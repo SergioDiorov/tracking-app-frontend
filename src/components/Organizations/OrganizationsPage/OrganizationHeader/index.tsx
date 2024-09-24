@@ -1,20 +1,39 @@
 'use client';
 
 // react
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 // types
-import { OrganizationType } from '@/interfaces/organization';
+import { IOrganizationType } from '@/interfaces/organization';
+
+// components
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+//iocns
+import { PlusIcon } from '@radix-ui/react-icons';
+
+// helpers
 import { formatDate } from '@/helpers/formatDate';
+import Modal from '@/components/assets/Modal';
+import AddOrganizationEmployerForm from '../../AddOrganizationEmployerForm/AddOrganizationEmployerForm';
+import { useAppSelector } from '@/redux/hooks';
+import userSelectors from '@/redux/user/userSelectors';
 
 interface IOrganizationsHeaderProps {
-  organization: OrganizationType;
+  organization: IOrganizationType;
+  setEmployeesChanged: () => void;
 }
 
 const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
   organization,
+  setEmployeesChanged,
 }) => {
+  const [openAddEmployerModal, setOpenAddEmployerModal] =
+    useState<boolean>(false);
+
+  const userId = useAppSelector(userSelectors.getUserId);
+
   const {
     name,
     industry,
@@ -24,6 +43,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
     avatar,
     description,
     createdAt,
+    id,
   } = organization;
   return (
     <>
@@ -42,7 +62,6 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
               {name.slice(0, 2)}
             </div>
           )}
-
           <div className='flex flex-col justify-between items-start gap-3'>
             <p className='text-[24px] font-semibold text-primary'>{name}</p>
 
@@ -89,6 +108,19 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
               </div>
             </div>
           </div>
+          {userId === organization.ownerId && (
+            <div className='ml-auto'>
+              <Button
+                variant='outline'
+                size='sm'
+                className='text-primary/70'
+                onClick={() => setOpenAddEmployerModal(true)}
+              >
+                <PlusIcon className='mr-2 h-4 w-4' />{' '}
+                <span className=''>Add employer</span>
+              </Button>
+            </div>
+          )}{' '}
         </div>
         {!!description && (
           <p className='text-[14px] font-medium text-primary/80 border-t border-primary/5 mt-4 pt-4 '>
@@ -96,6 +128,20 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
           </p>
         )}
       </Card>
+
+      <Modal
+        open={openAddEmployerModal}
+        onOpenChange={setOpenAddEmployerModal}
+        title='Add new employer'
+        disableCancelButton
+        disableAcceptButton
+      >
+        <AddOrganizationEmployerForm
+          organizationId={id}
+          closeModal={() => setOpenAddEmployerModal(false)}
+          setEmployeesChanged={setEmployeesChanged}
+        />
+      </Modal>
     </>
   );
 };

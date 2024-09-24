@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 // types
 import { IAuthResponse } from '@/api/auth/authTypes';
 import { UserType } from '@/redux/user/userTypes';
-import { ProfileType } from '@/interfaces/response';
+import { IProfileType } from '@/interfaces/response';
 
 const initialState = {
   id: '',
@@ -21,11 +21,11 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUserData: (state, action: PayloadAction<ProfileType>) => {
+    setUserData: (state, action: PayloadAction<IProfileType>) => {
       const { userId, id, ...restProfileData } = action.payload;
       return { ...state, id: userId, ...restProfileData }
     },
-    setUserPartialData: (state, action: PayloadAction<Partial<ProfileType>>) => {
+    setUserPartialData: (state, action: PayloadAction<Partial<IProfileType>>) => {
       return { ...state, ...action.payload }
     },
     setUserLoginData: (state, action: PayloadAction<IAuthResponse>) => {

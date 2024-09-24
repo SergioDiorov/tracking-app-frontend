@@ -2,14 +2,7 @@
 
 import React, { FC, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import Select from '@/components/ui/custom/select';
 import {
   Form,
   FormControl,
@@ -28,18 +21,20 @@ import {
   CreateOrganizationSchemaType,
 } from './schema';
 import { countriesList } from '@/constants/location.constants';
-import { industry } from '@/interfaces/organization';
+import { industry, IndustryType } from '@/interfaces/organization';
 import { useMutation } from '@tanstack/react-query';
 import { organizationsApi } from '@/api/organizations/organizationsApi';
 import { errorToast, successToast } from '@/helpers/toastActions';
 import { useAppDispatch } from '@/redux/hooks';
 import { setOrganizationData } from '@/redux/organization/organizationSlice';
 
-interface CreateOrganizationForm {
+interface ICreateOrganizationFormProps {
   closeModal: () => void;
 }
 
-const CreateOrganizationForm: FC<CreateOrganizationForm> = ({ closeModal }) => {
+const CreateOrganizationForm: FC<ICreateOrganizationFormProps> = ({
+  closeModal,
+}) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const dispatch = useAppDispatch();
@@ -48,7 +43,7 @@ const CreateOrganizationForm: FC<CreateOrganizationForm> = ({ closeModal }) => {
     resolver: zodResolver(createOrganizationSchema),
     defaultValues: {
       name: '',
-      industry: '' as any,
+      industry: '' as IndustryType | undefined,
       registrationCountry: '',
       website: '',
       corporateEmail: '',
@@ -177,21 +172,10 @@ const CreateOrganizationForm: FC<CreateOrganizationForm> = ({ closeModal }) => {
                   <FormControl>
                     <Select
                       value={field.value}
-                      onValueChange={(value) => field.onChange(value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder='Organization industry' />
-                      </SelectTrigger>
-                      <SelectContent className='max-h-[200px] h-full'>
-                        <SelectGroup>
-                          {industry.map((item) => (
-                            <SelectItem value={item} key={item}>
-                              {item}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                      onChange={(value) => field.onChange(value)}
+                      placeholder='Organization industry'
+                      options={industry}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,21 +199,11 @@ const CreateOrganizationForm: FC<CreateOrganizationForm> = ({ closeModal }) => {
                       render={({ field }) => (
                         <Select
                           value={field.value}
-                          onValueChange={(value) => field.onChange(value)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder='Registration country' />
-                          </SelectTrigger>
-                          <SelectContent className='max-h-[300px] h-full'>
-                            <SelectGroup>
-                              {countriesList.map((country) => (
-                                <SelectItem key={country} value={country}>
-                                  {country}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                          onChange={(value) => field.onChange(value)}
+                          placeholder='Registration country'
+                          options={countriesList}
+                          selectContentStyle={'max-h-[300px]'}
+                        />
                       )}
                     />
                   </FormControl>

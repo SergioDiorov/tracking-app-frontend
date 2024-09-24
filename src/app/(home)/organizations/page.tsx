@@ -21,7 +21,7 @@ const Organizations = () => {
 
   return (
     <>
-      {!!organizationData && !!organizationData.id ? (
+      {!!organizationData?.id ? (
         <OrganizationsPage organization={organizationData} />
       ) : (
         <div className='flex flex-col justify-center items-center gap-5 mt-10'>

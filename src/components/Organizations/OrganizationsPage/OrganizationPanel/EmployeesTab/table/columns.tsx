@@ -1,13 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { OrganizationMemberType } from '@/interfaces/organization';
+import { IOrganizationMemberType } from '@/interfaces/organization';
 import { formatDate } from '@/helpers/formatDate';
 
-export const columns: ColumnDef<OrganizationMemberType>[] = [
+export const columns: ColumnDef<IOrganizationMemberType>[] = [
   {
     id: 'user',
     header: 'Name',
     cell: ({ row }) => {
-      const { firstName, lastName, avatar } = row.original.userProfile;
+      const userProfile = row.original.userProfile;
+      const firstName = userProfile?.firstName || '';
+      const lastName = userProfile?.lastName || '';
+      const avatar = userProfile?.avatar || null;
+
       return (
         <div className='flex items-center'>
           {avatar ? (

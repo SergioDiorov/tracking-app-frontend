@@ -1,10 +1,12 @@
 import axios from "axios";
 import store from '@/redux/store';
 
-import { ICreateOrganizationData, ICreateOrganizationResponse, IGetUserOrganizationResponse, IGetOrganizationMembersResponse, IGetOrganizationMembersData } from "./organizationsTypes";
+import environment from "@/config";
+import { ICreateOrganizationData, ICreateOrganizationResponse, IGetUserOrganizationResponse, IGetOrganizationMembersResponse, IGetOrganizationMembersData, IAddUserToOrganizationData, IAddUserToOrganizationResponse } from "./organizationsTypes";
+import { objectToFormData } from "@/helpers/objectToFormData";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3001/organizations/",
+  baseURL: `${environment.BASE_URL}/organizations/`,
   headers: {
     'Content-Type': 'application/json',
   }
@@ -37,14 +39,8 @@ export const organizationsApi = {
   },
 
   createOrganization({ file, data }: ICreateOrganizationData) {
-    const formData = new FormData();
+    const formData = objectToFormData(data);
     file && formData.append('file', file);
-    data.description && formData.append('description', data.description);
-    formData.append('name', data.name);
-    formData.append('industry', data.industry);
-    formData.append('registrationCountry', data.registrationCountry);
-    formData.append('website', data.website);
-    formData.append('corporateEmail', data.corporateEmail);
 
     return instance.post<ICreateOrganizationResponse>('', formData, {
       headers: {
@@ -52,4 +48,8 @@ export const organizationsApi = {
       }
     });
   },
+
+  addUserToOrganization({ organizationId, userData }: IAddUserToOrganizationData) {
+    return instance.post<IAddUserToOrganizationResponse>(`${organizationId}/add`, userData);
+  }
 }
