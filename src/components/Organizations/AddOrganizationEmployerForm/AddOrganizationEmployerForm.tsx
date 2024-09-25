@@ -144,7 +144,7 @@ const AddOrganizationEmployerForm: FC<IAddOrganizationEmployerFormProps> = ({
           />
         </div>
 
-        <div className='flex gap-3 justify-between w-full'>
+        <div className='flex flex-col xs:flex-row gap-3 justify-between w-full'>
           <FormField
             control={form.control}
             name='role'

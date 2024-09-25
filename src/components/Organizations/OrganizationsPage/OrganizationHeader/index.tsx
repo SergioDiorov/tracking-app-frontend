@@ -31,6 +31,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
 }) => {
   const [openAddEmployerModal, setOpenAddEmployerModal] =
     useState<boolean>(false);
+  const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
 
   const userId = useAppSelector(userSelectors.getUserId);
 
@@ -50,14 +51,30 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
       <Card className='w-full p-4'>
         <div className='flex justify-start items-start gap-5'>
           {avatar ? (
-            <img
-              src={avatar}
-              alt='Avatar'
-              className={`w-[120px] h-[120px] rounded-full bg-secondary object-cover`}
-            />
+            <div>
+              <img
+                src={avatar}
+                alt='Avatar'
+                className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary object-cover xs:w-[120px] xs:h-[120px] xs:min-w-[120px] xs:min-h-[120px] cursor-pointer m-auto`}
+                onClick={() => setOpenAvatarModal(true)}
+              />
+              {userId === organization.ownerId && (
+                <div className='ml-auto block md:hidden mt-1'>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='text-primary/70 text-[12px] h-fit px-[3px] py-[6px]'
+                    onClick={() => setOpenAddEmployerModal(true)}
+                  >
+                    <PlusIcon className='mr-1 h-3 w-3' />{' '}
+                    <span className=''>Add employer</span>
+                  </Button>
+                </div>
+              )}
+            </div>
           ) : (
             <div
-              className={`w-[120px] h-[120px] rounded-full bg-secondary flex justify-center items-center text-[18px] font-bold text-primary/50`}
+              className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary flex justify-center items-center text-[18px] font-bold text-primary/50 xs:w-[120px] xs:h-[120px] xs:min-w-[120px] xs:min-h-[120px]`}
             >
               {name.slice(0, 2)}
             </div>
@@ -65,31 +82,31 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
           <div className='flex flex-col justify-between items-start gap-3'>
             <p className='text-[24px] font-semibold text-primary'>{name}</p>
 
-            <div className='flex justify-start items-start gap-5'>
-              <div>
+            <div className='flex justify-start items-start flex-col md:flex-row  md:gap-5'>
+              <div className='md:border-r border-primary/5 md:pr-4'>
                 <p className='text-[14px] font-medium text-primary/70'>
                   industry:{' '}
-                  <span className='text-base font-medium text-primary/90'>
+                  <span className='text-[14px] font-medium text-primary/90'>
                     {industry}
                   </span>
                 </p>
                 <p className='text-[14px] font-medium text-primary/70'>
                   location:{' '}
-                  <span className='text-base font-medium text-primary/90'>
+                  <span className='text-[14px] font-medium text-primary/90'>
                     {registrationCountry}
                   </span>
                 </p>
                 <p className='text-[14px] font-medium text-primary/70'>
                   created:{' '}
-                  <span className='text-base font-medium text-primary/90'>
+                  <span className='text-[14px] font-medium text-primary/90'>
                     {formatDate(createdAt)}
                   </span>
                 </p>
               </div>
-              <div className='border-l border-primary/5 pl-4'>
+              <div>
                 <p className='text-[14px] font-medium text-primary/70'>
                   email:{' '}
-                  <span className='text-base font-medium text-primary/90'>
+                  <span className='text-[14px] font-medium text-primary/90'>
                     {corporateEmail}
                   </span>
                 </p>
@@ -99,7 +116,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
                     href={website}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='text-base font-medium text-primary/90 underline hover:text-primary/70 transition'
+                    className='text-[14px] font-medium text-primary/90 underline hover:text-primary/70 transition'
                   >
                     {name[0].toLowerCase() + name.slice(1).replaceAll(' ', '')}
                     .com
@@ -109,7 +126,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
             </div>
           </div>
           {userId === organization.ownerId && (
-            <div className='ml-auto'>
+            <div className='ml-auto hidden md:block'>
               <Button
                 variant='outline'
                 size='sm'
@@ -120,7 +137,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
                 <span className=''>Add employer</span>
               </Button>
             </div>
-          )}{' '}
+          )}
         </div>
         {!!description && (
           <p className='text-[14px] font-medium text-primary/80 border-t border-primary/5 mt-4 pt-4 '>
@@ -142,6 +159,35 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
           setEmployeesChanged={setEmployeesChanged}
         />
       </Modal>
+
+      {avatar && (
+        <div
+          className={`fixed inset-0 items-center justify-center bg-black bg-opacity-10 backdrop-blur-sm z-[45] transition-opacity duration-300 ease-in-out hidden ${
+            openAvatarModal
+              ? '!flex transition-opacity duration-300 ease-in-out'
+              : ''
+          }`}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setOpenAvatarModal(false);
+            }
+          }}
+        >
+          <div className='relative'>
+            <img
+              src={avatar || ''}
+              alt='Avatar'
+              className='w-[400px] h-[400px] rounded-full object-cover'
+            />
+            <button
+              className='absolute top-2 right-2 text-secondary bg-primary hover:bg-primary/70 rounded-full w-[26px] h-[26px] transition'
+              onClick={() => setOpenAvatarModal(false)}
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };
