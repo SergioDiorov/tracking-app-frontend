@@ -48,11 +48,11 @@ export function DataTable<TData>({
     <div>
       <div className='rounded-md border'>
         <Table>
-          <TableHeader>
+          <TableHeader className='bg-muted/50'>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className='whitespace-nowrap'>
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext(),

@@ -53,7 +53,7 @@ const OrganizationPanel: FC<IEmployeesTabProps> = ({
         ))}
       </ul>
 
-      <div className='w-full'>{menuContent[activeMenuItem]}</div>
+      <div className='w-full overflow-auto'>{menuContent[activeMenuItem]}</div>
     </Card>
   );
 };

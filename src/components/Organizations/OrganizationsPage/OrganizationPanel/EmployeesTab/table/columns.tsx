@@ -1,6 +1,10 @@
+// types
 import { ColumnDef } from '@tanstack/react-table';
 import { IOrganizationMemberType } from '@/interfaces/organization';
+
+// helpers
 import { formatDate } from '@/helpers/formatDate';
+import { formatWorkExperience } from '@/helpers/formatWorkExperience';
 
 export const columns: ColumnDef<IOrganizationMemberType>[] = [
   {
@@ -19,13 +23,13 @@ export const columns: ColumnDef<IOrganizationMemberType>[] = [
               src={avatar}
               alt='Avatar'
               className={
-                'w-[30px] h-[30px] rounded-full bg-secondary object-cover'
+                'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary object-cover'
               }
             />
           ) : (
             <div
               className={
-                'w-[30px] h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
+                'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
               }
             >
               {firstName[0] + lastName[0]}
@@ -43,6 +47,28 @@ export const columns: ColumnDef<IOrganizationMemberType>[] = [
   {
     accessorKey: 'userProfile.country',
     header: 'Country',
+  },
+  {
+    accessorKey: 'position',
+    header: 'Position',
+  },
+  {
+    accessorKey: 'workSchedule',
+    header: 'Schedule',
+  },
+  {
+    accessorKey: 'workHours',
+    header: 'Work Hours',
+  },
+  {
+    accessorKey: 'salary',
+    header: 'Salary',
+    cell: ({ row }) => <span>${row.original.salary}</span>,
+  },
+  {
+    accessorKey: 'workExperienceMonth',
+    header: 'Work Experience',
+    cell: ({ row }) => formatWorkExperience(row.original.workExperienceMonth),
   },
   {
     accessorKey: 'role',
