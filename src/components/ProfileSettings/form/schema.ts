@@ -1,39 +1,40 @@
 import { z } from 'zod';
 
 import { lettersAndSpacesRegex } from '@/constants/regex';
+import { defaultConstants, emailConstants, nameConstants, passwordConstants } from '@/constants/schemaConstants';
 
 export const profileSettingsSchema = z.object({
   email: z
     .string()
     .email()
-    .min(1, { message: 'Email is required' })
-    .max(64, { message: 'Email is too long' })
+    .min(emailConstants.minLength, { message: 'Email is required' })
+    .max(emailConstants.maxLength, { message: 'Email is too long' })
     .trim()
     .optional(),
   oldPassword: z
     .string()
     .optional()
-    .refine(val => !val || (val.length >= 8 && val.length <= 64), {
-      message: 'Password must be at least 8 characters long',
+    .refine(val => !val || (val.length >= passwordConstants.minLength && val.length <= passwordConstants.maxLength), {
+      message: `Password must be at least ${passwordConstants.minLength} characters long`,
     }),
   newPassword: z
     .string()
     .optional()
-    .refine(val => !val || (val.length >= 8 && val.length <= 64), {
-      message: 'Password must be at least 8 characters long',
+    .refine(val => !val || (val.length >= passwordConstants.minLength && val.length <= passwordConstants.maxLength), {
+      message: `Password must be at least ${passwordConstants.minLength} characters long`,
     }),
   firstName: z
     .string()
-    .min(1, { message: 'First name is required' })
-    .max(64, { message: 'First name is too long' })
+    .min(nameConstants.minLength, { message: 'First name is required' })
+    .max(nameConstants.maxLength, { message: 'First name is too long' })
     .regex(lettersAndSpacesRegex, {
       message: 'Name must be only letters',
     })
     .trim(),
   lastName: z
     .string()
-    .min(1, { message: 'Last name is required' })
-    .max(64, { message: 'Last name is too long' })
+    .min(nameConstants.minLength, { message: 'Last name is required' })
+    .max(nameConstants.maxLength, { message: 'Last name is too long' })
     .regex(lettersAndSpacesRegex, {
       message: 'Name must be only letters',
     })
@@ -46,20 +47,20 @@ export const profileSettingsSchema = z.object({
     .trim(),
   country: z
     .string()
-    .min(1, { message: 'Country is required' })
-    .max(64, { message: 'Country name is too long' })
+    .min(defaultConstants.minLength, { message: 'Country is required' })
+    .max(defaultConstants.maxLength, { message: 'Country name is too long' })
     .trim(),
   city: z
     .string()
-    .min(1, { message: 'City is required' })
-    .max(64, { message: 'City name is too long' })
+    .min(defaultConstants.minLength, { message: 'City is required' })
+    .max(defaultConstants.maxLength, { message: 'City name is too long' })
     .trim(), avatar: z
       .string()
       .optional(),
   workPreference: z
     .string()
-    .min(1, { message: 'Work preference is required' })
-    .max(64, { message: 'Work preference is too long' })
+    .min(defaultConstants.minLength, { message: 'Work preference is required' })
+    .max(defaultConstants.maxLength, { message: 'Work preference is too long' })
     .trim(),
 })
 // .refine(data => {

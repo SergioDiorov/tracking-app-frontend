@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 // redux
 import { logout } from '@/redux/auth/authSlice';
 import { setUserPartialData, userLogout } from '@/redux/user/userSlice';
+import { clearOrganizationData } from '@/redux/organization/organizationSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import userSelectors from '@/redux/user/userSelectors';
 
@@ -48,6 +49,7 @@ const Home = () => {
   const handleLogOut = () => {
     dispatch(logout());
     dispatch(userLogout());
+    dispatch(clearOrganizationData());
     successToast('Successful sign out');
   };
 

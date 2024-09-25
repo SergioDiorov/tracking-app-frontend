@@ -24,11 +24,12 @@ const textVariants = cva('text-primary-text');
 
 type LoaderProps = {
   full?: boolean;
+  hideText?: boolean;
 } & React.HTMLProps<HTMLDivElement> &
   VariantProps<typeof loaderVariants>;
 
 const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
-  ({ full = false, className, ...props }, ref) => (
+  ({ full = false, hideText = false, className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(loaderVariants({ full }), className)}
@@ -36,7 +37,7 @@ const Loader = React.forwardRef<HTMLDivElement, LoaderProps>(
     >
       <div className='flex flex-col items-center space-y-4'>
         <div className={spinnerVariants()} />
-        <p className={textVariants()}>Loading...</p>
+        {!hideText && <p className={textVariants()}>Loading...</p>}
       </div>
     </div>
   ),

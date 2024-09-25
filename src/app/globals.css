@@ -82,3 +82,26 @@ body {
   background: linear-gradient(45deg, #93a5cf 0%, #e4efe9 100%);
   min-height: 100vh;
 }
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #fff;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: rgb(237 238 241);
+    border-radius: 100vh;
+    border: 2px solid #fff;
+    transition: 0.4s;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(203 203 203);
+  }
+}

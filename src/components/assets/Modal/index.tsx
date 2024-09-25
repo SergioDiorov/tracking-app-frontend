@@ -1,13 +1,13 @@
+import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+
 import { FC } from 'react';
 
 interface IModalProps {
@@ -20,6 +20,8 @@ interface IModalProps {
   onCancel?: () => void;
   onAccept?: () => void;
   children: React.ReactNode;
+  disableAcceptButton?: boolean;
+  disableCancelButton?: boolean;
 }
 
 const Modal: FC<IModalProps> = ({
@@ -32,35 +34,42 @@ const Modal: FC<IModalProps> = ({
   onCancel,
   onAccept,
   children,
+  disableAcceptButton,
+  disableCancelButton,
 }) => {
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
           {children}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel
-            onClick={() => {
-              onOpenChange(false);
-              onCancel && onCancel();
-            }}
-          >
-            {cancelButtonText ? cancelButtonText : 'Cancel'}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => {
-              onOpenChange(false);
-              onAccept && onAccept();
-            }}
-          >
-            {acceptButtonText ? acceptButtonText : 'Accept'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        </DialogHeader>
+        <DialogFooter>
+          {!disableCancelButton && (
+            <Button
+              variant='secondary'
+              onClick={() => {
+                onOpenChange(false);
+                onCancel && onCancel();
+              }}
+            >
+              {cancelButtonText ?? 'Cancel'}
+            </Button>
+          )}
+          {!disableAcceptButton && (
+            <Button
+              onClick={() => {
+                onOpenChange(false);
+                onAccept && onAccept();
+              }}
+            >
+              {acceptButtonText ?? 'Accept'}
+            </Button>
+          )}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
