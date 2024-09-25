@@ -49,21 +49,21 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
   return (
     <>
       <Card className='w-full p-4'>
-        <div className='flex justify-start items-start gap-5'>
+        <div className='flex items-end md:items-start justify-start gap-5'>
           {avatar ? (
             <div>
               <img
                 src={avatar}
                 alt='Avatar'
-                className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary object-cover xs:w-[120px] xs:h-[120px] xs:min-w-[120px] xs:min-h-[120px] cursor-pointer m-auto`}
+                className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary object-cover md:w-[120px] md:h-[120px] md:min-w-[120px] md:min-h-[120px] cursor-pointer m-auto`}
                 onClick={() => setOpenAvatarModal(true)}
               />
               {userId === organization.ownerId && (
-                <div className='ml-auto block md:hidden mt-1'>
+                <div className='ml-auto block md:hidden mt-2'>
                   <Button
                     variant='outline'
                     size='sm'
-                    className='text-primary/70 text-[12px] h-fit px-[3px] py-[6px]'
+                    className='text-primary/70 text-[12px] h-fit px-[6px] py-[3px] w-full'
                     onClick={() => setOpenAddEmployerModal(true)}
                   >
                     <PlusIcon className='mr-1 h-3 w-3' />{' '}
@@ -74,7 +74,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
             </div>
           ) : (
             <div
-              className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary flex justify-center items-center text-[18px] font-bold text-primary/50 xs:w-[120px] xs:h-[120px] xs:min-w-[120px] xs:min-h-[120px]`}
+              className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary flex justify-center items-center text-[18px] font-bold text-primary/50 md:w-[120px] md:h-[120px] md:min-w-[120px] md:min-h-[120px]`}
             >
               {name.slice(0, 2)}
             </div>
@@ -177,7 +177,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
             <img
               src={avatar || ''}
               alt='Avatar'
-              className='w-[400px] h-[400px] rounded-full object-cover'
+              className='w-[400px] h-[400px] max-[440px]:w-[250px] max-[440px]:h-[250px] rounded-full object-cover'
             />
             <button
               className='absolute top-2 right-2 text-secondary bg-primary hover:bg-primary/70 rounded-full w-[26px] h-[26px] transition'
