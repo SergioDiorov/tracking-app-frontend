@@ -35,17 +35,19 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const isPathAuth = path.includes('signUp') || path.includes('signIn');
 
   const userData = useQuery({
-    queryKey: ['getUserById'],
+    queryKey: [`getUserById-${userId}`],
     queryFn: () => usersApi.getUserById(userId),
     select: (res) => res.data.data,
     enabled: !!userId,
+    retry: 3,
   });
 
   const organizationData = useQuery({
-    queryKey: ['getUserOrganization'],
+    queryKey: [`getUserOrganization-${userId}`],
     queryFn: () => organizationsApi.getUserOrganization(userId),
     select: (res) => res.data.data,
     enabled: !!userId,
+    retry: 2,
   });
 
   useEffect(() => {

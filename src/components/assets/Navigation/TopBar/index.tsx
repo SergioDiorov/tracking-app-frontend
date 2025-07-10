@@ -54,6 +54,21 @@ const TopBar: FC<ITopbarProps> = ({ openMenu }) => {
     dispatch(clearOrganizationData());
   };
 
+  const splitEmail = (email: string): { name: string; domain: string } => {
+    const match = email.match(/^(.+)(@gmail\.com)$/);
+    if (!match) {
+      throw new Error('Email is not a valid Gmail address');
+    }
+    return {
+      name: match[1],
+      domain: match[2],
+    };
+  };
+
+  const splittedEmail = userData?.email?.length
+    ? splitEmail(userData?.email)
+    : null;
+
   return (
     <div className='fixed top-0 left-0 w-full h-[60px] bg-primary text-secondary-text flex justify-between items-center px-3 shadow-sm z-[49]'>
       <div className='min-[850px]:max-w-[205px] min-[850px]:w-full'>
@@ -96,7 +111,12 @@ const TopBar: FC<ITopbarProps> = ({ openMenu }) => {
           <p className='text-[12px]'>
             {userData.firstName + ' ' + userData.lastName}
           </p>
-          <p className='text-[12px]'>{userData.email}</p>
+          {!!splittedEmail && (
+            <div className='text-[12px] flex items-center justify-end max-w-[150px] lg:max-w-[250px]'>
+              <p className='max-w-full truncate'>{splittedEmail.name}</p>
+              <span>{splittedEmail.domain}</span>
+            </div>
+          )}
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger>
