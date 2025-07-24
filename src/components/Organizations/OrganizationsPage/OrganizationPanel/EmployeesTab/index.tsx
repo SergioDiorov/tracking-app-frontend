@@ -21,15 +21,9 @@ import { columns } from './table/columns';
 import { DataTable } from './table/DataTable';
 import { Loader } from '@/components/ui/loader';
 
-interface IEmployeesTabProps {
-  isEmployeesChanged: boolean;
-  resetEmployeesChanged: () => void;
-}
+interface IEmployeesTabProps {}
 
-const EmployeesTab: FC<IEmployeesTabProps> = ({
-  isEmployeesChanged,
-  resetEmployeesChanged,
-}) => {
+const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
   const [organizationsMembers, setOrganizationsMembers] = useState<
     IOrganizationMemberType[]
   >([]);
@@ -42,7 +36,7 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({
   );
 
   const organizationsMembersResponse = useQuery({
-    queryKey: ['getOrganizationsMembers'],
+    queryKey: ['getOrganizationsMembers', organizationId],
     queryFn: () =>
       organizationsApi.getOrganizationMembers({
         organizationId,
@@ -75,16 +69,6 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({
     organizationsMembersResponse.refetch();
   }, [paginationPage]);
 
-  useEffect(() => {
-    if (isEmployeesChanged) {
-      paginationPage === 1
-        ? organizationsMembersResponse.refetch()
-        : setPaginationPage(1);
-
-      resetEmployeesChanged();
-    }
-  }, [isEmployeesChanged, paginationPage]);
-
   if (organizationsMembersResponse.isLoading) {
     return (
       <div className='h-full flex justify-center items-center'>
@@ -92,6 +76,7 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({
       </div>
     );
   }
+
   return (
     <>
       {!!organizationsMembers.length ? (

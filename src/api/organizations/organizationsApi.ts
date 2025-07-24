@@ -2,7 +2,18 @@ import axios from "axios";
 import store from '@/redux/store';
 
 import environment from "@/config";
-import { ICreateOrganizationData, ICreateOrganizationResponse, IGetUserOrganizationResponse, IGetOrganizationMembersResponse, IGetOrganizationMembersData, IAddUserToOrganizationData, IAddUserToOrganizationResponse } from "./organizationsTypes";
+import {
+  ICreateOrganizationData,
+  ICreateOrganizationResponse,
+  IGetUserOrganizationResponse,
+  IGetOrganizationMembersResponse,
+  IGetOrganizationMembersData,
+  IAddUserToOrganizationData,
+  IAddUserToOrganizationResponse,
+  IGetOrganizationTasksData,
+  IGetOrganizationTasksResponse,
+  ICreateOrganizationTaskData
+} from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
 const instance = axios.create({
@@ -34,8 +45,8 @@ export const organizationsApi = {
   },
 
   getOrganizationMembers(data: IGetOrganizationMembersData) {
-    const { organizationId, limit, page } = data;
-    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`);
+    const { organizationId, limit, page, search } = data;
+    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search } });
   },
 
   createOrganization({ file, data }: ICreateOrganizationData) {
@@ -51,5 +62,23 @@ export const organizationsApi = {
 
   addUserToOrganization({ organizationId, userData }: IAddUserToOrganizationData) {
     return instance.post<IAddUserToOrganizationResponse>(`${organizationId}/add`, userData);
-  }
+  },
+
+  createOrganizationTask({ organizationId, taskData }: ICreateOrganizationTaskData) {
+    return instance.post<ICreateOrganizationResponse>(`${organizationId}/tasks/create`, taskData);
+  },
+
+  getOrganizationTasks(data: IGetOrganizationTasksData) {
+    const { organizationId, limit, page, sortBy, sortOrder } = data;
+
+    const params = new URLSearchParams();
+
+    if (limit) params.set('limit', String(limit));
+    if (page) params.set('page', String(page));
+    if (sortBy) params.set('sortBy', sortBy);
+    if (sortOrder) params.set('sortOrder', sortOrder);
+
+    return instance.get<IGetOrganizationTasksResponse>(`${organizationId}/tasks?${params.toString()}`);
+  },
+
 }

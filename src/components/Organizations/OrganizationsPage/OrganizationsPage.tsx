@@ -13,17 +13,10 @@ interface IOrganizationPageProps {
 }
 
 const OrganizationsPage: FC<IOrganizationPageProps> = ({ organization }) => {
-  const [isEmployeesChanged, setEmployeesChanged] = useState<boolean>(false);
   return (
     <>
-      <OrganizationsHeader
-        organization={organization}
-        setEmployeesChanged={() => setEmployeesChanged(true)}
-      />
-      <OrganizationPanel
-        isEmployeesChanged={isEmployeesChanged}
-        resetEmployeesChanged={() => setEmployeesChanged(false)}
-      />
+      <OrganizationsHeader organization={organization} />
+      <OrganizationPanel />
     </>
   );
 };

@@ -11,30 +11,20 @@ import {
   OrganizationMenuEnum,
 } from './constants';
 import EmployeesTab from './EmployeesTab';
+import TasksTab from './TasksTab';
 
-interface IEmployeesTabProps {
-  isEmployeesChanged: boolean;
-  resetEmployeesChanged: () => void;
-}
+interface IEmployeesTabProps {}
 
-const OrganizationPanel: FC<IEmployeesTabProps> = ({
-  isEmployeesChanged,
-  resetEmployeesChanged,
-}) => {
+const OrganizationPanel: FC<IEmployeesTabProps> = ({}) => {
   const [activeMenuItem, setActiveMenuItem] = useState<OrganizationMenuType>(
     OrganizationMenuEnum.EMPLOYEES,
   );
 
   const menuContent = {
-    [OrganizationMenuEnum.EMPLOYEES]: (
-      <EmployeesTab
-        isEmployeesChanged={isEmployeesChanged}
-        resetEmployeesChanged={resetEmployeesChanged}
-      />
-    ),
+    [OrganizationMenuEnum.EMPLOYEES]: <EmployeesTab />,
     [OrganizationMenuEnum.ANALYTICS]: OrganizationMenuEnum.ANALYTICS,
     [OrganizationMenuEnum.PROGRESS]: OrganizationMenuEnum.PROGRESS,
-    [OrganizationMenuEnum.TASKS]: OrganizationMenuEnum.TASKS,
+    [OrganizationMenuEnum.TASKS]: <TasksTab />,
   };
 
   return (

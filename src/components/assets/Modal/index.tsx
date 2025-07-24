@@ -14,6 +14,7 @@ interface IModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title?: string;
+  dialogContentClassName?: string;
   description?: string;
   cancelButtonText?: string;
   acceptButtonText?: string;
@@ -36,10 +37,11 @@ const Modal: FC<IModalProps> = ({
   children,
   disableAcceptButton,
   disableCancelButton,
+  dialogContentClassName,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className={dialogContentClassName || ''}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
