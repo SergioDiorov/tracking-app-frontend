@@ -1,30 +1,23 @@
 // types
 import { ColumnDef } from '@tanstack/react-table';
-import {
-  IOrganizationTaskType,
-  OrganizationTaskPriorityEnum,
-} from '@/interfaces/organization';
+import { IOrganizationTaskType } from '@/interfaces/organization';
 
 // helpers
 import { formatDate } from '@/helpers/formatDate';
-import { Badge } from '@/components/ui/badge';
 import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   TaskOrderType,
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
+import { PriorityBadge } from '../../constants';
 
 export const columns = ({
-  expandedRowId,
-  toggleRow,
   sortBy,
   sortOrder,
   setSortBy,
   setSortOrder,
 }: {
-  expandedRowId: string | null;
-  toggleRow: (id: string) => void;
   sortBy: TaskSortByType | undefined;
   sortOrder: TaskOrderType | undefined;
   setSortBy: (param: TaskSortByType) => void;
@@ -98,50 +91,35 @@ export const columns = ({
       accessorKey: 'title',
       header: () => <HeaderButton colKey='title' colTitle='Title' />,
       cell: ({ row }) => {
-        return <p className='whitespace-nowrap'>{row.getValue('title')}</p>;
-      },
-    },
-    {
-      accessorKey: 'descriptopn',
-      header: 'Description',
-      cell: ({ row }) => {
-        const isExpanded = expandedRowId === row.original.id;
         return (
-          <button
-            onClick={() => toggleRow(row.original.id)}
-            className={`w-full max-w-72 xl:max-w-96 text-left ${
-              !isExpanded && 'truncate'
-            }`}
-          >
-            {row.getValue('descriptopn')}
-          </button>
+          <p className='whitespace-nowrap max-w-64 w-full truncate'>
+            {row.getValue('title')}
+          </p>
         );
       },
     },
+    // {
+    //   accessorKey: 'descriptopn',
+    //   header: 'Description',
+    //   cell: ({ row }) => {
+    //     const isExpanded = expandedRowId === row.original.id;
+    //     return (
+    //       <button
+    //         onClick={() => toggleRow(row.original.id)}
+    //         className={`w-full max-w-72 xl:max-w-96 text-left ${
+    //           !isExpanded && 'truncate'
+    //         }`}
+    //       >
+    //         {row.getValue('descriptopn')}
+    //       </button>
+    //     );
+    //   },
+    // },
     {
       accessorKey: 'priority',
       header: () => <HeaderButton colKey='priority' colTitle='Priority' />,
       cell: ({ row }) => {
-        const colorBg = () => {
-          switch (row.getValue('priority')) {
-            case OrganizationTaskPriorityEnum.HIGH:
-              return 'bg-[#FFE5E5]';
-            case OrganizationTaskPriorityEnum.MEDIUM:
-              return 'bg-[#FFF8E1]';
-            case OrganizationTaskPriorityEnum.LOW:
-              return 'bg-[#E8F5E9]';
-            default:
-              return '';
-          }
-        };
-        return (
-          <Badge
-            variant='secondary'
-            className={`text-primary-text/80 block w-full text-center max-w-20 ${colorBg()}`}
-          >
-            {row.getValue('priority')}
-          </Badge>
-        );
+        return <PriorityBadge value={row.getValue('priority')} />;
       },
     },
     {

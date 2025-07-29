@@ -40,6 +40,10 @@ export interface IOrganizationTaskType {
   organizationId: string,
   createdAt: string,
   updatedAt: string,
+  startedAt?: string,
+  finishedAt?: string,
+  workStatus?: TaskWorkStatusType,
+  loggedTimeSec?: number,
   assignedMember: {
     userProfile: {
       firstName: string,
@@ -128,3 +132,17 @@ export enum OrganizationTaskPriorityEnum {
 export type OrganizationTaskPriorityType = OrganizationTaskPriorityEnum.HIGH | OrganizationTaskPriorityEnum.LOW | OrganizationTaskPriorityEnum.MEDIUM;
 
 export const organizationTaskPriority: OrganizationTaskPriorityType[] = [OrganizationTaskPriorityEnum.LOW, OrganizationTaskPriorityEnum.MEDIUM, OrganizationTaskPriorityEnum.HIGH]
+
+
+// Organization task work status type
+export enum TaskWorkStatusEnum {
+  TODO = 'TODO',
+  BLOCKED = 'BLOCKED',
+  INPROGRESS = 'INPROGRESS',
+  PUSHED = 'PUSHED',
+  DONE = 'DONE',
+}
+
+export type TaskWorkStatusType = TaskWorkStatusEnum.BLOCKED | TaskWorkStatusEnum.DONE | TaskWorkStatusEnum.INPROGRESS | TaskWorkStatusEnum.PUSHED | TaskWorkStatusEnum.TODO;
+
+export const taskWorkStatus: TaskWorkStatusType[] = [TaskWorkStatusEnum.BLOCKED, TaskWorkStatusEnum.DONE, TaskWorkStatusEnum.INPROGRESS, TaskWorkStatusEnum.PUSHED, TaskWorkStatusEnum.TODO];

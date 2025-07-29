@@ -11,6 +11,7 @@ import {
   TaskOrderType,
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
+import ExpandedTaskModal from './ExpandedTaskModal/ExpandedTaskModal';
 
 interface ITasksTabProps {}
 
@@ -26,7 +27,8 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
   const [sortOrder, setSortOrder] = useState<TaskOrderType | undefined>(
     undefined,
   );
-  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
+  const [rowDataSelected, setRowDataSelected] =
+    useState<IOrganizationTaskType | null>(null);
 
   const {
     data: organizationTasksData,
@@ -47,12 +49,12 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
     enabled: !!organizationId,
   });
 
-  const toggleRow = (id: string) => {
-    setExpandedRowId((prevId) => (prevId === id ? null : id));
-  };
-
   const handleSetPreviousPage = () => {
     setPaginationPage((prev) => (prev === 1 ? prev : --prev));
+  };
+
+  const handleRowClick = (rowData: IOrganizationTaskType) => {
+    setRowDataSelected(rowData);
   };
 
   const handleSetNextPage = () => {
@@ -109,8 +111,6 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
           >
             <DataTable
               columns={columns({
-                expandedRowId,
-                toggleRow,
                 sortBy,
                 sortOrder,
                 setSortBy,
@@ -122,8 +122,16 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
               isFetching={organizationTasksIsFetching}
               setNextPage={handleSetNextPage}
               setPreviousPage={handleSetPreviousPage}
+              onRowClick={handleRowClick}
             />
           </div>
+          {!!rowDataSelected && (
+            <ExpandedTaskModal
+              open={!!rowDataSelected}
+              onOpenChange={() => setRowDataSelected(null)}
+              taskData={rowDataSelected as IOrganizationTaskType}
+            />
+          )}
         </div>
       ) : (
         <div>The tasks haven&apos;t been created yet</div>
