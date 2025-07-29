@@ -55,7 +55,7 @@ const TopBar: FC<ITopbarProps> = ({ openMenu }) => {
   };
 
   const splitEmail = (email: string): { name: string; domain: string } => {
-    const match = email.match(/^(.+)(@gmail\.com)$/);
+    const match = email.match(/^([^@]+)@(.+)$/);
     if (!match) {
       throw new Error('Email is not a valid Gmail address');
     }

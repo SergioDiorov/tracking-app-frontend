@@ -5,6 +5,8 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from '@tanstack/react-table';
 
@@ -17,6 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 interface IDataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -26,6 +29,7 @@ interface IDataTableProps<TData> {
   isFetching: boolean;
   setPreviousPage: () => void;
   setNextPage: () => void;
+  onRowClick?: (param: any) => void;
 }
 
 export function DataTable<TData>({
@@ -36,12 +40,20 @@ export function DataTable<TData>({
   isFetching,
   setPreviousPage,
   setNextPage,
+  onRowClick,
 }: IDataTableProps<TData>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (
@@ -66,7 +78,11 @@ export function DataTable<TData>({
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  onClick={() => !!onRowClick && onRowClick(row.original)}
+                  className={onRowClick ? 'cursor-pointer' : ''}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(

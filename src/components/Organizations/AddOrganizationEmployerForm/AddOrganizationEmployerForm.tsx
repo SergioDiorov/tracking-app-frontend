@@ -41,21 +41,21 @@ import {
 import { organizationMemberConstants } from '@/constants/schemaConstants';
 
 // api
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationsApi } from '@/api/organizations/organizationsApi';
 import { errorToast, successToast } from '@/helpers/toastActions';
 
 interface IAddOrganizationEmployerFormProps {
   organizationId: string;
   closeModal: () => void;
-  setEmployeesChanged: () => void;
 }
 
 const AddOrganizationEmployerForm: FC<IAddOrganizationEmployerFormProps> = ({
   organizationId,
   closeModal,
-  setEmployeesChanged,
 }) => {
+  const queryClient = useQueryClient();
+
   const form = useForm<AddOrganizationMemberSchemaType>({
     resolver: zodResolver(addOrganizationMemberSchema),
     defaultValues: {
@@ -83,9 +83,11 @@ const AddOrganizationEmployerForm: FC<IAddOrganizationEmployerFormProps> = ({
       });
     },
     mutationKey: ['addUserToOrganization'],
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       if (response) {
-        setEmployeesChanged();
+        await queryClient.invalidateQueries({
+          queryKey: ['getOrganizationsMembers', organizationId],
+        });
         successToast('User successfully added');
         closeModal();
       }

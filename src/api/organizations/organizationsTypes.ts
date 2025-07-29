@@ -2,6 +2,7 @@ import { IMessageResponse, IResponse, IPaginationData, IResponsePagination } fro
 import {
   IndustryType,
   IOrganizationMemberType,
+  IOrganizationTaskType,
   IOrganizationType,
   OrganizationUserPositionType,
   OrganizationUserRoleType,
@@ -20,6 +21,7 @@ export interface IGetOrganizationMembersResponse extends IResponsePagination<{
 
 export interface IGetOrganizationMembersData extends IPaginationData {
   organizationId: string;
+  search?: string
 }
 
 // CreateOrganization
@@ -57,3 +59,30 @@ export interface IAddUserToOrganizationData {
     workExperienceMonth: number;
   }
 }
+
+// GetOrganizationTasks
+export interface IGetOrganizationTasksResponse extends IResponsePagination<{
+  tasks: IOrganizationTaskType[];
+}> { }
+
+export type TaskSortByType = 'title' | 'assignee' | 'priority' | 'deadline' | 'createdAt';
+export type TaskOrderType = 'asc' | 'desc';
+
+export interface IGetOrganizationTasksData extends IPaginationData {
+  organizationId: string;
+  sortBy?: TaskSortByType,
+  sortOrder?: TaskOrderType,
+}
+
+
+// CreateOrganizationTasks
+export interface ICreateOrganizationTaskData {
+  organizationId: string;
+  taskData: {
+    title: string;
+    descriptopn: string;
+    assignee: string;
+    priority: string;
+    deadline: string;
+  }
+} 

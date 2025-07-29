@@ -30,6 +30,30 @@ export interface IOrganizationMemberType {
   userProfile?: Pick<IProfileType, 'age' | 'avatar' | 'country' | 'firstName' | 'lastName'>;
 };
 
+export interface IOrganizationTaskType {
+  id: string,
+  title: string,
+  descriptopn: string,
+  assignee: string,
+  priority: OrganizationTaskPriorityType,
+  deadline: string,
+  organizationId: string,
+  createdAt: string,
+  updatedAt: string,
+  startedAt?: string,
+  finishedAt?: string,
+  workStatus?: TaskWorkStatusType,
+  loggedTimeSec?: number,
+  assignedMember: {
+    userProfile: {
+      firstName: string,
+      lastName: string,
+      email: string,
+      avatar: string,
+    }
+  }
+}
+
 // Organization industry 
 export enum IndustryEnum {
   IT = 'IT',
@@ -97,3 +121,28 @@ export enum OrganizationUserTypeEnum {
 export type OrganizationUserTypeType = OrganizationUserTypeEnum.CONTRACTOR | OrganizationUserTypeEnum.PERMANENT;
 
 export const organizationUserType: OrganizationUserTypeType[] = [OrganizationUserTypeEnum.CONTRACTOR, OrganizationUserTypeEnum.PERMANENT]
+
+// Organization task priority
+export enum OrganizationTaskPriorityEnum {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+}
+
+export type OrganizationTaskPriorityType = OrganizationTaskPriorityEnum.HIGH | OrganizationTaskPriorityEnum.LOW | OrganizationTaskPriorityEnum.MEDIUM;
+
+export const organizationTaskPriority: OrganizationTaskPriorityType[] = [OrganizationTaskPriorityEnum.LOW, OrganizationTaskPriorityEnum.MEDIUM, OrganizationTaskPriorityEnum.HIGH]
+
+
+// Organization task work status type
+export enum TaskWorkStatusEnum {
+  TODO = 'TODO',
+  BLOCKED = 'BLOCKED',
+  INPROGRESS = 'INPROGRESS',
+  PUSHED = 'PUSHED',
+  DONE = 'DONE',
+}
+
+export type TaskWorkStatusType = TaskWorkStatusEnum.BLOCKED | TaskWorkStatusEnum.DONE | TaskWorkStatusEnum.INPROGRESS | TaskWorkStatusEnum.PUSHED | TaskWorkStatusEnum.TODO;
+
+export const taskWorkStatus: TaskWorkStatusType[] = [TaskWorkStatusEnum.BLOCKED, TaskWorkStatusEnum.DONE, TaskWorkStatusEnum.INPROGRESS, TaskWorkStatusEnum.PUSHED, TaskWorkStatusEnum.TODO];

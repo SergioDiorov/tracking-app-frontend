@@ -19,19 +19,19 @@ import Modal from '@/components/assets/Modal';
 import AddOrganizationEmployerForm from '../../AddOrganizationEmployerForm/AddOrganizationEmployerForm';
 import { useAppSelector } from '@/redux/hooks';
 import userSelectors from '@/redux/user/userSelectors';
+import AddNewTaskForm from '../../AddNewTaskForm/AddNewTaskForm';
 
 interface IOrganizationsHeaderProps {
   organization: IOrganizationType;
-  setEmployeesChanged: () => void;
 }
 
 const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
   organization,
-  setEmployeesChanged,
 }) => {
   const [openAddEmployerModal, setOpenAddEmployerModal] =
     useState<boolean>(false);
   const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
+  const [openAddTaskModal, setOpenAddTaskModal] = useState<boolean>(false);
 
   const userId = useAppSelector(userSelectors.getUserId);
 
@@ -126,7 +126,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
             </div>
           </div>
           {userId === organization.ownerId && (
-            <div className='ml-auto hidden md:block'>
+            <div className='ml-auto hidden md:flex flex-col gap-2'>
               <Button
                 variant='outline'
                 size='sm'
@@ -135,6 +135,14 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
               >
                 <PlusIcon className='mr-2 h-4 w-4' />{' '}
                 <span className=''>Add employer</span>
+              </Button>
+              <Button
+                variant='outline'
+                size='sm'
+                className='text-primary/70'
+                onClick={() => setOpenAddTaskModal(true)}
+              >
+                <span className=''>Add task</span>
               </Button>
             </div>
           )}
@@ -156,7 +164,20 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
         <AddOrganizationEmployerForm
           organizationId={id}
           closeModal={() => setOpenAddEmployerModal(false)}
-          setEmployeesChanged={setEmployeesChanged}
+        />
+      </Modal>
+
+      <Modal
+        open={openAddTaskModal}
+        onOpenChange={setOpenAddTaskModal}
+        title='Add new task'
+        disableCancelButton
+        disableAcceptButton
+        dialogContentClassName='!overflow-visible'
+      >
+        <AddNewTaskForm
+          organizationId={id}
+          closeModal={() => setOpenAddTaskModal(false)}
         />
       </Modal>
 
