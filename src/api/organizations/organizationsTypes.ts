@@ -22,6 +22,17 @@ export interface IGetOrganizationMembersResponse extends IResponsePagination<{
 export interface IGetOrganizationMembersData extends IPaginationData {
   organizationId: string;
   search?: string
+  userId?: string
+}
+
+// GetOrganizationMember
+export interface IGetOrganizationMemberResponse extends IResponsePagination<{
+  member: IOrganizationMemberType;
+}> { }
+
+export interface IGetOrganizationMemberData {
+  organizationId: string;
+  userId: string;
 }
 
 // CreateOrganization

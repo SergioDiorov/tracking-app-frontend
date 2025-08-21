@@ -14,7 +14,9 @@ import {
   IGetOrganizationTasksResponse,
   ICreateOrganizationTaskData,
   IGetOrganizationTasksProgressData,
-  IGetOrganizationTasksProgressResponse
+  IGetOrganizationTasksProgressResponse,
+  IGetOrganizationMemberData,
+  IGetOrganizationMemberResponse
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
@@ -47,8 +49,13 @@ export const organizationsApi = {
   },
 
   getOrganizationMembers(data: IGetOrganizationMembersData) {
-    const { organizationId, limit, page, search } = data;
-    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search } });
+    const { organizationId, limit, page, search, userId } = data;
+    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search, ...(userId ? { userId } : {}) } });
+  },
+
+  getOrganizationMemberData(data: IGetOrganizationMemberData) {
+    const { organizationId, userId } = data;
+    return instance.get<IGetOrganizationMemberResponse>(`members/${organizationId}/${userId}`);
   },
 
   createOrganization({ file, data }: ICreateOrganizationData) {

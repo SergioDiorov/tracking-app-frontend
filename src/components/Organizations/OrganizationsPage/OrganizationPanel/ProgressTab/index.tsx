@@ -32,6 +32,8 @@ import {
   ChevronUp,
   Loader2Icon,
 } from 'lucide-react';
+import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
+import userSelectors from '@/redux/user/userSelectors';
 
 interface MemberProgressType {
   name: string;
@@ -226,6 +228,12 @@ const UserRow: FC<UserRowProps> = ({ member, dates, isLastItem }) => {
 };
 
 const ProgressTab = () => {
+  const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
+  const userId = useAppSelector(userSelectors.getUserId);
+  const organizationId = useAppSelector(
+    organizationSelectors.getOrganizationId,
+  );
+
   const [membersRows, setMembersRows] = useState<MemberProgressType[]>([]);
   const [paginationPage, setPaginationPage] = useState<number>(1);
   const [progressDates, setProgressDates] = useState<string[]>([]);
@@ -233,10 +241,6 @@ const ProgressTab = () => {
   const [memberButtonOrderClicked, setMemberButtonOrderClicked] = useState<
     'top' | 'bottom' | null
   >(null);
-
-  const organizationId = useAppSelector(
-    organizationSelectors.getOrganizationId,
-  );
 
   const {
     data,
@@ -250,6 +254,7 @@ const ProgressTab = () => {
         organizationId,
         page: paginationPage,
         limit: 5,
+        userId: isUserOwnerOrAdmin ? undefined : userId,
       }),
     select: (res) => res.data,
     enabled: !!organizationId && !!paginationPage,

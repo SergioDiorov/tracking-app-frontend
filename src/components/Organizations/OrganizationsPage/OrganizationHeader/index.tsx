@@ -17,9 +17,8 @@ import { PlusIcon } from '@radix-ui/react-icons';
 import { formatDate } from '@/helpers/formatDate';
 import Modal from '@/components/assets/Modal';
 import AddOrganizationEmployerForm from '../../AddOrganizationEmployerForm/AddOrganizationEmployerForm';
-import { useAppSelector } from '@/redux/hooks';
-import userSelectors from '@/redux/user/userSelectors';
 import AddNewTaskForm from '../../AddNewTaskForm/AddNewTaskForm';
+import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
 
 interface IOrganizationsHeaderProps {
   organization: IOrganizationType;
@@ -28,12 +27,12 @@ interface IOrganizationsHeaderProps {
 const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
   organization,
 }) => {
+  const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
+
   const [openAddEmployerModal, setOpenAddEmployerModal] =
     useState<boolean>(false);
   const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
   const [openAddTaskModal, setOpenAddTaskModal] = useState<boolean>(false);
-
-  const userId = useAppSelector(userSelectors.getUserId);
 
   const {
     name,
@@ -58,7 +57,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
                 className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary object-cover md:w-[120px] md:h-[120px] md:min-w-[120px] md:min-h-[120px] cursor-pointer m-auto`}
                 onClick={() => setOpenAvatarModal(true)}
               />
-              {userId === organization.ownerId && (
+              {isUserOwnerOrAdmin && (
                 <div className='ml-auto block md:hidden mt-2'>
                   <Button
                     variant='outline'
@@ -125,7 +124,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
               </div>
             </div>
           </div>
-          {userId === organization.ownerId && (
+          {isUserOwnerOrAdmin && (
             <div className='ml-auto hidden md:flex flex-col gap-2'>
               <Button
                 variant='outline'

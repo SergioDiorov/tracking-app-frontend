@@ -18,7 +18,10 @@ import { usersApi } from '@/api/users/usersApi';
 // components
 import { Loader } from '@/components/ui/loader';
 import { organizationsApi } from '@/api/organizations/organizationsApi';
-import { setOrganizationData } from '@/redux/organization/organizationSlice';
+import {
+  setOrganizationData,
+  setOrganizationMemberData,
+} from '@/redux/organization/organizationSlice';
 
 export function PublicProvider({ children }: { children: React.ReactNode }) {
   const isAuth = useAuth();
@@ -43,6 +46,20 @@ export function PublicProvider({ children }: { children: React.ReactNode }) {
     retry: 2,
   });
 
+  const organizationUserData = useQuery({
+    queryKey: [
+      `getUserOrganizationMember-${organizationData.data?.organization.id}-${userId}`,
+    ],
+    queryFn: () =>
+      organizationsApi.getOrganizationMemberData({
+        userId,
+        organizationId: organizationData.data?.organization?.id || '',
+      }),
+    select: (res) => res.data.data,
+    enabled: !!userId && !!organizationData.data?.organization.id,
+    retry: 2,
+  });
+
   const isAuthWithProfile =
     isAuth && userId && userData.data && userData.isSuccess;
 
@@ -63,6 +80,14 @@ export function PublicProvider({ children }: { children: React.ReactNode }) {
       dispatch(setOrganizationData(data.organization));
     }
   }, [organizationData.data, organizationData.isSuccess, isAuth]);
+
+  useEffect(() => {
+    const { data, isSuccess } = organizationUserData;
+
+    if (data && isSuccess) {
+      dispatch(setOrganizationMemberData(data.member));
+    }
+  }, [organizationUserData.data, organizationUserData.isSuccess, isAuth]);
 
   if (userData.isLoading) {
     return <Loader full />;
