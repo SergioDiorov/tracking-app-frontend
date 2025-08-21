@@ -25,6 +25,31 @@ export const organizationMenuItems: OrganizationMenuType[] = [
   OrganizationMenuEnum.ANALYTICS,
 ];
 
+export const generatePriorityBgColor = ({
+  value,
+  vividColors = false,
+}: {
+  value: OrganizationTaskPriorityType;
+  vividColors?: boolean;
+}) => {
+  switch (value) {
+    case OrganizationTaskPriorityEnum.HIGH:
+      return vividColors
+        ? 'bg-[#FF4D4F] hover:bg-[#FF4D4F]'
+        : 'bg-[#FFE5E5] hover:bg-[#FFE5E5]';
+    case OrganizationTaskPriorityEnum.MEDIUM:
+      return vividColors
+        ? 'bg-[#FFC107] hover:bg-[#FFC107]'
+        : 'bg-[#FFF8E1] hover:bg-[#FFF8E1]';
+    case OrganizationTaskPriorityEnum.LOW:
+      return vividColors
+        ? 'bg-[#4CAF50] hover:bg-[#4CAF50]'
+        : 'bg-[#E8F5E9] hover:bg-[#E8F5E9]';
+    default:
+      return '';
+  }
+};
+
 export const PriorityBadge = ({
   value,
   vividColors = false,
@@ -32,30 +57,12 @@ export const PriorityBadge = ({
   value: OrganizationTaskPriorityType;
   vividColors?: boolean;
 }) => {
-  const colorBg = () => {
-    switch (value) {
-      case OrganizationTaskPriorityEnum.HIGH:
-        return vividColors
-          ? 'bg-[#FF4D4F] hover:bg-[#FF4D4F]'
-          : 'bg-[#FFE5E5] hover:bg-[#FFE5E5]';
-      case OrganizationTaskPriorityEnum.MEDIUM:
-        return vividColors
-          ? 'bg-[#FFC107] hover:bg-[#FFC107]'
-          : 'bg-[#FFF8E1] hover:bg-[#FFF8E1]';
-      case OrganizationTaskPriorityEnum.LOW:
-        return vividColors
-          ? 'bg-[#4CAF50] hover:bg-[#4CAF50]'
-          : 'bg-[#E8F5E9] hover:bg-[#E8F5E9]';
-      default:
-        return '';
-    }
-  };
   return (
     <Badge
       variant='secondary'
-      className={`text-primary-text/80 block w-full text-center max-w-20 ${colorBg()} ${
-        vividColors && '!text-white'
-      }`}
+      className={`text-primary-text/80 block w-full text-center max-w-20 ${generatePriorityBgColor(
+        { value, vividColors },
+      )} ${vividColors && '!text-white'}`}
     >
       {value}
     </Badge>

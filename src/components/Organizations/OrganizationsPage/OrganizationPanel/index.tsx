@@ -12,6 +12,7 @@ import {
 } from './constants';
 import EmployeesTab from './EmployeesTab';
 import TasksTab from './TasksTab';
+import ProgressTab from './ProgressTab';
 
 interface IEmployeesTabProps {}
 
@@ -22,9 +23,9 @@ const OrganizationPanel: FC<IEmployeesTabProps> = ({}) => {
 
   const menuContent = {
     [OrganizationMenuEnum.EMPLOYEES]: <EmployeesTab />,
-    [OrganizationMenuEnum.ANALYTICS]: OrganizationMenuEnum.ANALYTICS,
-    [OrganizationMenuEnum.PROGRESS]: OrganizationMenuEnum.PROGRESS,
     [OrganizationMenuEnum.TASKS]: <TasksTab />,
+    [OrganizationMenuEnum.PROGRESS]: <ProgressTab />,
+    [OrganizationMenuEnum.ANALYTICS]: OrganizationMenuEnum.ANALYTICS,
   };
 
   return (

@@ -72,6 +72,21 @@ export interface IGetOrganizationTasksData extends IPaginationData {
   organizationId: string;
   sortBy?: TaskSortByType,
   sortOrder?: TaskOrderType,
+  userId?: string;
+}
+
+// GetOrganizationTasksProgress
+export interface IGetOrganizationTasksProgressResponse {
+  totalLoggedTimeSec: number;
+  totalLoggedTimeSecMonth: number;
+  totalLoggedTimePerDates: Record<string, number> | null;
+}
+
+export interface IGetOrganizationTasksProgressData {
+  organizationId: string;
+  startDate: string;
+  endDate: string;
+  userId?: string;
 }
 
 

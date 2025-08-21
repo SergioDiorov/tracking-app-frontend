@@ -12,7 +12,9 @@ import {
   IAddUserToOrganizationResponse,
   IGetOrganizationTasksData,
   IGetOrganizationTasksResponse,
-  ICreateOrganizationTaskData
+  ICreateOrganizationTaskData,
+  IGetOrganizationTasksProgressData,
+  IGetOrganizationTasksProgressResponse
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
@@ -69,7 +71,7 @@ export const organizationsApi = {
   },
 
   getOrganizationTasks(data: IGetOrganizationTasksData) {
-    const { organizationId, limit, page, sortBy, sortOrder } = data;
+    const { organizationId, limit, page, sortBy, sortOrder, userId } = data;
 
     const params = new URLSearchParams();
 
@@ -77,8 +79,21 @@ export const organizationsApi = {
     if (page) params.set('page', String(page));
     if (sortBy) params.set('sortBy', sortBy);
     if (sortOrder) params.set('sortOrder', sortOrder);
+    if (userId) params.set('userId', userId);
 
     return instance.get<IGetOrganizationTasksResponse>(`${organizationId}/tasks?${params.toString()}`);
+  },
+
+  getOrganizationTasksProgress(data: IGetOrganizationTasksProgressData) {
+    const { organizationId, startDate, endDate, userId } = data;
+
+    const params = new URLSearchParams();
+
+    if (startDate) params.set('startDate', String(startDate));
+    if (endDate) params.set('endDate', String(endDate));
+    if (userId) params.set('userId', userId);
+
+    return instance.get<IGetOrganizationTasksProgressResponse>(`${organizationId}/tasks/progress-weekly?${params.toString()}`);
   },
 
 }

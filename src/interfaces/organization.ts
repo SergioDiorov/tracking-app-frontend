@@ -27,7 +27,7 @@ export interface IOrganizationMemberType {
   type: OrganizationUserTypeType,
   workExperienceMonth: number,
   role: OrganizationUserRoleType,
-  userProfile?: Pick<IProfileType, 'age' | 'avatar' | 'country' | 'firstName' | 'lastName'>;
+  userProfile?: Pick<IProfileType, 'age' | 'avatar' | 'country' | 'firstName' | 'lastName' | 'userId'>;
 };
 
 export interface IOrganizationTaskType {
