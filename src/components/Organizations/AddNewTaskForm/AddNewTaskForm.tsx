@@ -90,13 +90,14 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
   const { mutate: createOrganizationTask, isPending } = useMutation({
     mutationFn: (values: AddNewTaskSchemaType) => {
       const { deadline, assignee, ...rest } = values;
-      const isoDeadline = deadline.toISOString();
+      const isoDeadline = format(deadline, 'yyyy-MM-dd');
+      const normalizedDeadline = new Date(isoDeadline).toISOString();
 
       return organizationsApi.createOrganizationTask({
         organizationId,
         taskData: {
           ...rest,
-          deadline: isoDeadline,
+          deadline: normalizedDeadline,
           assignee: assigneeId || '',
         },
       });
