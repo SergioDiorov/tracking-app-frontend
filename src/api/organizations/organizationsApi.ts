@@ -12,7 +12,11 @@ import {
   IAddUserToOrganizationResponse,
   IGetOrganizationTasksData,
   IGetOrganizationTasksResponse,
-  ICreateOrganizationTaskData
+  ICreateOrganizationTaskData,
+  IGetOrganizationTasksProgressData,
+  IGetOrganizationTasksProgressResponse,
+  IGetOrganizationMemberData,
+  IGetOrganizationMemberResponse
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
@@ -45,8 +49,13 @@ export const organizationsApi = {
   },
 
   getOrganizationMembers(data: IGetOrganizationMembersData) {
-    const { organizationId, limit, page, search } = data;
-    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search } });
+    const { organizationId, limit, page, search, userId } = data;
+    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search, ...(userId ? { userId } : {}) } });
+  },
+
+  getOrganizationMemberData(data: IGetOrganizationMemberData) {
+    const { organizationId, userId } = data;
+    return instance.get<IGetOrganizationMemberResponse>(`members/${organizationId}/${userId}`);
   },
 
   createOrganization({ file, data }: ICreateOrganizationData) {
@@ -69,7 +78,7 @@ export const organizationsApi = {
   },
 
   getOrganizationTasks(data: IGetOrganizationTasksData) {
-    const { organizationId, limit, page, sortBy, sortOrder } = data;
+    const { organizationId, limit, page, sortBy, sortOrder, userId } = data;
 
     const params = new URLSearchParams();
 
@@ -77,8 +86,21 @@ export const organizationsApi = {
     if (page) params.set('page', String(page));
     if (sortBy) params.set('sortBy', sortBy);
     if (sortOrder) params.set('sortOrder', sortOrder);
+    if (userId) params.set('userId', userId);
 
     return instance.get<IGetOrganizationTasksResponse>(`${organizationId}/tasks?${params.toString()}`);
+  },
+
+  getOrganizationTasksProgress(data: IGetOrganizationTasksProgressData) {
+    const { organizationId, startDate, endDate, userId } = data;
+
+    const params = new URLSearchParams();
+
+    if (startDate) params.set('startDate', String(startDate));
+    if (endDate) params.set('endDate', String(endDate));
+    if (userId) params.set('userId', userId);
+
+    return instance.get<IGetOrganizationTasksProgressResponse>(`${organizationId}/tasks/progress-weekly?${params.toString()}`);
   },
 
 }

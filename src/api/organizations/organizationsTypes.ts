@@ -22,6 +22,17 @@ export interface IGetOrganizationMembersResponse extends IResponsePagination<{
 export interface IGetOrganizationMembersData extends IPaginationData {
   organizationId: string;
   search?: string
+  userId?: string
+}
+
+// GetOrganizationMember
+export interface IGetOrganizationMemberResponse extends IResponsePagination<{
+  member: IOrganizationMemberType;
+}> { }
+
+export interface IGetOrganizationMemberData {
+  organizationId: string;
+  userId: string;
 }
 
 // CreateOrganization
@@ -72,6 +83,21 @@ export interface IGetOrganizationTasksData extends IPaginationData {
   organizationId: string;
   sortBy?: TaskSortByType,
   sortOrder?: TaskOrderType,
+  userId?: string;
+}
+
+// GetOrganizationTasksProgress
+export interface IGetOrganizationTasksProgressResponse {
+  totalLoggedTimeSec: number;
+  totalLoggedTimeSecMonth: number;
+  totalLoggedTimePerDates: Record<string, number> | null;
+}
+
+export interface IGetOrganizationTasksProgressData {
+  organizationId: string;
+  startDate: string;
+  endDate: string;
+  userId?: string;
 }
 
 

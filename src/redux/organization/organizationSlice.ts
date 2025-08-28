@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 // types
-import { IndustryType, IOrganizationType } from '@/interfaces/organization';
+import { IndustryType, IOrganizationMemberType, IOrganizationType } from '@/interfaces/organization';
 
 const initialState = {
   id: '',
@@ -15,20 +15,23 @@ const initialState = {
   createdAt: '',
   updatedAt: '',
   avatar: null,
-} as IOrganizationType;
+  memberData: null,
+} as IOrganizationType & { memberData: IOrganizationMemberType | null };
 
 export const organizationSlice = createSlice({
   name: "organization",
   initialState,
   reducers: {
     setOrganizationData: (state, action: PayloadAction<IOrganizationType>) => ({ ...state, ...action.payload }),
+    setOrganizationMemberData: (state, action: PayloadAction<IOrganizationMemberType>) => ({ ...state, memberData: action.payload }),
     clearOrganizationData: (state) => Object.assign(state, initialState),
   },
 });
 
 export const {
   setOrganizationData,
-  clearOrganizationData
+  clearOrganizationData,
+  setOrganizationMemberData
 } = organizationSlice.actions;
 
 export default organizationSlice.reducer;

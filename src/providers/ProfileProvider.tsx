@@ -15,6 +15,7 @@ import { userLogout } from '@/redux/user/userSlice';
 import {
   clearOrganizationData,
   setOrganizationData,
+  setOrganizationMemberData,
 } from '@/redux/organization/organizationSlice';
 
 // api
@@ -50,6 +51,20 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     retry: 2,
   });
 
+  const organizationUserData = useQuery({
+    queryKey: [
+      `getUserOrganizationMember-${organizationData.data?.organization.id}-${userId}`,
+    ],
+    queryFn: () =>
+      organizationsApi.getOrganizationMemberData({
+        userId,
+        organizationId: organizationData.data?.organization?.id || '',
+      }),
+    select: (res) => res.data.data,
+    enabled: !!userId && !!organizationData.data?.organization.id,
+    retry: 2,
+  });
+
   useEffect(() => {
     const { data, isSuccess, isError, error } = userData;
 
@@ -79,6 +94,14 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       dispatch(setOrganizationData(data.organization));
     }
   }, [organizationData.data, organizationData.isSuccess, isAuth]);
+
+  useEffect(() => {
+    const { data, isSuccess } = organizationUserData;
+
+    if (data && isSuccess) {
+      dispatch(setOrganizationMemberData(data.member));
+    }
+  }, [organizationUserData.data, organizationUserData.isSuccess, isAuth]);
 
   if (userData.isLoading) {
     return <Loader full />;
