@@ -25,6 +25,20 @@ export const organizationMenuItems: OrganizationMenuType[] = [
   OrganizationMenuEnum.ANALYTICS,
 ];
 
+export enum AnalyticsChildTabsEnum {
+  MEMBERS = 'Members',
+  TASKS = 'Tasks',
+}
+
+export type AnalyticsChildTabsType =
+  | AnalyticsChildTabsEnum.MEMBERS
+  | AnalyticsChildTabsEnum.TASKS;
+
+export const analyticsChildTabsItems: AnalyticsChildTabsType[] = [
+  AnalyticsChildTabsEnum.MEMBERS,
+  AnalyticsChildTabsEnum.TASKS,
+];
+
 export const generatePriorityBgColor = ({
   value,
   vividColors = false,

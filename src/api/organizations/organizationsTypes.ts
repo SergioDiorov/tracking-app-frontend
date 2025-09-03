@@ -4,9 +4,11 @@ import {
   IOrganizationMemberType,
   IOrganizationTaskType,
   IOrganizationType,
+  OrganizationTaskPriorityEnum,
   OrganizationUserPositionType,
   OrganizationUserRoleType,
-  OrganizationUserTypeType
+  OrganizationUserTypeType,
+  TaskWorkStatusEnum
 } from "@/interfaces/organization";
 
 // GetUserOrganization
@@ -111,4 +113,18 @@ export interface ICreateOrganizationTaskData {
     priority: string;
     deadline: string;
   }
-} 
+}
+
+// GetOrganizationEmployersAnalytics
+export interface IGetOrganizationEmployersAnalyticsResponse extends IResponse<{
+  salary: Record<string, number>,
+  age: Record<string, number>,
+  experience: Record<string, number>,
+}> { }
+
+// GetOrganizationTasksAnalytics
+export interface IGetOrganizationTasksAnalyticsResponse extends IResponse<{
+  loggedTime: { month: string, hours: number }[],
+  tasksByPriority: { [key in OrganizationTaskPriorityEnum]: number }
+  tasksByWorkStatus: { [key in TaskWorkStatusEnum]: number }
+}> { }
