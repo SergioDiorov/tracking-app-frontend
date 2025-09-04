@@ -16,7 +16,9 @@ import {
   IGetOrganizationTasksProgressData,
   IGetOrganizationTasksProgressResponse,
   IGetOrganizationMemberData,
-  IGetOrganizationMemberResponse
+  IGetOrganizationMemberResponse,
+  IGetOrganizationEmployersAnalyticsResponse,
+  IGetOrganizationTasksAnalyticsResponse
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
@@ -101,6 +103,14 @@ export const organizationsApi = {
     if (userId) params.set('userId', userId);
 
     return instance.get<IGetOrganizationTasksProgressResponse>(`${organizationId}/tasks/progress-weekly?${params.toString()}`);
+  },
+
+  getOrganizationEmployersAnalytics(organizationId: string) {
+    return instance.get<IGetOrganizationEmployersAnalyticsResponse>(`${organizationId}/analytics/employers`);
+  },
+
+  getOrganizationTasksAnalytics(organizationId: string) {
+    return instance.get<IGetOrganizationTasksAnalyticsResponse>(`${organizationId}/analytics/tasks`);
   },
 
 }
