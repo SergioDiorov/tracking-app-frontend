@@ -8,17 +8,11 @@ import { IOrganizationType } from '@/interfaces/organization';
 
 // components
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-
-//iocns
-import { PlusIcon } from '@radix-ui/react-icons';
 
 // helpers
 import { formatDate } from '@/helpers/formatDate';
-import Modal from '@/components/assets/Modal';
-import AddOrganizationEmployerForm from '../../AddOrganizationEmployerForm/AddOrganizationEmployerForm';
-import AddNewTaskForm from '../../AddNewTaskForm/AddNewTaskForm';
 import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
+import OrganizationHeaderMenu from './OrganizationHeaderMenu';
 
 interface IOrganizationsHeaderProps {
   organization: IOrganizationType;
@@ -29,10 +23,7 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
 }) => {
   const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
 
-  const [openAddEmployerModal, setOpenAddEmployerModal] =
-    useState<boolean>(false);
   const [openAvatarModal, setOpenAvatarModal] = useState<boolean>(false);
-  const [openAddTaskModal, setOpenAddTaskModal] = useState<boolean>(false);
 
   const {
     name,
@@ -45,10 +36,11 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
     createdAt,
     id,
   } = organization;
+
   return (
     <>
       <Card className='w-full p-4'>
-        <div className='flex items-end md:items-start justify-start gap-5'>
+        <div className='flex items-start justify-start gap-5'>
           {avatar ? (
             <div>
               <img
@@ -57,19 +49,6 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
                 className={`w-[100px] h-[100px] min-w-[100px] min-h-[100px] rounded-full bg-secondary object-cover md:w-[120px] md:h-[120px] md:min-w-[120px] md:min-h-[120px] cursor-pointer m-auto`}
                 onClick={() => setOpenAvatarModal(true)}
               />
-              {isUserOwnerOrAdmin && (
-                <div className='ml-auto block md:hidden mt-2'>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    className='text-primary/70 text-[12px] h-fit px-[6px] py-[3px] w-full'
-                    onClick={() => setOpenAddEmployerModal(true)}
-                  >
-                    <PlusIcon className='mr-1 h-3 w-3' />{' '}
-                    <span className=''>Add employer</span>
-                  </Button>
-                </div>
-              )}
             </div>
           ) : (
             <div
@@ -125,24 +104,8 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
             </div>
           </div>
           {isUserOwnerOrAdmin && (
-            <div className='ml-auto hidden md:flex flex-col gap-2'>
-              <Button
-                variant='outline'
-                size='sm'
-                className='text-primary/70'
-                onClick={() => setOpenAddEmployerModal(true)}
-              >
-                <PlusIcon className='mr-2 h-4 w-4' />{' '}
-                <span className=''>Add employer</span>
-              </Button>
-              <Button
-                variant='outline'
-                size='sm'
-                className='text-primary/70'
-                onClick={() => setOpenAddTaskModal(true)}
-              >
-                <span className=''>Add task</span>
-              </Button>
+            <div className='ml-auto'>
+              <OrganizationHeaderMenu organizationId={id} />
             </div>
           )}
         </div>
@@ -152,33 +115,6 @@ const OrganizationsHeader: FC<IOrganizationsHeaderProps> = ({
           </p>
         )}
       </Card>
-
-      <Modal
-        open={openAddEmployerModal}
-        onOpenChange={setOpenAddEmployerModal}
-        title='Add new employer'
-        disableCancelButton
-        disableAcceptButton
-      >
-        <AddOrganizationEmployerForm
-          organizationId={id}
-          closeModal={() => setOpenAddEmployerModal(false)}
-        />
-      </Modal>
-
-      <Modal
-        open={openAddTaskModal}
-        onOpenChange={setOpenAddTaskModal}
-        title='Add new task'
-        disableCancelButton
-        disableAcceptButton
-        dialogContentClassName='!overflow-visible'
-      >
-        <AddNewTaskForm
-          organizationId={id}
-          closeModal={() => setOpenAddTaskModal(false)}
-        />
-      </Modal>
 
       {avatar && (
         <div
