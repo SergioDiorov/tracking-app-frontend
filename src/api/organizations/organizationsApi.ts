@@ -18,7 +18,8 @@ import {
   IGetOrganizationMemberData,
   IGetOrganizationMemberResponse,
   IGetOrganizationEmployersAnalyticsResponse,
-  IGetOrganizationTasksAnalyticsResponse
+  IGetOrganizationTasksAnalyticsResponse,
+  IGetOrganizationMembersForExportResponse
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
@@ -53,6 +54,10 @@ export const organizationsApi = {
   getOrganizationMembers(data: IGetOrganizationMembersData) {
     const { organizationId, limit, page, search, userId } = data;
     return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search, ...(userId ? { userId } : {}) } });
+  },
+
+  getAllOrganizationMembersForExport(organizationId: string) {
+    return instance.get<IGetOrganizationMembersForExportResponse>(`members/${organizationId}/export`);
   },
 
   getOrganizationMemberData(data: IGetOrganizationMemberData) {
@@ -112,5 +117,4 @@ export const organizationsApi = {
   getOrganizationTasksAnalytics(organizationId: string) {
     return instance.get<IGetOrganizationTasksAnalyticsResponse>(`${organizationId}/analytics/tasks`);
   },
-
 }

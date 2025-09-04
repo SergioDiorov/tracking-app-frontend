@@ -10,6 +10,7 @@ import {
   OrganizationUserTypeType,
   TaskWorkStatusEnum
 } from "@/interfaces/organization";
+import { IProfileType } from "@/interfaces/response";
 
 // GetUserOrganization
 export interface IGetUserOrganizationResponse extends IResponse<{
@@ -26,6 +27,26 @@ export interface IGetOrganizationMembersData extends IPaginationData {
   search?: string
   userId?: string
 }
+
+// GetOrganizationMembersForExport
+export interface IGetOrganizationMembersForExportResponse extends IResponse<{
+  members: Array<Pick<IOrganizationMemberType,
+    'joined' |
+    'email' |
+    'position' |
+    'workSchedule' |
+    'workHours' |
+    'salary' |
+    'type' |
+    'workExperienceMonth' |
+    'role'
+  > & Pick<IProfileType,
+    'firstName' |
+    'lastName' |
+    'age' |
+    'country'
+  >>;
+}> { }
 
 // GetOrganizationMember
 export interface IGetOrganizationMemberResponse extends IResponsePagination<{
