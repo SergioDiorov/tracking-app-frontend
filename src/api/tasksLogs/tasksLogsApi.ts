@@ -3,6 +3,7 @@ import store from '@/redux/store';
 
 import environment from "@/config";
 import { CreateTaskLogData, CreateTaskLogResponse, IGetTasksLogData, IGetTasksLogResponse, UpdateTaskLogData, UpdateTaskLogResponse } from "./tasksLogsTypes";
+import { ISimpleMessageResponse } from "@/interfaces/http";
 
 const instance = axios.create({
   baseURL: `${environment.BASE_URL}/task-logs/`,
@@ -44,5 +45,9 @@ export const tasksLogsApi = {
 
   updateTaskLog({ data, logId }: UpdateTaskLogData) {
     return instance.patch<UpdateTaskLogResponse>(`/${logId}`, data);
+  },
+
+  deleteTaskLog(logId: string) {
+    return instance.delete<ISimpleMessageResponse>(`/${logId}`);
   },
 }

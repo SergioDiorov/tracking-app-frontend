@@ -12,10 +12,22 @@ import { Card } from '@/components/ui/card';
 import Modal from '@/components/assets/Modal';
 import { Button } from '@/components/ui/button';
 import AddManuallyTimeForm from '../AddManuallyTimeForm/AddManuallyTimeForm';
-import { Angry, Frown, Laugh, Meh, Smile, SquarePen } from 'lucide-react';
+import {
+  Angry,
+  Frown,
+  Laugh,
+  Meh,
+  Smile,
+  SquarePen,
+  Trash,
+} from 'lucide-react';
 
 // helpers
 import { format } from 'date-fns';
+import { useMutation } from '@tanstack/react-query';
+import { tasksLogsApi } from '@/api/tasksLogs/tasksLogsApi';
+import { errorToast, successToast } from '@/helpers/toastActions';
+import { useMyProgressContext } from '@/context/MyProgress/useMyProgressContext';
 
 // mood icons
 const moodIcons = {
@@ -27,13 +39,37 @@ const moodIcons = {
 };
 
 const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
+  // context
+  const { setIsTaskLogAdded } = useMyProgressContext();
+
   // state
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
 
   // log data
   const { breakSec, start, end, task, organization, type, mood, note } = log;
   const startTime = format(new Date(start), 'kk:mm');
   const endTime = format(new Date(end), 'kk:mm');
+
+  // mutation to delete log
+  const { mutate: deleteTaskLog, isPending: isDeleteTaskLogPending } =
+    useMutation({
+      mutationFn: (logId: string) => tasksLogsApi.deleteTaskLog(logId),
+      mutationKey: ['deleteTaskLog'],
+      onSuccess: async (response) => {
+        if (response) {
+          setIsTaskLogAdded(true);
+          successToast('Log successfully deleted');
+        }
+      },
+      onError: (error: { error: string }) => {
+        errorToast(error.error ?? 'Error while deleting log');
+      },
+    });
+
+  const handleDeleteLog = () => {
+    log.id && deleteTaskLog(log.id);
+  };
 
   // calculate total work seconds
   const totalWorkSeconds =
@@ -45,7 +81,9 @@ const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
 
   return (
     <Card
-      className={'w-full p-4 bg-gray-100/40 flex gap-4 flex-col md:flex-row'}
+      className={`w-full p-4 bg-gray-100/40 flex gap-4 flex-col md:flex-row ${
+        isDeleteTaskLogPending ? 'opacity-60 pointer-events-none' : ''
+      }`}
     >
       <div className='md:border-r pr-4 font-semibold text-sm flex-wrap md:flex-nowrap'>
         <div className='flex gap-0.5 text-primary/80 mb-1'>
@@ -92,21 +130,43 @@ const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
         </div>
       )}
 
-      {/* edit log button */}
-      <Button
-        variant='secondary'
-        className='md:hidden w-full text-primary/70 group'
-        onClick={() => setOpenEditModal(true)}
-      >
-        <SquarePen className='text-primary/50 group-hover:text-primary/40 group-active:text-primary/20 transition mr-1' />
-      </Button>
+      <div className='flex items-center gap-1 ml-auto w-full md:w-auto'>
+        {/* edit log button */}
+        <Button
+          variant='secondary'
+          className='md:hidden w-full text-primary/70 group'
+          onClick={() => setOpenEditModal(true)}
+          disabled={isDeleteTaskLogPending}
+        >
+          <SquarePen className='relative top-px size-[22px] text-primary/50 group-hover:text-primary/40 group-active:text-primary/20 transition mr-1' />
+        </Button>
 
-      <button
-        onClick={() => setOpenEditModal(true)}
-        className='hidden md:block ml-auto'
-      >
-        <SquarePen className='text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-      </button>
+        <button
+          onClick={() => setOpenEditModal(true)}
+          className='hidden md:block'
+          disabled={isDeleteTaskLogPending}
+        >
+          <SquarePen className='relative top-px size-[22px] text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+        </button>
+
+        {/* delete log button */}
+        <Button
+          variant='destructive'
+          className='md:hidden w-full text-primary/70 group'
+          onClick={() => setOpenDeleteModal(true)}
+          disabled={isDeleteTaskLogPending}
+        >
+          <Trash className='size-[22px] text-white group-hover:text-white/80 group-active:text-white/60 transition mr-1' />
+        </Button>
+
+        <button
+          onClick={() => setOpenDeleteModal(true)}
+          className='hidden md:block'
+          disabled={isDeleteTaskLogPending}
+        >
+          <Trash className='size-[22px] text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+        </button>
+      </div>
 
       {/* edit log modal */}
       <Modal
@@ -122,6 +182,18 @@ const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
           isEditMode
           logData={log}
         />
+      </Modal>
+
+      {/* delete log modal */}
+      <Modal
+        open={openDeleteModal}
+        onOpenChange={setOpenDeleteModal}
+        title='Delete Log'
+        onAccept={handleDeleteLog}
+        isActionLoading={isDeleteTaskLogPending}
+        isCloseOnAccept={false}
+      >
+        <p className='pt-4 pb-2'>Are you sure you want to delete the log?</p>
       </Modal>
     </Card>
   );

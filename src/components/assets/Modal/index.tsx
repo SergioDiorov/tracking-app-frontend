@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Loader2Icon } from 'lucide-react';
 
 import { FC } from 'react';
 
@@ -23,6 +24,8 @@ interface IModalProps {
   children: React.ReactNode;
   disableAcceptButton?: boolean;
   disableCancelButton?: boolean;
+  isCloseOnAccept?: boolean;
+  isActionLoading?: boolean;
 }
 
 const Modal: FC<IModalProps> = ({
@@ -38,6 +41,8 @@ const Modal: FC<IModalProps> = ({
   disableAcceptButton,
   disableCancelButton,
   dialogContentClassName,
+  isCloseOnAccept = true,
+  isActionLoading = false,
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -47,7 +52,7 @@ const Modal: FC<IModalProps> = ({
           <DialogDescription>{description}</DialogDescription>
           {children}
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className='gap-2'>
           {!disableCancelButton && (
             <Button
               variant='secondary'
@@ -55,6 +60,7 @@ const Modal: FC<IModalProps> = ({
                 onOpenChange(false);
                 onCancel && onCancel();
               }}
+              disabled={isActionLoading}
             >
               {cancelButtonText ?? 'Cancel'}
             </Button>
@@ -62,11 +68,15 @@ const Modal: FC<IModalProps> = ({
           {!disableAcceptButton && (
             <Button
               onClick={() => {
-                onOpenChange(false);
                 onAccept && onAccept();
+                isCloseOnAccept && onOpenChange(false);
               }}
+              disabled={isActionLoading}
             >
               {acceptButtonText ?? 'Accept'}
+              {isActionLoading && (
+                <Loader2Icon className='animate-spin size-4 ml-1 !text-gray-400' />
+              )}
             </Button>
           )}
         </DialogFooter>

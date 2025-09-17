@@ -6,6 +6,10 @@ export interface IMessageResponse<T> extends IResponse<T> {
   message: string;
 }
 
+export interface ISimpleMessageResponse {
+  message: string;
+}
+
 export interface IResponsePagination<T> {
   data: T;
   pagination: {
