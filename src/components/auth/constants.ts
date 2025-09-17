@@ -1,6 +1,8 @@
 export enum workPreferenceEnum {
-  OFFICE = "Office",
-  REMOTE = "Remote",
+  OFFICE = "OFFICE",
+  REMOTE = "REMOTE",
 }
 
-export const workPreferenceList: workPreferenceEnum[] = [workPreferenceEnum.OFFICE, workPreferenceEnum.REMOTE]
+export type WorkPreferenceType = workPreferenceEnum.OFFICE | workPreferenceEnum.REMOTE;
+
+export const workPreferenceList: WorkPreferenceType[] = [workPreferenceEnum.OFFICE, workPreferenceEnum.REMOTE]

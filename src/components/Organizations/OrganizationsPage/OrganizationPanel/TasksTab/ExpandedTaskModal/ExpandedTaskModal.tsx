@@ -11,17 +11,20 @@ import {
   PriorityBadge,
 } from '../../constants';
 import { formatDate } from '@/helpers/formatDate';
+import { Button } from '@/components/ui/button';
 
 interface IExpandedTaskModalProps {
   open: boolean;
   onOpenChange: (param: boolean) => void;
   taskData: IOrganizationTaskType;
+  onWorkOnTask?: () => void;
 }
 
 const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
   open,
   onOpenChange,
   taskData,
+  onWorkOnTask,
 }) => {
   const {
     title,
@@ -107,22 +110,37 @@ const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
           </div>
         </div>
 
-        <div className='bg-border/70 h-full w-1/3 rounded-lg p-3 flex flex-col gap-3'>
-          <div className='flex justify-center'>
-            <PriorityBadge value={priority} vividColors />
+        <div className='w-1/3 flex flex-col gap-4'>
+          <div className='bg-border/70 w-full h-full rounded-lg p-3 flex flex-col gap-3 items-center'>
+            <div className='flex justify-center'>
+              <PriorityBadge value={priority} vividColors />
+            </div>
+            <div>
+              <h6 className='text-sm leading-none font-medium text-center'>
+                Created
+              </h6>
+              <p className='text-muted-foreground text-sm'>
+                {formatDate(createdAt)}
+              </p>
+            </div>
+            <div>
+              <h6 className='text-sm leading-none font-medium text-center'>
+                Deadline
+              </h6>
+              <p className='text-muted-foreground text-sm'>
+                {formatDate(deadline)}
+              </p>
+            </div>
           </div>
-          <div>
-            <h6 className='text-sm leading-none font-medium'>Created</h6>
-            <p className='text-muted-foreground text-sm'>
-              {formatDate(createdAt)}
-            </p>
-          </div>
-          <div>
-            <h6 className='text-sm leading-none font-medium'>Deadline</h6>
-            <p className='text-muted-foreground text-sm'>
-              {formatDate(deadline)}
-            </p>
-          </div>
+          {onWorkOnTask && (
+            <Button
+              variant='outline'
+              className='mt-auto'
+              onClick={onWorkOnTask}
+            >
+              Work on task
+            </Button>
+          )}
         </div>
       </div>
     </Modal>

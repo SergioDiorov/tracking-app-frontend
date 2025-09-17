@@ -371,14 +371,18 @@ const ProgressTab = () => {
         ))}
       </div>
       {/* Rows */}
-      {membersRows.map((member, idx) => (
-        <UserRow
-          key={member.id}
-          member={member}
-          dates={progressDates}
-          isLastItem={idx === membersRows.length - 1}
-        />
-      ))}
+      {membersRows.length > 0 ? (
+        membersRows.map((member, idx) => (
+          <UserRow
+            key={member.id}
+            member={member}
+            dates={progressDates}
+            isLastItem={idx === membersRows.length - 1}
+          />
+        ))
+      ) : (
+        <div className='w-full h-[81px]' />
+      )}
 
       <div className='h-[38px] bg-muted text-muted-foreground flex items-center justify-start border-t'>
         <div className='w-full max-w-[200px] self-start border-r h-full flex items-center justify-center'>
