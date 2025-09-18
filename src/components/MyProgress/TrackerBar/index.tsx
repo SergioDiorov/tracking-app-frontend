@@ -29,6 +29,7 @@ const TrackerBar = () => {
   const {
     selectedTask: selectedTaskContext,
     setSelectedTask: setSelectedTaskContext,
+    timerStartTime,
   } = useMyProgressContext();
 
   // selectors
@@ -123,6 +124,7 @@ const TrackerBar = () => {
             placeholder='Organization'
             options={organizationOptions}
             triggerClassName={selectPlaceholderStyle}
+            disabled={!!timerStartTime}
           />
         </div>
 
@@ -139,8 +141,9 @@ const TrackerBar = () => {
             options={tasksOptions}
             triggerClassName={selectPlaceholderStyle}
             disabled={
-              (organizationTasksIsLoading || organizationTasksIsFetching) &&
-              !!selectedOrganization
+              ((organizationTasksIsLoading || organizationTasksIsFetching) &&
+                !!selectedOrganization) ||
+              !!timerStartTime
             }
             noOptionsMessage={
               selectedOrganization ? 'No tasks found' : 'Select organization'

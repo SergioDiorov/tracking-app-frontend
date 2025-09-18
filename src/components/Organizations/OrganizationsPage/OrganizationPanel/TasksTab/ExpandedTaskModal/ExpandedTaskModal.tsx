@@ -1,17 +1,25 @@
+// react
+import React, { FC } from 'react';
+
+// components
 import Modal from '@/components/assets/Modal';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+
+// context
+import { useMyProgressContext } from '@/context/MyProgress/useMyProgressContext';
+
+// helpers
 import {
   IOrganizationTaskType,
   TaskWorkStatusEnum,
 } from '@/interfaces/organization';
-import React, { FC } from 'react';
-import { Separator } from '@/components/ui/separator';
 import {
   formatloggedTimeDuration,
   handleFormatWorkStatus,
   PriorityBadge,
 } from '../../constants';
 import { formatDate } from '@/helpers/formatDate';
-import { Button } from '@/components/ui/button';
 
 interface IExpandedTaskModalProps {
   open: boolean;
@@ -26,6 +34,10 @@ const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
   taskData,
   onWorkOnTask,
 }) => {
+  // context
+  const { timerStartTime } = useMyProgressContext();
+
+  // task data destructuring
   const {
     title,
     descriptopn,
@@ -137,6 +149,7 @@ const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
               variant='outline'
               className='mt-auto'
               onClick={onWorkOnTask}
+              disabled={!!timerStartTime}
             >
               Work on task
             </Button>
