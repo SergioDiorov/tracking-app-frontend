@@ -104,4 +104,25 @@ body {
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgb(203 203 203);
   }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #fff;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(139, 139, 139, 0.516);
+    border-radius: 100vh;
+    border: 4px solid #fff;
+    transition: 0.4s;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #63636379;
+  }
 }

@@ -1,7 +1,15 @@
+'use client';
+
 import React from 'react';
+import MyProgressContainer from '@/components/MyProgress';
+import { MyProgressProvider } from '@/context/MyProgress/MyProgressContext';
 
 const MyProgress = () => {
-  return <div>My Progress</div>;
+  return (
+    <MyProgressProvider>
+      <MyProgressContainer />
+    </MyProgressProvider>
+  );
 };
 
 export default MyProgress;
