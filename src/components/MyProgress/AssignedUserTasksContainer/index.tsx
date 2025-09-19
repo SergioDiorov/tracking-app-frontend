@@ -19,7 +19,13 @@ import { Loader2Icon } from 'lucide-react';
 // helpers
 import { HorizontalInfinityScrollWrapper } from '@/helpers/HorizontalInfinityScrollWrapper';
 
+// context
+import { useMyProgressContext } from '@/context/MyProgress/useMyProgressContext';
+
 const AssignedUserTasks = () => {
+  // context
+  const { isTaskLogAdded, setIsTaskLogAdded } = useMyProgressContext();
+
   // selectors
   const userId = useAppSelector(userSelectors.getUserId);
   const { firstName } = useAppSelector(userSelectors.getUserData);
@@ -33,6 +39,7 @@ const AssignedUserTasks = () => {
   >([]);
   const [organizationMemberTasksPage, setOrganizationMemberTasksPage] =
     useState<number>(1);
+  const [tasksLimit, setTasksLimit] = useState<number>(10);
 
   // fetch tasks
   const {
@@ -40,19 +47,14 @@ const AssignedUserTasks = () => {
     isSuccess: organizationTasksIsSuccess,
     isLoading: organizationTasksIsLoading,
     isFetching: organizationTasksIsFetching,
+    refetch: organizationTasksRefetch,
   } = useQuery({
-    queryKey: [
-      'getOrganizationMemberTasks',
-      organizationId,
-      userId,
-      organizationMemberTasksPage,
-      'limit-10',
-    ],
+    queryKey: ['getOrganizationMemberTasks', organizationId, userId],
     queryFn: () =>
       organizationsApi.getOrganizationTasks({
         organizationId: organizationId,
         page: organizationMemberTasksPage,
-        limit: 10,
+        limit: tasksLimit || 10,
         userId: userId,
       }),
     select: (res) => res.data,
@@ -60,13 +62,18 @@ const AssignedUserTasks = () => {
   });
 
   const handleLoadMoreTasks = () => {
-    if (
-      organizationTasksData &&
-      organizationTasksIsSuccess &&
-      organizationTasksData.pagination.totalItems >
-        organizationMemberTasks.length
-    ) {
-      setOrganizationMemberTasksPage((prev) => ++prev);
+    if (organizationTasksData) {
+      if (organizationTasksData.pagination.pageSize === 10) {
+        setOrganizationMemberTasksPage(
+          organizationTasksData.pagination.currentPage + 1,
+        );
+      } else {
+        const totalLoaded = organizationTasksData.data.tasks.length;
+        const calculatedPage = Math.ceil(totalLoaded / 10);
+
+        setOrganizationMemberTasksPage(calculatedPage + 1);
+      }
+      setTasksLimit(10);
     }
   };
 
@@ -80,8 +87,29 @@ const AssignedUserTasks = () => {
           ...organizationTasksData.data.tasks,
         ]);
       }
+
+      // Reset isTaskLogAdded to false after fetching new logs
+      setIsTaskLogAdded(false);
     }
   }, [organizationTasksData, organizationTasksIsSuccess]);
+
+  useEffect(() => {
+    if (isTaskLogAdded) {
+      const calculatedLimit =
+        Math.ceil(organizationMemberTasks.length / 10) * 10;
+
+      setOrganizationMemberTasksPage(1);
+      if (calculatedLimit === tasksLimit) {
+        organizationTasksRefetch();
+      } else {
+        setTasksLimit(calculatedLimit);
+      }
+    }
+  }, [isTaskLogAdded, organizationMemberTasks, tasksLimit]);
+
+  useEffect(() => {
+    organizationTasksRefetch();
+  }, [organizationMemberTasksPage, tasksLimit]);
 
   return (
     <Card

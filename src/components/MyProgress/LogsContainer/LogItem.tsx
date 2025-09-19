@@ -1,6 +1,6 @@
 'use client';
 // react
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // types
 import { ExtendedLogDataType } from '@/api/tasksLogs/tasksLogsTypes';
@@ -58,12 +58,15 @@ const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
       mutationKey: ['deleteTaskLog'],
       onSuccess: async (response) => {
         if (response) {
-          setIsTaskLogAdded(true);
           successToast('Log successfully deleted');
         }
       },
       onError: (error: { error: string }) => {
         errorToast(error.error ?? 'Error while deleting log');
+      },
+      onSettled: () => {
+        setIsTaskLogAdded(true);
+        setOpenDeleteModal(false);
       },
     });
 

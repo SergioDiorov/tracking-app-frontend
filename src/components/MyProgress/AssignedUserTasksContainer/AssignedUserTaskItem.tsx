@@ -36,7 +36,7 @@ const AssignedUserTaskItem = ({ task }: { task: IOrganizationTaskType }) => {
         onClick={() => setOpenTaskModal(true)}
       >
         <div className='text-xs font-medium truncate'>{title}</div>
-        <div className='text-xs text-muted-foreground'>
+        <div className='text-xs text-muted-foreground w-max'>
           <span>Status:</span>
           <span className='font-semibold pl-1'>
             {handleFormatWorkStatus(
@@ -44,7 +44,7 @@ const AssignedUserTaskItem = ({ task }: { task: IOrganizationTaskType }) => {
             )}
           </span>
         </div>
-        <div className='text-xs text-muted-foreground'>
+        <div className='text-xs text-muted-foreground w-max'>
           <span>Time:</span>
           <span className='font-semibold pl-1'>
             {formatloggedTimeDuration(loggedTimeSec || 0)}

@@ -32,6 +32,7 @@ const LogsContainer = ({}: {}) => {
   // state
   const [tasksLogs, setTasksLogs] = useState<ExtendedLogDataType[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tasksLimit, setTasksLimit] = useState<number>(10);
 
   // fetch logs
   const {
@@ -41,11 +42,11 @@ const LogsContainer = ({}: {}) => {
     isFetching: tasksLogIsFetching,
     refetch: tasksLogRefetch,
   } = useQuery({
-    queryKey: ['getTasksLog', userId, `currentPage:${currentPage}`],
+    queryKey: ['getTasksLog', userId],
     queryFn: () =>
       tasksLogsApi.getTasksLog({
         page: currentPage,
-        limit: 10,
+        limit: tasksLimit || 10,
         userId: userId,
       }),
     select: (res) => res.data,
@@ -69,6 +70,20 @@ const LogsContainer = ({}: {}) => {
     );
   };
 
+  const handleRefetchLogs = () => {
+    if (tasksLogData) {
+      if (tasksLogData.pagination.pageSize === 10) {
+        setCurrentPage(tasksLogData.pagination.currentPage + 1);
+      } else {
+        const totalLoaded = tasksLogData.data.logs.length;
+        const calculatedPage = Math.ceil(totalLoaded / 10);
+
+        setCurrentPage(calculatedPage + 1);
+      }
+      setTasksLimit(10);
+    }
+  };
+
   useEffect(() => {
     if (tasksLogData && tasksLogSuccess && tasksLogData.data.logs.length) {
       const formatDateLogs = tasksLogData.data.logs.map((log) => {
@@ -89,8 +104,21 @@ const LogsContainer = ({}: {}) => {
   }, [tasksLogData, tasksLogSuccess]);
 
   useEffect(() => {
+    if (isTaskLogAdded) {
+      const calculatedLimit = Math.ceil(tasksLogs.length / 10) * 10;
+
+      setCurrentPage(1);
+      if (calculatedLimit === tasksLimit) {
+        tasksLogRefetch();
+      } else {
+        setTasksLimit(calculatedLimit);
+      }
+    }
+  }, [isTaskLogAdded, tasksLogs, tasksLimit]);
+
+  useEffect(() => {
     tasksLogRefetch();
-  }, [isTaskLogAdded]);
+  }, [tasksLimit, currentPage]);
 
   // Group logs by date
   const groupedLogs = handleGroupLogsByDate(tasksLogs);
@@ -134,14 +162,7 @@ const LogsContainer = ({}: {}) => {
             <Button
               className='mx-auto w-full mt-2 text-primary/70 font-semibold'
               variant='secondary'
-              onClick={() =>
-                setCurrentPage(
-                  (prev) =>
-                    (tasksLogData
-                      ? tasksLogData.pagination.currentPage
-                      : prev) + 1,
-                )
-              }
+              onClick={handleRefetchLogs}
             >
               Load more
               {tasksLogIsFetching && (
