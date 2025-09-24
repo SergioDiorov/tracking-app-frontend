@@ -85,7 +85,7 @@ export const organizationsApi = {
   },
 
   getOrganizationTasks(data: IGetOrganizationTasksData) {
-    const { organizationId, limit, page, sortBy, sortOrder, userId } = data;
+    const { organizationId, limit, page, sortBy, sortOrder, userId, filterByWorkStatus } = data;
 
     const params = new URLSearchParams();
 
@@ -94,6 +94,7 @@ export const organizationsApi = {
     if (sortBy) params.set('sortBy', sortBy);
     if (sortOrder) params.set('sortOrder', sortOrder);
     if (userId) params.set('userId', userId);
+    if (filterByWorkStatus) params.set('filterByWorkStatus', filterByWorkStatus);
 
     return instance.get<IGetOrganizationTasksResponse>(`${organizationId}/tasks?${params.toString()}`);
   },

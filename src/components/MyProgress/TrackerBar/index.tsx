@@ -54,7 +54,9 @@ const TrackerBar = () => {
 
   const organizationOptions = [
     { value: 'personal', label: 'My personal' },
-    { value: getOrganizationData?.id, label: getOrganizationData.name },
+    ...(getOrganizationData?.id
+      ? [{ value: getOrganizationData.id, label: getOrganizationData.name }]
+      : []),
   ];
 
   // fetch tasks when organization changes
@@ -119,7 +121,7 @@ const TrackerBar = () => {
         {/* Select Organization */}
         <div className='md:!max-w-64 !w-full'>
           <Select
-            value={selectedOrganization || ''}
+            value={selectedOrganization ?? undefined}
             onChange={(value) => setSelectedOrganization(value)}
             placeholder='Organization'
             options={organizationOptions}
@@ -135,7 +137,7 @@ const TrackerBar = () => {
               <Loader2Icon className='absolute animate-spin size-[12px] top-0 bottom-0 m-auto right-8' />
             )}
           <Select
-            value={selectedTask || ''}
+            value={selectedTask ?? undefined}
             onChange={(value) => setSelectedTask(value)}
             placeholder='Task'
             options={tasksOptions}

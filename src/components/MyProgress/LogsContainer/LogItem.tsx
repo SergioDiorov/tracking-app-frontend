@@ -38,7 +38,13 @@ const moodIcons = {
   [TaskMoodEnum.LAUGH]: Laugh,
 };
 
-const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
+const LogItem = ({
+  log,
+  hideActionButtons = false,
+}: {
+  log: ExtendedLogDataType;
+  hideActionButtons?: boolean;
+}) => {
   // context
   const { setIsTaskLogAdded } = useMyProgressContext();
 
@@ -133,43 +139,45 @@ const LogItem = ({ log }: { log: ExtendedLogDataType }) => {
         </div>
       )}
 
-      <div className='flex items-center gap-1 ml-auto w-full md:w-auto'>
-        {/* edit log button */}
-        <Button
-          variant='secondary'
-          className='md:hidden w-full text-primary/70 group'
-          onClick={() => setOpenEditModal(true)}
-          disabled={isDeleteTaskLogPending}
-        >
-          <SquarePen className='relative top-px size-[22px] text-primary/50 group-hover:text-primary/40 group-active:text-primary/20 transition mr-1' />
-        </Button>
+      {!hideActionButtons && (
+        <div className='flex items-center gap-1 ml-auto w-full md:w-auto'>
+          {/* edit log button */}
+          <Button
+            variant='secondary'
+            className='md:hidden w-full text-primary/70 group'
+            onClick={() => setOpenEditModal(true)}
+            disabled={isDeleteTaskLogPending}
+          >
+            <SquarePen className='relative top-px size-[22px] text-primary/50 group-hover:text-primary/40 group-active:text-primary/20 transition mr-1' />
+          </Button>
 
-        <button
-          onClick={() => setOpenEditModal(true)}
-          className='hidden md:block'
-          disabled={isDeleteTaskLogPending}
-        >
-          <SquarePen className='relative top-px size-[22px] text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-        </button>
+          <button
+            onClick={() => setOpenEditModal(true)}
+            className='hidden md:block'
+            disabled={isDeleteTaskLogPending}
+          >
+            <SquarePen className='relative top-px size-[22px] text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+          </button>
 
-        {/* delete log button */}
-        <Button
-          variant='destructive'
-          className='md:hidden w-full text-primary/70 group'
-          onClick={() => setOpenDeleteModal(true)}
-          disabled={isDeleteTaskLogPending}
-        >
-          <Trash className='size-[22px] text-white group-hover:text-white/80 group-active:text-white/60 transition mr-1' />
-        </Button>
+          {/* delete log button */}
+          <Button
+            variant='destructive'
+            className='md:hidden w-full text-primary/70 group'
+            onClick={() => setOpenDeleteModal(true)}
+            disabled={isDeleteTaskLogPending}
+          >
+            <Trash className='size-[22px] text-white group-hover:text-white/80 group-active:text-white/60 transition mr-1' />
+          </Button>
 
-        <button
-          onClick={() => setOpenDeleteModal(true)}
-          className='hidden md:block'
-          disabled={isDeleteTaskLogPending}
-        >
-          <Trash className='size-[22px] text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-        </button>
-      </div>
+          <button
+            onClick={() => setOpenDeleteModal(true)}
+            className='hidden md:block'
+            disabled={isDeleteTaskLogPending}
+          >
+            <Trash className='size-[22px] text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+          </button>
+        </div>
+      )}
 
       {/* edit log modal */}
       <Modal

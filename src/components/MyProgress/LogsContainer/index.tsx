@@ -1,6 +1,10 @@
 'use client';
 
+// react
 import React, { useEffect, useState } from 'react';
+
+// next
+import { useRouter } from 'next/navigation';
 
 // redux
 import { useAppSelector } from '@/redux/hooks';
@@ -11,7 +15,7 @@ import { useQuery } from '@tanstack/react-query';
 import { tasksLogsApi } from '@/api/tasksLogs/tasksLogsApi';
 
 // components
-import { Card } from '@/components/ui/card';
+import { Card, CardTitle } from '@/components/ui/card';
 import { ExtendedLogDataType } from '@/api/tasksLogs/tasksLogsTypes';
 import { Loader } from '@/components/ui/loader';
 import { Button } from '@/components/ui/button';
@@ -22,7 +26,17 @@ import { Loader2Icon } from 'lucide-react';
 import { format } from 'date-fns';
 import { useMyProgressContext } from '@/context/MyProgress/useMyProgressContext';
 
-const LogsContainer = ({}: {}) => {
+const LogsContainer = ({
+  containerClassName = '',
+  cardTitle,
+  showLinkButton = false,
+}: {
+  containerClassName?: string;
+  cardTitle?: string;
+  showLinkButton?: boolean;
+}) => {
+  const router = useRouter();
+
   // selectors
   const userId = useAppSelector(userSelectors.getUserId);
 
@@ -32,7 +46,7 @@ const LogsContainer = ({}: {}) => {
   // state
   const [tasksLogs, setTasksLogs] = useState<ExtendedLogDataType[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [tasksLimit, setTasksLimit] = useState<number>(10);
+  const [tasksLimit, setTasksLimit] = useState<number>(showLinkButton ? 5 : 10);
 
   // fetch logs
   const {
@@ -46,7 +60,7 @@ const LogsContainer = ({}: {}) => {
     queryFn: () =>
       tasksLogsApi.getTasksLog({
         page: currentPage,
-        limit: tasksLimit || 10,
+        limit: showLinkButton ? 5 : tasksLimit || 10,
         userId: userId,
       }),
     select: (res) => res.data,
@@ -130,7 +144,14 @@ const LogsContainer = ({}: {}) => {
     !tasksLogIsLoading;
 
   return (
-    <Card className='p-4 space-y-4 md:max-h-[calc(100vh-355px)] overflow-auto'>
+    <Card
+      className={`${containerClassName} p-4 space-y-4 md:max-h-[calc(100vh-355px)] overflow-auto`}
+    >
+      {cardTitle && (
+        <CardTitle className='tracking-tight text-xl font-semibold text-card-foreground/70 flex items-center justify-center'>
+          {cardTitle}
+        </CardTitle>
+      )}
       {tasksLogIsLoading && !tasksLogs.length ? (
         <div className='py-7'>
           <Loader />
@@ -148,23 +169,40 @@ const LogsContainer = ({}: {}) => {
               </div>
 
               {logs.map((log) => (
-                <LogItem key={log.id} log={log as ExtendedLogDataType} />
+                <LogItem
+                  key={log.id}
+                  log={log as ExtendedLogDataType}
+                  hideActionButtons={showLinkButton}
+                />
               ))}
             </div>
           ))}
-          {isAllDataLoaded ? (
-            <div className='w-full flex items-center justify-center py-4'>
-              <p className='text-sm font-semibold text-card-foreground/70'>
-                All data loaded
-              </p>
-            </div>
-          ) : (
+          {!showLinkButton &&
+            (isAllDataLoaded ? (
+              <div className='w-full flex items-center justify-center py-4'>
+                <p className='text-sm font-semibold text-card-foreground/70'>
+                  All data loaded
+                </p>
+              </div>
+            ) : (
+              <Button
+                className='mx-auto w-full mt-2 text-primary/70 font-semibold'
+                variant='secondary'
+                onClick={handleRefetchLogs}
+              >
+                Load more
+                {tasksLogIsFetching && (
+                  <Loader2Icon className='ml-2 h-4 w-4 animate-spin' />
+                )}
+              </Button>
+            ))}
+          {showLinkButton && (
             <Button
               className='mx-auto w-full mt-2 text-primary/70 font-semibold'
               variant='secondary'
-              onClick={handleRefetchLogs}
+              onClick={() => router.push('/my-progress')}
             >
-              Load more
+              See more logs
               {tasksLogIsFetching && (
                 <Loader2Icon className='ml-2 h-4 w-4 animate-spin' />
               )}
