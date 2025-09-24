@@ -633,6 +633,8 @@ const AddManuallyTimeForm = ({
           >
             {isCreateTaskLogPending || isUpdateTaskLogPending
               ? 'Loading'
+              : isEditMode && logData
+              ? 'Edit'
               : 'Create'}
             {isCreateTaskLogPending ||
               (isUpdateTaskLogPending && (

@@ -145,4 +145,10 @@ export enum TaskWorkStatusEnum {
 
 export type TaskWorkStatusType = TaskWorkStatusEnum.BLOCKED | TaskWorkStatusEnum.DONE | TaskWorkStatusEnum.INPROGRESS | TaskWorkStatusEnum.PUSHED | TaskWorkStatusEnum.TODO;
 
-export const taskWorkStatus: TaskWorkStatusType[] = [TaskWorkStatusEnum.BLOCKED, TaskWorkStatusEnum.DONE, TaskWorkStatusEnum.INPROGRESS, TaskWorkStatusEnum.PUSHED, TaskWorkStatusEnum.TODO];
+export const taskWorkStatus: TaskWorkStatusType[] = [
+  TaskWorkStatusEnum.TODO,
+  TaskWorkStatusEnum.BLOCKED,
+  TaskWorkStatusEnum.INPROGRESS,
+  TaskWorkStatusEnum.PUSHED,
+  TaskWorkStatusEnum.DONE,
+];

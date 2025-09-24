@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/select';
 
 interface ICustomSelectProps {
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
   placeholder: string;
   options: { value: string; label: string }[] | string[];

@@ -107,6 +107,7 @@ export interface IGetOrganizationTasksData extends IPaginationData {
   sortBy?: TaskSortByType,
   sortOrder?: TaskOrderType,
   userId?: string;
+  filterByWorkStatus?: TaskWorkStatusEnum;
 }
 
 // GetOrganizationTasksProgress
