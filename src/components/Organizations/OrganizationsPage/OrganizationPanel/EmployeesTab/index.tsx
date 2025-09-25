@@ -20,6 +20,10 @@ import { columns } from './table/columns';
 // components
 import { DataTable } from './table/DataTable';
 import { Loader } from '@/components/ui/loader';
+import {
+  OrganizationMembersOrderType,
+  OrganizationMembersSortByType,
+} from '@/api/organizations/organizationsTypes';
 
 interface IEmployeesTabProps {}
 
@@ -28,6 +32,12 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
     IOrganizationMemberType[]
   >([]);
   const [paginationPage, setPaginationPage] = useState<number>(1);
+  const [sortBy, setSortBy] = useState<
+    OrganizationMembersSortByType | undefined
+  >(undefined);
+  const [sortOrder, setSortOrder] = useState<
+    OrganizationMembersOrderType | undefined
+  >(undefined);
 
   const membersLimit = 10;
 
@@ -42,6 +52,8 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
         organizationId,
         page: paginationPage,
         limit: membersLimit,
+        sortBy,
+        sortOrder,
       }),
     select: (res) => res.data,
     enabled: !!organizationId,
@@ -68,6 +80,12 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
   useEffect(() => {
     organizationsMembersResponse.refetch();
   }, [paginationPage]);
+
+  useEffect(() => {
+    if (sortBy && sortOrder) {
+      organizationsMembersResponse.refetch();
+    }
+  }, [sortBy, sortOrder]);
 
   if (organizationsMembersResponse.isLoading) {
     return (
@@ -98,7 +116,12 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
             }`}
           >
             <DataTable
-              columns={columns}
+              columns={columns({
+                sortBy,
+                sortOrder,
+                setSortBy,
+                setSortOrder,
+              })}
               data={organizationsMembers}
               currentPage={
                 organizationsMembersResponse.data?.pagination.currentPage || 0

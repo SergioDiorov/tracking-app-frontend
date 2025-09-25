@@ -52,8 +52,18 @@ export const organizationsApi = {
   },
 
   getOrganizationMembers(data: IGetOrganizationMembersData) {
-    const { organizationId, limit, page, search, userId } = data;
-    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search, ...(userId ? { userId } : {}) } });
+    const { organizationId, limit, page, search, userId, sortBy, sortOrder } = data;
+
+    const params = new URLSearchParams();
+
+    if (limit) params.set('limit', String(limit));
+    if (page) params.set('page', String(page));
+    if (sortBy) params.set('sortBy', sortBy);
+    if (sortOrder) params.set('sortOrder', sortOrder);
+    if (userId) params.set('userId', userId);
+    if (search) params.set('search', search);
+
+    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?${params.toString()}`);
   },
 
   getAllOrganizationMembersForExport(organizationId: string) {

@@ -22,10 +22,17 @@ export interface IGetOrganizationMembersResponse extends IResponsePagination<{
   members: IOrganizationMemberType[];
 }> { }
 
+
+export type OrganizationMembersSortByType = 'joined' | 'position' | 'workHours' | 'salary' | 'type' | 'workExperienceMonth' | 'role' | 'firstName' | 'age' | 'country';
+export type OrganizationMembersOrderType = 'asc' | 'desc';
+
+
 export interface IGetOrganizationMembersData extends IPaginationData {
   organizationId: string;
-  search?: string
-  userId?: string
+  search?: string;
+  userId?: string;
+  sortBy?: OrganizationMembersSortByType;
+  sortOrder?: OrganizationMembersOrderType;
 }
 
 // GetOrganizationMembersForExport

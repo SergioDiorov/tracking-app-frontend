@@ -4,13 +4,15 @@ import { IOrganizationTaskType } from '@/interfaces/organization';
 
 // helpers
 import { formatDate } from '@/helpers/formatDate';
-import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   TaskOrderType,
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
 import { PriorityBadge } from '../../constants';
+import {
+  HeaderButton,
+  HeaderButtonSettingsType,
+} from '@/helpers/HeaderTableButton';
 
 export const columns = ({
   sortBy,
@@ -23,40 +25,23 @@ export const columns = ({
   setSortBy: (param: TaskSortByType) => void;
   setSortOrder: (param: TaskOrderType) => void;
 }): ColumnDef<IOrganizationTaskType>[] => {
-  const HeaderButton = ({
-    colKey,
-    colTitle,
-  }: {
-    colKey: TaskSortByType;
-    colTitle: string;
-  }) => {
-    const isAsc = sortBy === colKey && sortOrder === 'asc';
-
-    return (
-      <Button
-        variant='ghost'
-        className='relative -left-1 !p-1'
-        onClick={() => {
-          setSortBy(colKey);
-          setSortOrder(isAsc ? 'desc' : 'asc');
-        }}
-      >
-        {colTitle}
-        {sortBy !== colKey ? (
-          <ArrowUpDown className='ml-2 h-4 w-4 opacity-40' />
-        ) : isAsc ? (
-          <ArrowUp className='ml-2 h-4 w-4' />
-        ) : (
-          <ArrowDown className='ml-2 h-4 w-4' />
-        )}
-      </Button>
-    );
-  };
+  const settings: HeaderButtonSettingsType = {
+    sortBy,
+    sortOrder,
+    setSortBy,
+    setSortOrder,
+  } as HeaderButtonSettingsType;
 
   return [
     {
       id: 'assignee',
-      header: () => <HeaderButton colKey='assignee' colTitle='Assignee' />,
+      header: () => (
+        <HeaderButton
+          colKey='assignee'
+          colTitle='Assignee'
+          settings={settings}
+        />
+      ),
       cell: ({ row }) => {
         const userProfile = row.original.assignedMember.userProfile;
         const firstName = userProfile?.firstName || '';
@@ -89,7 +74,9 @@ export const columns = ({
     },
     {
       accessorKey: 'title',
-      header: () => <HeaderButton colKey='title' colTitle='Title' />,
+      header: () => (
+        <HeaderButton colKey='title' colTitle='Title' settings={settings} />
+      ),
       cell: ({ row }) => {
         return (
           <p className='whitespace-nowrap max-w-64 w-full truncate'>
@@ -117,7 +104,13 @@ export const columns = ({
     // },
     {
       accessorKey: 'priority',
-      header: () => <HeaderButton colKey='priority' colTitle='Priority' />,
+      header: () => (
+        <HeaderButton
+          colKey='priority'
+          colTitle='Priority'
+          settings={settings}
+        />
+      ),
       cell: ({ row }) => {
         return <PriorityBadge value={row.getValue('priority')} />;
       },
@@ -125,11 +118,19 @@ export const columns = ({
     {
       accessorKey: 'createdAt',
       cell: ({ row }) => formatDate(row.getValue('createdAt')),
-      header: () => <HeaderButton colKey='createdAt' colTitle='Added' />,
+      header: () => (
+        <HeaderButton colKey='createdAt' colTitle='Added' settings={settings} />
+      ),
     },
     {
       accessorKey: 'deadline',
-      header: () => <HeaderButton colKey='deadline' colTitle='Deadline' />,
+      header: () => (
+        <HeaderButton
+          colKey='deadline'
+          colTitle='Deadline'
+          settings={settings}
+        />
+      ),
       cell: ({ row }) => formatDate(row.getValue('deadline')),
     },
   ];
