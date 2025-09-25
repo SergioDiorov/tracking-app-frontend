@@ -1,4 +1,3 @@
-import { TaskSortByType } from '@/api/organizations/organizationsTypes';
 import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
