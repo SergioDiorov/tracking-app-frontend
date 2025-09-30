@@ -1,7 +1,7 @@
 'use client';
 
 // react
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 // components
 import { Input } from '@/components/ui/input';
@@ -31,7 +31,10 @@ import { AddNewTaskSchemaType, addNewTaskSchema } from './schema';
 import { format } from 'date-fns';
 
 // types
-import { organizationTaskPriority } from '@/interfaces/organization';
+import {
+  IOrganizationTaskType,
+  organizationTaskPriority,
+} from '@/interfaces/organization';
 
 // api
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -42,15 +45,20 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Loader } from '@/components/ui/loader';
+import { CreateOrganizationTaskParamsType } from '@/api/organizations/organizationsTypes';
 
 interface IAddNewTaskFormProps {
   organizationId: string;
   closeModal: () => void;
+  isEditMode?: boolean;
+  taskData?: IOrganizationTaskType;
 }
 
 const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
   organizationId,
   closeModal,
+  isEditMode,
+  taskData,
 }) => {
   const [isAssigneeListOpen, setAssigneeListOpen] = useState<boolean>(false);
   const [isMouseOverAssigneeList, setMouseOverAssigneeList] =
@@ -71,6 +79,11 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
   const assignee = form.watch('assignee');
 
   const {
+    setValue,
+    formState: { dirtyFields },
+  } = form;
+
+  const {
     data: organizationsMembersData,
     isLoading: isLoadingOrganizationsMembers,
     isPending: isPendingOrganizationsMembers,
@@ -87,50 +100,110 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
     enabled: !!organizationId && !!assignee.length,
   });
 
-  const { mutate: createOrganizationTask, isPending } = useMutation({
-    mutationFn: (values: AddNewTaskSchemaType) => {
-      const { deadline, assignee, ...rest } = values;
+  const handleMutationFn = (
+    values: Partial<AddNewTaskSchemaType>,
+    apiFn: Function,
+  ) => {
+    const { deadline, assignee, ...data } = values;
+
+    const payload = {
+      ...data,
+    } as CreateOrganizationTaskParamsType;
+
+    if (deadline) {
       const isoDeadline = format(deadline, 'yyyy-MM-dd');
       const normalizedDeadline = new Date(isoDeadline).toISOString();
 
-      return organizationsApi.createOrganizationTask({
-        organizationId,
-        taskData: {
-          ...rest,
-          deadline: normalizedDeadline,
-          assignee: assigneeId || '',
-        },
-      });
-    },
-    mutationKey: ['createOrganizationTask'],
-    onSuccess: async (response) => {
-      if (response) {
-        await queryClient.invalidateQueries({
-          queryKey: ['getOrganizationTasks', organizationId],
-        });
-        await successToast('Task successfully created');
-        closeModal();
-      }
-    },
-    onError: (error: { error: string }) => {
-      errorToast(error.error ? error.error : 'Error while creating task');
-    },
-  });
+      payload.deadline = normalizedDeadline;
+    }
+
+    if (assignee) {
+      payload.assignee = assigneeId || '';
+    }
+
+    return apiFn({
+      taskData: payload,
+      organizationId,
+      ...(isEditMode && taskData?.id ? { taskId: taskData.id } : {}),
+    });
+  };
+
+  // create task
+  const { mutate: createOrganizationTask, isPending: isPerndingCreateTask } =
+    useMutation({
+      mutationFn: (values: AddNewTaskSchemaType) =>
+        handleMutationFn(values, organizationsApi.createOrganizationTask),
+      mutationKey: ['createOrganizationTask'],
+      onSuccess: async (response) => {
+        if (response) {
+          await queryClient.invalidateQueries({
+            queryKey: ['getOrganizationTasks', organizationId],
+          });
+          await successToast('Task successfully created');
+          closeModal();
+        }
+      },
+      onError: (error: { error: string }) => {
+        errorToast(error.error ? error.error : 'Error while creating task');
+      },
+    });
+
+  // update task
+  const { mutate: updateOrganizationTask, isPending: isPerndingUpdateTask } =
+    useMutation({
+      mutationFn: (values: AddNewTaskSchemaType) => {
+        const filterValues = Object.keys(dirtyFields).reduce((acc, key) => {
+          acc[key] = values[key as keyof AddNewTaskSchemaType];
+          return acc;
+        }, {} as Record<string, any>);
+
+        return handleMutationFn(
+          filterValues,
+          organizationsApi.updateOrganizationTask,
+        );
+      },
+      mutationKey: ['updateOrganizationTask'],
+      onSuccess: async (response) => {
+        if (response) {
+          await queryClient.invalidateQueries({
+            queryKey: ['getOrganizationTasks', organizationId],
+          });
+          await successToast('Task successfully updated');
+          closeModal();
+        }
+      },
+      onError: (error: { error: string }) => {
+        errorToast(error.error ? error.error : 'Error while updating task');
+      },
+    });
 
   const onSubmit = (values: AddNewTaskSchemaType) => {
-    createOrganizationTask(values);
+    isEditMode && taskData
+      ? updateOrganizationTask(values)
+      : createOrganizationTask(values);
   };
+
+  useEffect(() => {
+    if (isEditMode && taskData) {
+      setValue('title', taskData.title);
+      setValue('descriptopn', taskData.descriptopn);
+      setValue(
+        'assignee',
+        taskData.assignedMember.userProfile.firstName +
+          ' ' +
+          taskData.assignedMember.userProfile.lastName,
+      );
+      setValue('priority', taskData.priority);
+      setValue('deadline', new Date(taskData.deadline));
+      setAssigneeId(taskData.assignee);
+    }
+  }, [isEditMode, taskData]);
 
   return (
     <Form {...form}>
       <form
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            setAssigneeListOpen(false);
-          }
-        }}
+        onSubmit={(e) => e.preventDefault()}
         className='mt-4 flex flex-col gap-4 w-full'
-        onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className='w-full'>
           <FormField
@@ -267,6 +340,7 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
                           member.userProfile?.firstName +
                             ' ' +
                             member.userProfile?.lastName,
+                          { shouldDirty: true },
                         );
                         setAssigneeListOpen(false);
                       }}
@@ -316,7 +390,13 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
                 <FormLabel>Priority</FormLabel>
                 <FormControl>
                   <Select
-                    value={field.value}
+                    value={
+                      field.value
+                        ? field.value
+                        : taskData?.priority && isEditMode
+                        ? taskData?.priority
+                        : ''
+                    }
                     onChange={(value) => field.onChange(value)}
                     placeholder='Priority'
                     options={organizationTaskPriority}
@@ -378,17 +458,25 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
             type='button'
             variant='outline'
             className='w-full h-[40px] md:h-[32px]'
-            disabled={isPending}
+            disabled={isPerndingCreateTask || isPerndingUpdateTask}
           >
             Cancel
           </Button>
           <Button
             type='submit'
             className='w-full h-[40px] md:h-[32px]'
-            disabled={isPending}
+            disabled={isPerndingCreateTask || isPerndingUpdateTask}
+            onClick={form.handleSubmit(onSubmit)}
           >
-            {isPending ? 'Loading' : 'Create'}
-            {isPending && <ReloadIcon className='ml-2 h-4 w-4 animate-spin' />}
+            {isPerndingCreateTask || isPerndingUpdateTask
+              ? 'Loading'
+              : isEditMode
+              ? 'Update'
+              : 'Create'}
+            {isPerndingCreateTask ||
+              (isPerndingUpdateTask && (
+                <ReloadIcon className='ml-2 h-4 w-4 animate-spin' />
+              ))}
           </Button>
         </div>
       </form>

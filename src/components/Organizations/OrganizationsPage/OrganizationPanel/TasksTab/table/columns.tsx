@@ -13,17 +13,20 @@ import {
   HeaderButton,
   HeaderButtonSettingsType,
 } from '@/helpers/HeaderTableButton';
+import { SquarePen, Trash } from 'lucide-react';
 
 export const columns = ({
   sortBy,
   sortOrder,
   setSortBy,
   setSortOrder,
+  setOpenEditTaskModal,
 }: {
   sortBy: TaskSortByType | undefined;
   sortOrder: TaskOrderType | undefined;
   setSortBy: (param: TaskSortByType) => void;
   setSortOrder: (param: TaskOrderType) => void;
+  setOpenEditTaskModal: (param: IOrganizationTaskType) => void;
 }): ColumnDef<IOrganizationTaskType>[] => {
   const settings: HeaderButtonSettingsType = {
     sortBy,
@@ -132,6 +135,33 @@ export const columns = ({
         />
       ),
       cell: ({ row }) => formatDate(row.getValue('deadline')),
+    },
+    {
+      accessorKey: 'edit',
+      header: '',
+      cell: ({ row }) => (
+        <>
+          <div className='flex items-center gap-1'>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenEditTaskModal(row.original);
+              }}
+              className='hidden md:block'
+              disabled={false}
+            >
+              <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+            </button>
+            <button
+              onClick={() => {}}
+              className='hidden md:block'
+              disabled={false}
+            >
+              <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+            </button>
+          </div>
+        </>
+      ),
     },
   ];
 };

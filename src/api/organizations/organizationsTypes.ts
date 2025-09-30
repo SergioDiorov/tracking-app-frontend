@@ -133,16 +133,29 @@ export interface IGetOrganizationTasksProgressData {
 
 
 // CreateOrganizationTasks
+export type CreateOrganizationTaskParamsType = {
+  title: string;
+  descriptopn: string;
+  assignee: string;
+  priority: string;
+  deadline: string;
+}
+
 export interface ICreateOrganizationTaskData {
   organizationId: string;
-  taskData: {
-    title: string;
-    descriptopn: string;
-    assignee: string;
-    priority: string;
-    deadline: string;
-  }
+  taskData: CreateOrganizationTaskParamsType
 }
+
+// UpdateOrganizationTasks
+export interface IUpdateOrganizationTaskData {
+  organizationId: string;
+  taskId: string;
+  taskData: Partial<CreateOrganizationTaskParamsType>;
+}
+
+export interface IUpdateOrganizationTaskResponse extends IMessageResponse<{
+  task: IOrganizationTaskType;
+}> { }
 
 // GetOrganizationEmployersAnalytics
 export interface IGetOrganizationEmployersAnalyticsResponse extends IResponse<{

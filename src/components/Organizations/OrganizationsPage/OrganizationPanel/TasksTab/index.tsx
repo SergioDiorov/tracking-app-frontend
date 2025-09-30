@@ -12,6 +12,8 @@ import {
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
 import ExpandedTaskModal from './ExpandedTaskModal/ExpandedTaskModal';
+import Modal from '@/components/assets/Modal';
+import AddNewTaskForm from '@/components/Organizations/AddNewTaskForm/AddNewTaskForm';
 
 interface ITasksTabProps {}
 
@@ -28,6 +30,8 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
     undefined,
   );
   const [rowDataSelected, setRowDataSelected] =
+    useState<IOrganizationTaskType | null>(null);
+  const [openEditTaskModal, setOpenEditTaskModal] =
     useState<IOrganizationTaskType | null>(null);
 
   const {
@@ -115,6 +119,7 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
                 sortOrder,
                 setSortBy,
                 setSortOrder,
+                setOpenEditTaskModal,
               })}
               data={organizationTasks}
               currentPage={organizationTasksData.pagination.currentPage || 0}
@@ -132,6 +137,22 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
               taskData={rowDataSelected as IOrganizationTaskType}
             />
           )}
+
+          <Modal
+            open={!!openEditTaskModal}
+            onOpenChange={() => setOpenEditTaskModal(null)}
+            title='Edit task'
+            disableCancelButton
+            disableAcceptButton
+            dialogContentClassName='!overflow-visible'
+          >
+            <AddNewTaskForm
+              organizationId={openEditTaskModal?.organizationId as string}
+              closeModal={() => setOpenEditTaskModal(null)}
+              isEditMode
+              taskData={openEditTaskModal as IOrganizationTaskType}
+            />
+          </Modal>
         </div>
       ) : (
         <div>The tasks haven&apos;t been created yet</div>

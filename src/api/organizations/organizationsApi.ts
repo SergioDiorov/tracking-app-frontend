@@ -19,7 +19,9 @@ import {
   IGetOrganizationMemberResponse,
   IGetOrganizationEmployersAnalyticsResponse,
   IGetOrganizationTasksAnalyticsResponse,
-  IGetOrganizationMembersForExportResponse
+  IGetOrganizationMembersForExportResponse,
+  IUpdateOrganizationTaskData,
+  IUpdateOrganizationTaskResponse
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 
@@ -92,6 +94,10 @@ export const organizationsApi = {
 
   createOrganizationTask({ organizationId, taskData }: ICreateOrganizationTaskData) {
     return instance.post<ICreateOrganizationResponse>(`${organizationId}/tasks/create`, taskData);
+  },
+
+  updateOrganizationTask({ organizationId, taskData, taskId }: IUpdateOrganizationTaskData) {
+    return instance.patch<IUpdateOrganizationTaskResponse>(`${organizationId}/tasks/update/${taskId}`, taskData);
   },
 
   getOrganizationTasks(data: IGetOrganizationTasksData) {
