@@ -157,6 +157,12 @@ export interface IUpdateOrganizationTaskResponse extends IMessageResponse<{
   task: IOrganizationTaskType;
 }> { }
 
+// DeleteOrganizationTasks
+export interface IDeleteOrganizationTaskData {
+  organizationId: string;
+  taskId: string;
+}
+
 // GetOrganizationEmployersAnalytics
 export interface IGetOrganizationEmployersAnalyticsResponse extends IResponse<{
   salary: Record<string, number>,

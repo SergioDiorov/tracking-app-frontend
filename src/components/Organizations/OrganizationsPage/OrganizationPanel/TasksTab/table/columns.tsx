@@ -21,12 +21,14 @@ export const columns = ({
   setSortBy,
   setSortOrder,
   setOpenEditTaskModal,
+  setOpenDeleteTaskModal,
 }: {
   sortBy: TaskSortByType | undefined;
   sortOrder: TaskOrderType | undefined;
   setSortBy: (param: TaskSortByType) => void;
   setSortOrder: (param: TaskOrderType) => void;
   setOpenEditTaskModal: (param: IOrganizationTaskType) => void;
+  setOpenDeleteTaskModal: (param: IOrganizationTaskType) => void;
 }): ColumnDef<IOrganizationTaskType>[] => {
   const settings: HeaderButtonSettingsType = {
     sortBy,
@@ -153,7 +155,10 @@ export const columns = ({
               <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
             </button>
             <button
-              onClick={() => {}}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenDeleteTaskModal(row.original);
+              }}
               className='hidden md:block'
               disabled={false}
             >

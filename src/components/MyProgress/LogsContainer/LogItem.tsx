@@ -110,7 +110,7 @@ const LogItem = ({
 
       <div className='md:border-r pr-4 text-sm'>
         <p className='font-semibold text-primary/80 mb-1 w-max max-w-[250px]'>
-          {task.title}
+          {task ? task.title : 'This task has been deleted'}
         </p>
         <div className='flex w-max items-center text-muted-foreground'>
           {!!organization?.avatar && (

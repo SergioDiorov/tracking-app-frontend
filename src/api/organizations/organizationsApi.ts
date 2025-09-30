@@ -21,9 +21,11 @@ import {
   IGetOrganizationTasksAnalyticsResponse,
   IGetOrganizationMembersForExportResponse,
   IUpdateOrganizationTaskData,
-  IUpdateOrganizationTaskResponse
+  IUpdateOrganizationTaskResponse,
+  IDeleteOrganizationTaskData
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
+import { ISimpleMessageResponse } from "@/interfaces/http";
 
 const instance = axios.create({
   baseURL: `${environment.BASE_URL}/organizations/`,
@@ -98,6 +100,10 @@ export const organizationsApi = {
 
   updateOrganizationTask({ organizationId, taskData, taskId }: IUpdateOrganizationTaskData) {
     return instance.patch<IUpdateOrganizationTaskResponse>(`${organizationId}/tasks/update/${taskId}`, taskData);
+  },
+
+  deleteOrganizationTask({ organizationId, taskId }: IDeleteOrganizationTaskData) {
+    return instance.delete<ISimpleMessageResponse>(`${organizationId}/tasks/${taskId}`);
   },
 
   getOrganizationTasks(data: IGetOrganizationTasksData) {
