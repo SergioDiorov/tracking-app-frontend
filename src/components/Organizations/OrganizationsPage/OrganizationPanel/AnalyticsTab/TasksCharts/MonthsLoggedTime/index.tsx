@@ -24,7 +24,7 @@ const MonthsLoggedTime = ({
 
   const dataMap = tasksAnalyticsData.reduce<Record<string, number>>(
     (acc, item) => {
-      const [year, month] = item.month.split('-');
+      const [, month] = item.month.split('-');
       const monthIndex = parseInt(month, 10) - 1;
       acc[monthIndex] = item.hours;
       return acc;

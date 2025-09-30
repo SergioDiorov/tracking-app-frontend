@@ -1,7 +1,7 @@
 'use client';
 
 // react
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 // types
 import { IOrganizationType } from '@/interfaces/organization';

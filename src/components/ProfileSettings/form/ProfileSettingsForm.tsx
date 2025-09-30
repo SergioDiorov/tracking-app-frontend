@@ -396,7 +396,7 @@ const ProfileSettingsForm = () => {
                 <FormField
                   control={form.control}
                   name='country'
-                  render={({ field }) => (
+                  render={({}) => (
                     <FormItem>
                       <FormLabel>Country</FormLabel>
                       <FormControl>

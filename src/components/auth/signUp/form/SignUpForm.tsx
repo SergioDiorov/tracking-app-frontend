@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // ui components
 import { Input } from '@/components/ui/input';
@@ -203,7 +203,7 @@ const SignUpForm = () => {
               <FormField
                 control={form.control}
                 name='country'
-                render={({ field }) => (
+                render={({}) => (
                   <FormItem>
                     <FormLabel>Country</FormLabel>
                     <FormControl>
