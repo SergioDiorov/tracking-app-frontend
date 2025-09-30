@@ -7,7 +7,7 @@ import organizationSelectors from '@/redux/organization/organizationSelectors';
 
 // api
 import { organizationsApi } from '@/api/organizations/organizationsApi';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 // components
 import { Loader } from '@/components/ui/loader';
@@ -18,12 +18,12 @@ import { DataTable } from '../EmployeesTab/table/DataTable';
 import { columns } from './table/columns';
 
 // helpers
-import { errorToast, successToast } from '@/helpers/toastActions';
 import { IOrganizationTaskType } from '@/interfaces/organization';
 import {
   TaskOrderType,
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
+import DeleteTaskModal from './DeleteTaskModal';
 
 interface ITasksTabProps {}
 
@@ -31,8 +31,6 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
   const organizationId = useAppSelector(
     organizationSelectors.getOrganizationId,
   );
-
-  const queryClient = useQueryClient();
 
   // state
   const [organizationTasks, setOrganizationTasks] = useState<
@@ -56,6 +54,7 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
     isLoading: organizationTasksIsLoading,
     isFetching: organizationTasksIsFetching,
     refetch: refetchOrganizationTasks,
+    isFetchedAfterMount: organizationTasksIsFetchedAfterMount,
   } = useQuery({
     queryKey: ['getOrganizationTasks', organizationId],
     queryFn: () =>
@@ -69,26 +68,6 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
     select: (res) => res.data,
     enabled: !!organizationId,
   });
-
-  // delete task
-  const { mutate: deleteOrganizationTask, isPending: isPerndingDeleteTask } =
-    useMutation({
-      mutationFn: (taskId: string) =>
-        organizationsApi.deleteOrganizationTask({ organizationId, taskId }),
-      mutationKey: ['deleteOrganizationTask'],
-      onSuccess: async (response) => {
-        if (response) {
-          await queryClient.invalidateQueries({
-            queryKey: ['getOrganizationTasks', organizationId],
-          });
-          await successToast('Task successfully deleted');
-        }
-      },
-      onError: (error: { error: string }) => {
-        errorToast(error.error ? error.error : 'Error while deleting task');
-      },
-      onSettled: () => setOpenDeleteTaskModal(null),
-    });
 
   const handleSetPreviousPage = () => {
     setPaginationPage((prev) => (prev === 1 ? prev : --prev));
@@ -122,7 +101,10 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
     }
   }, [sortBy, sortOrder]);
 
-  if (organizationTasksIsLoading) {
+  if (
+    (organizationTasksIsFetching || organizationTasksIsLoading) &&
+    !organizationTasksIsFetchedAfterMount
+  ) {
     return (
       <div className='h-full flex justify-center items-center'>
         <Loader />
@@ -175,7 +157,6 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
               taskData={rowDataSelected as IOrganizationTaskType}
             />
           )}
-
           <Modal
             open={!!openEditTaskModal}
             onOpenChange={() => setOpenEditTaskModal(null)}
@@ -192,53 +173,17 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
             />
           </Modal>
 
-          <Modal
-            open={!!openDeleteTaskModal}
-            onOpenChange={() => setOpenDeleteTaskModal(null)}
-            title='Delete task'
-            dialogContentClassName='!overflow-visible'
-            acceptButtonText='Delete'
-            onAccept={() =>
-              deleteOrganizationTask(openDeleteTaskModal?.id || '')
-            }
-            isCloseOnAccept={false}
-            isActionLoading={isPerndingDeleteTask}
-          >
-            <div className='pt-2 text-[14px] font-medium text-primary/70'>
-              <div className=''>
-                Title:{' '}
-                <span className='text-primary/90'>
-                  {openDeleteTaskModal?.title}
-                </span>
-              </div>
-              <div className='flex items-center'>
-                <span className='mr-2'>Assigned member: </span>
-                <img
-                  src={
-                    openDeleteTaskModal?.assignedMember.userProfile.avatar || ''
-                  }
-                  alt='Avatar'
-                  className='size-6 mr-1'
-                />
-                <span className='text-primary/90'>
-                  {openDeleteTaskModal?.assignedMember.userProfile.firstName +
-                    ' ' +
-                    openDeleteTaskModal?.assignedMember.userProfile.lastName}
-                </span>
-              </div>
-              {!!openDeleteTaskModal?.workStatus && (
-                <div>
-                  Work status:{' '}
-                  <span className='text-primary/90'>
-                    {openDeleteTaskModal?.workStatus}
-                  </span>
-                </div>
-              )}
-            </div>
-          </Modal>
+          <DeleteTaskModal
+            openDeleteTaskModal={openDeleteTaskModal}
+            setOpenDeleteTaskModal={setOpenDeleteTaskModal}
+          />
         </div>
       ) : (
-        <div>The tasks haven&apos;t been created yet</div>
+        <div className='h-full flex items-center justify-center'>
+          <p className='w-full text-center text-sm font-semibold text-card-foreground/70'>
+            The tasks haven&apos;t been created yet
+          </p>
+        </div>
       )}
     </>
   );

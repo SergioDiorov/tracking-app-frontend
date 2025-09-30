@@ -136,7 +136,11 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
           </div>
         </div>
       ) : (
-        <div>No employeers in company</div>
+        <div className='h-full flex items-center justify-center'>
+          <p className='w-full text-center text-sm font-semibold text-card-foreground/70'>
+            No employeers in company
+          </p>
+        </div>
       )}
     </>
   );
