@@ -24,6 +24,8 @@ import {
   OrganizationMembersOrderType,
   OrganizationMembersSortByType,
 } from '@/api/organizations/organizationsTypes';
+import Modal from '@/components/assets/Modal';
+import AddOrganizationEmployerForm from '@/components/Organizations/AddOrganizationEmployerForm/AddOrganizationEmployerForm';
 
 interface IEmployeesTabProps {}
 
@@ -38,6 +40,10 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
   const [sortOrder, setSortOrder] = useState<
     OrganizationMembersOrderType | undefined
   >(undefined);
+  const [openEditMemberModal, setOpenEditMemberModal] =
+    useState<IOrganizationMemberType | null>(null);
+  const [openDeleteMEmberModal, setOpenDeleteMEmberModal] =
+    useState<IOrganizationMemberType | null>(null);
 
   const membersLimit = 10;
 
@@ -121,6 +127,8 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
                 sortOrder,
                 setSortBy,
                 setSortOrder,
+                setOpenEditMemberModal,
+                setOpenDeleteMEmberModal,
               })}
               data={organizationsMembers}
               currentPage={
@@ -134,6 +142,22 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
               setPreviousPage={handleSetPreviousPage}
             />
           </div>
+
+          <Modal
+            open={!!openEditMemberModal}
+            onOpenChange={() => setOpenEditMemberModal(null)}
+            title='Edit employer infotmation'
+            disableCancelButton
+            disableAcceptButton
+            dialogContentClassName='!overflow-visible'
+          >
+            <AddOrganizationEmployerForm
+              organizationId={organizationId}
+              closeModal={() => setOpenEditMemberModal(null)}
+              isEditMode
+              memberData={openEditMemberModal || undefined}
+            />
+          </Modal>
         </div>
       ) : (
         <div className='h-full flex items-center justify-center'>

@@ -149,8 +149,6 @@ export const columns = ({
                 e.stopPropagation();
                 setOpenEditTaskModal(row.original);
               }}
-              className='hidden md:block'
-              disabled={false}
             >
               <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
             </button>
@@ -159,8 +157,6 @@ export const columns = ({
                 e.stopPropagation();
                 setOpenDeleteTaskModal(row.original);
               }}
-              className='hidden md:block'
-              disabled={false}
             >
               <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
             </button>

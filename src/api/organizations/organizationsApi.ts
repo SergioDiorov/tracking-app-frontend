@@ -22,7 +22,8 @@ import {
   IGetOrganizationMembersForExportResponse,
   IUpdateOrganizationTaskData,
   IUpdateOrganizationTaskResponse,
-  IDeleteOrganizationTaskData
+  IDeleteOrganizationTaskData,
+  IUpdateUserFromOrganizationData
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 import { ISimpleMessageResponse } from "@/interfaces/http";
@@ -92,6 +93,10 @@ export const organizationsApi = {
 
   addUserToOrganization({ organizationId, userData }: IAddUserToOrganizationData) {
     return instance.post<IAddUserToOrganizationResponse>(`${organizationId}/add`, userData);
+  },
+
+  updateUserFromOrganization({ organizationId, userToUpdate, userData }: IUpdateUserFromOrganizationData) {
+    return instance.patch<IAddUserToOrganizationResponse>(`${organizationId}/member/${userToUpdate}`, userData);
   },
 
   createOrganizationTask({ organizationId, taskData }: ICreateOrganizationTaskData) {

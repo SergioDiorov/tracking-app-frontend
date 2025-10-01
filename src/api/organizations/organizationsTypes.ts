@@ -82,6 +82,18 @@ export interface ICreateOrganizationData {
   file: File | null;
 }
 
+// OrganizationMemberDataType
+export type OrganizationMemberDataType = {
+  email: string;
+  position: OrganizationUserPositionType;
+  workSchedule: string;
+  type: OrganizationUserTypeType;
+  role: OrganizationUserRoleType;
+  workHours: number;
+  salary: number;
+  workExperienceMonth: number;
+}
+
 // AddUserToOrganization
 export interface IAddUserToOrganizationResponse extends IMessageResponse<{
   member: IOrganizationMemberType;
@@ -89,16 +101,18 @@ export interface IAddUserToOrganizationResponse extends IMessageResponse<{
 
 export interface IAddUserToOrganizationData {
   organizationId: string;
-  userData: {
-    email: string;
-    position: OrganizationUserPositionType;
-    workSchedule: string;
-    type: OrganizationUserTypeType;
-    role: OrganizationUserRoleType;
-    workHours: number;
-    salary: number;
-    workExperienceMonth: number;
-  }
+  userData: OrganizationMemberDataType
+}
+
+// UpdateUserFromOrganization
+export interface IAddUserToOrganizationResponse extends IMessageResponse<{
+  member: IOrganizationMemberType;
+}> { }
+
+export interface IUpdateUserFromOrganizationData {
+  organizationId: string;
+  userToUpdate: string;
+  userData: Partial<Omit<OrganizationMemberDataType, 'email'>>
 }
 
 // GetOrganizationTasks

@@ -13,17 +13,22 @@ import {
   HeaderButton,
   HeaderButtonSettingsType,
 } from '@/helpers/HeaderTableButton';
+import { SquarePen, Trash } from 'lucide-react';
 
 export const columns = ({
   sortBy,
   sortOrder,
   setSortBy,
   setSortOrder,
+  setOpenEditMemberModal,
+  setOpenDeleteMEmberModal,
 }: {
   sortBy: OrganizationMembersSortByType | undefined;
   sortOrder: OrganizationMembersOrderType | undefined;
   setSortBy: (param: OrganizationMembersSortByType) => void;
   setSortOrder: (param: OrganizationMembersOrderType) => void;
+  setOpenEditMemberModal: (param: IOrganizationMemberType) => void;
+  setOpenDeleteMEmberModal: (param: IOrganizationMemberType) => void;
 }): ColumnDef<IOrganizationMemberType>[] => {
   const settings: HeaderButtonSettingsType = {
     sortBy,
@@ -140,6 +145,32 @@ export const columns = ({
         <HeaderButton colKey='joined' colTitle='Joined' settings={settings} />
       ),
       cell: ({ row }) => formatDate(row.getValue('joined')),
+    },
+    {
+      accessorKey: 'edit',
+      header: '',
+      cell: ({ row }) => (
+        <>
+          <div className='flex items-center gap-1'>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenEditMemberModal(row.original);
+              }}
+            >
+              <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenDeleteMEmberModal(row.original);
+              }}
+            >
+              <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+            </button>
+          </div>
+        </>
+      ),
     },
   ];
 };
