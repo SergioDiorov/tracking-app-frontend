@@ -21,14 +21,14 @@ export const columns = ({
   setSortBy,
   setSortOrder,
   setOpenEditMemberModal,
-  setOpenDeleteMEmberModal,
+  setOpenDeleteMemberModal,
 }: {
   sortBy: OrganizationMembersSortByType | undefined;
   sortOrder: OrganizationMembersOrderType | undefined;
   setSortBy: (param: OrganizationMembersSortByType) => void;
   setSortOrder: (param: OrganizationMembersOrderType) => void;
   setOpenEditMemberModal: (param: IOrganizationMemberType) => void;
-  setOpenDeleteMEmberModal: (param: IOrganizationMemberType) => void;
+  setOpenDeleteMemberModal: (param: IOrganizationMemberType) => void;
 }): ColumnDef<IOrganizationMemberType>[] => {
   const settings: HeaderButtonSettingsType = {
     sortBy,
@@ -163,7 +163,7 @@ export const columns = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setOpenDeleteMEmberModal(row.original);
+                setOpenDeleteMemberModal(row.original);
               }}
             >
               <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />

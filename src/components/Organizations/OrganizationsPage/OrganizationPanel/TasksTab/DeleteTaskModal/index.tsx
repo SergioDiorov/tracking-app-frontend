@@ -66,16 +66,31 @@ const DeleteTaskModal = ({
           <span className='text-primary/90'>{openDeleteTaskModal?.title}</span>
         </div>
         <div className='flex items-center'>
-          <span className='mr-2'>Assigned member: </span>
-          <img
-            src={openDeleteTaskModal?.assignedMember.userProfile.avatar || ''}
-            alt='Avatar'
-            className='size-6 mr-1'
-          />
-          <span className='text-primary/90'>
-            {openDeleteTaskModal?.assignedMember.userProfile.firstName +
-              ' ' +
-              openDeleteTaskModal?.assignedMember.userProfile.lastName}
+          <span className='mr-2 min-w-fit'>Assigned member: </span>
+          {openDeleteTaskModal?.assignedMember?.userProfile.avatar ? (
+            <img
+              src={
+                openDeleteTaskModal?.assignedMember?.userProfile.avatar || ''
+              }
+              alt='Avatar'
+              className='size-6 mr-1'
+            />
+          ) : (
+            <div className='size-8 min-w-8 max-w-8 mr-1 rounded-full bg-[#e5e7eb]' />
+          )}
+          <span
+            className={
+              openDeleteTaskModal?.assignedMember
+                ? 'text-primary/90'
+                : 'text-muted-foreground text-sm leading-[14px]'
+            }
+          >
+            {openDeleteTaskModal?.assignedMember === null &&
+            !openDeleteTaskModal.assignee
+              ? 'Asigned user was removed from organization'
+              : openDeleteTaskModal?.assignedMember?.userProfile.firstName +
+                ' ' +
+                openDeleteTaskModal?.assignedMember?.userProfile.lastName}
           </span>
         </div>
         {!!openDeleteTaskModal?.workStatus && (

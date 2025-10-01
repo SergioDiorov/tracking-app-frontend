@@ -26,6 +26,7 @@ import {
 } from '@/api/organizations/organizationsTypes';
 import Modal from '@/components/assets/Modal';
 import AddOrganizationEmployerForm from '@/components/Organizations/AddOrganizationEmployerForm/AddOrganizationEmployerForm';
+import DeleteMemberModal from './DeleteMemberModal';
 
 interface IEmployeesTabProps {}
 
@@ -42,7 +43,7 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
   >(undefined);
   const [openEditMemberModal, setOpenEditMemberModal] =
     useState<IOrganizationMemberType | null>(null);
-  const [openDeleteMEmberModal, setOpenDeleteMEmberModal] =
+  const [openDeleteMemberModal, setOpenDeleteMemberModal] =
     useState<IOrganizationMemberType | null>(null);
 
   const membersLimit = 10;
@@ -128,7 +129,7 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
                 setSortBy,
                 setSortOrder,
                 setOpenEditMemberModal,
-                setOpenDeleteMEmberModal,
+                setOpenDeleteMemberModal,
               })}
               data={organizationsMembers}
               currentPage={
@@ -142,7 +143,6 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
               setPreviousPage={handleSetPreviousPage}
             />
           </div>
-
           <Modal
             open={!!openEditMemberModal}
             onOpenChange={() => setOpenEditMemberModal(null)}
@@ -158,6 +158,10 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
               memberData={openEditMemberModal || undefined}
             />
           </Modal>
+          <DeleteMemberModal
+            openDeleteMemberModal={openDeleteMemberModal}
+            setOpenDeleteMemberModal={setOpenDeleteMemberModal}
+          />
         </div>
       ) : (
         <div className='h-full flex items-center justify-center'>

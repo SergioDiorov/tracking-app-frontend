@@ -48,31 +48,42 @@ export const columns = ({
         />
       ),
       cell: ({ row }) => {
-        const userProfile = row.original.assignedMember.userProfile;
+        const userProfile = row?.original?.assignedMember?.userProfile;
         const firstName = userProfile?.firstName || '';
         const lastName = userProfile?.lastName || '';
         const avatar = userProfile?.avatar || null;
 
         return (
           <div className='flex items-center'>
-            {avatar ? (
-              <img
-                src={avatar}
-                alt='Avatar'
-                className={
-                  'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary object-cover'
-                }
-              />
+            {userProfile ? (
+              <>
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt='Avatar'
+                    className={
+                      'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary object-cover'
+                    }
+                  />
+                ) : (
+                  <div
+                    className={
+                      'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
+                    }
+                  >
+                    {firstName[0] + lastName[0]}
+                  </div>
+                )}
+                <span className='ml-2'>{`${firstName} ${lastName}`}</span>
+              </>
             ) : (
-              <div
-                className={
-                  'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
-                }
-              >
-                {firstName[0] + lastName[0]}
-              </div>
+              <>
+                <div className='size-[30px] mr-1 rounded-full bg-[#e5e7eb]' />
+                <p className='text-muted-foreground text-sm'>
+                  Asigned user was removed from organization
+                </p>
+              </>
             )}
-            <span className='ml-2'>{`${firstName} ${lastName}`}</span>
           </div>
         );
       },

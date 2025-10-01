@@ -72,9 +72,9 @@ const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
           <Separator orientation='horizontal' className='my-3 z-50' />
           <div className='flex flex-col gap-2'>
             <div className='flex items-center pb-1'>
-              {assignedMember.userProfile.avatar ? (
+              {assignedMember?.userProfile.avatar ? (
                 <img
-                  src={assignedMember.userProfile.avatar}
+                  src={assignedMember?.userProfile.avatar}
                   alt='Avatar'
                   className={
                     'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary object-cover'
@@ -83,14 +83,21 @@ const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
               ) : (
                 <div
                   className={
-                    'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
+                    'max-w-[34px] max-h-[34px] min-w-[34px] min-h-[34px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
                   }
                 >
-                  {assignedMember.userProfile.firstName[0] +
-                    assignedMember.userProfile.lastName[0]}
+                  {assignedMember &&
+                    assignedMember?.userProfile.firstName[0] +
+                      assignedMember?.userProfile.lastName[0]}
                 </div>
               )}
-              <span className='ml-2'>{`${assignedMember.userProfile.firstName} ${assignedMember.userProfile.lastName}`}</span>
+              {assignedMember ? (
+                <span className='ml-2'>{`${assignedMember.userProfile.firstName} ${assignedMember.userProfile.lastName}`}</span>
+              ) : (
+                <span className='ml-1 text-muted-foreground text-sm leading-[14px]'>
+                  Asigned user was removed from organization
+                </span>
+              )}
             </div>
 
             <div className='flex gap-2 items-center justify-start'>

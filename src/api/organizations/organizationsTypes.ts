@@ -115,6 +115,11 @@ export interface IUpdateUserFromOrganizationData {
   userData: Partial<Omit<OrganizationMemberDataType, 'email'>>
 }
 
+export interface IDeleteUserFromOrganizationData {
+  organizationId: string;
+  userToDelete: string;
+}
+
 // GetOrganizationTasks
 export interface IGetOrganizationTasksResponse extends IResponsePagination<{
   tasks: IOrganizationTaskType[];

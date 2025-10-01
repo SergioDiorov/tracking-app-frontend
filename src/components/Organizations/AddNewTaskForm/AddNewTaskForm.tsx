@@ -187,12 +187,14 @@ const AddNewTaskForm: FC<IAddNewTaskFormProps> = ({
     if (isEditMode && taskData) {
       setValue('title', taskData.title);
       setValue('descriptopn', taskData.descriptopn);
-      setValue(
-        'assignee',
-        taskData.assignedMember.userProfile.firstName +
-          ' ' +
-          taskData.assignedMember.userProfile.lastName,
-      );
+
+      taskData?.assignedMember &&
+        setValue(
+          'assignee',
+          taskData.assignedMember.userProfile.firstName +
+            ' ' +
+            taskData.assignedMember.userProfile.lastName,
+        );
       setValue('priority', taskData.priority);
       setValue('deadline', new Date(taskData.deadline));
       setAssigneeId(taskData.assignee);

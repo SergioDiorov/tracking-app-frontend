@@ -23,7 +23,8 @@ import {
   IUpdateOrganizationTaskData,
   IUpdateOrganizationTaskResponse,
   IDeleteOrganizationTaskData,
-  IUpdateUserFromOrganizationData
+  IUpdateUserFromOrganizationData,
+  IDeleteUserFromOrganizationData
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 import { ISimpleMessageResponse } from "@/interfaces/http";
@@ -97,6 +98,10 @@ export const organizationsApi = {
 
   updateUserFromOrganization({ organizationId, userToUpdate, userData }: IUpdateUserFromOrganizationData) {
     return instance.patch<IAddUserToOrganizationResponse>(`${organizationId}/member/${userToUpdate}`, userData);
+  },
+
+  deleteUserFromOrganization({ organizationId, userToDelete }: IDeleteUserFromOrganizationData) {
+    return instance.delete<ISimpleMessageResponse>(`${organizationId}/member/${userToDelete}`);
   },
 
   createOrganizationTask({ organizationId, taskData }: ICreateOrganizationTaskData) {
