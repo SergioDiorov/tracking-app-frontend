@@ -56,7 +56,7 @@ const Analytics = () => {
   } = useQuery({
     queryKey: ['getOrganizationTasksAnalytics', organizationId],
     queryFn: () =>
-      organizationsApi.getOrganizationTasksAnalytics(organizationId),
+      organizationsApi.getOrganizationTasksAnalytics({ organizationId }),
     select: (res) => res.data,
     enabled: !!organizationId && activeTab === AnalyticsChildTabsEnum.TASKS,
   });

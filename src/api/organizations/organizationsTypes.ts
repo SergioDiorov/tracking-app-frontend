@@ -8,7 +8,8 @@ import {
   OrganizationUserPositionType,
   OrganizationUserRoleType,
   OrganizationUserTypeType,
-  TaskWorkStatusEnum
+  TaskWorkStatusEnum,
+  TaskWorkStatusType
 } from "@/interfaces/organization";
 import { IProfileType } from "@/interfaces/response";
 
@@ -169,7 +170,7 @@ export interface ICreateOrganizationTaskData {
 export interface IUpdateOrganizationTaskData {
   organizationId: string;
   taskId: string;
-  taskData: Partial<CreateOrganizationTaskParamsType>;
+  taskData: Partial<CreateOrganizationTaskParamsType & { workStatus?: TaskWorkStatusType }>;
 }
 
 export interface IUpdateOrganizationTaskResponse extends IMessageResponse<{
@@ -190,6 +191,8 @@ export interface IGetOrganizationEmployersAnalyticsResponse extends IResponse<{
 }> { }
 
 // GetOrganizationTasksAnalytics
+export interface IGetOrganizationTasksAnalyticsData { organizationId: string; userToSearch?: string }
+
 export interface IGetOrganizationTasksAnalyticsResponse extends IResponse<{
   loggedTime: { month: string, hours: number }[],
   tasksByPriority: { [key in OrganizationTaskPriorityEnum]: number }

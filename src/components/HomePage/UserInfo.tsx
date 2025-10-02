@@ -51,7 +51,7 @@ const UserInfo = () => {
 
   return (
     <Card className='p-4 w-full flex gap-4 flex-col lg:flex-row'>
-      <div className='w-full lg:w-1/2'>
+      <div className='w-full lg:w-1/2 bg-[#f3f4f6] p-2.5 rounded-lg'>
         <div className='flex gap-4'>
           <Avatar className='hidden lg:block size-[108px]'>
             <AvatarImage src={userAvatar || ''} alt='Avatar' />
@@ -74,7 +74,7 @@ const UserInfo = () => {
           </div>
         </div>
       </div>
-      <div className='w-full lg:w-1/2'>
+      <div className='w-full lg:w-1/2 bg-[#f3f4f6] p-2.5 rounded-lg'>
         <div className='text-sm xl:text-xl font-semibold text-card-foreground/60 flex gap-1 items-center'>
           Member of{' '}
           <Link

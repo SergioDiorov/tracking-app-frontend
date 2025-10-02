@@ -21,6 +21,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAppSelector } from '@/redux/hooks';
 import organizationSelectors from '@/redux/organization/organizationSelectors';
 import { useMyProgressContext } from '@/context/MyProgress/useMyProgressContext';
+import userSelectors from '@/redux/user/userSelectors';
 
 const chartConfig = {
   logged: {
@@ -34,8 +35,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const LoggedTimeWidget = () => {
+  //context
   const { isTaskLogAdded, setIsTaskLogAdded } = useMyProgressContext();
 
+  // selectors
+  const userId = useAppSelector(userSelectors.getUserId);
   const organizationId = useAppSelector(
     organizationSelectors.getOrganizationId,
   );
@@ -48,7 +52,10 @@ const LoggedTimeWidget = () => {
   } = useQuery({
     queryKey: ['getOrganizationTasksAnalytics', organizationId],
     queryFn: () =>
-      organizationsApi.getOrganizationTasksAnalytics(organizationId),
+      organizationsApi.getOrganizationTasksAnalytics({
+        organizationId,
+        userToSearch: userId,
+      }),
     select: (res) => res.data,
     enabled: !!organizationId,
   });

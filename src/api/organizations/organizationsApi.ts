@@ -24,7 +24,8 @@ import {
   IUpdateOrganizationTaskResponse,
   IDeleteOrganizationTaskData,
   IUpdateUserFromOrganizationData,
-  IDeleteUserFromOrganizationData
+  IDeleteUserFromOrganizationData,
+  IGetOrganizationTasksAnalyticsData
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
 import { ISimpleMessageResponse } from "@/interfaces/http";
@@ -147,7 +148,11 @@ export const organizationsApi = {
     return instance.get<IGetOrganizationEmployersAnalyticsResponse>(`${organizationId}/analytics/employers`);
   },
 
-  getOrganizationTasksAnalytics(organizationId: string) {
-    return instance.get<IGetOrganizationTasksAnalyticsResponse>(`${organizationId}/analytics/tasks`);
+  getOrganizationTasksAnalytics({ organizationId, userToSearch }: IGetOrganizationTasksAnalyticsData) {
+    const params = new URLSearchParams();
+
+    if (userToSearch) params.set('userToSearch', String(userToSearch));
+
+    return instance.get<IGetOrganizationTasksAnalyticsResponse>(`${organizationId}/analytics/tasks?${params.toString()}`,);
   },
 }
