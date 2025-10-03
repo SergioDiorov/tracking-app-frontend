@@ -10,6 +10,11 @@ export type SignUpData = z.infer<typeof signUpSchema>;
 
 export type SignInData = z.infer<typeof signInSchema>;
 
+export type ResetPasswordData = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export interface IAuthResponse extends IResponse<{
   user: UserType;
   access_token: string;

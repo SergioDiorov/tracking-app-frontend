@@ -156,7 +156,7 @@ const ExpandedTaskModal: FC<IExpandedTaskModalProps> = ({
                 </p>
 
                 {isOwnerOrAdmin || assignee === userId ? (
-                  <div className='w-full pr-2 relative'>
+                  <div className='w-full relative'>
                     <Select
                       value={selectedStatus}
                       onChange={(value) => {

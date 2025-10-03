@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import FormFieldPassword from '@/components/ui/custom/password-input';
 
 // redux
 import { useAppDispatch } from '@/redux/hooks';
@@ -77,22 +78,11 @@ const SignInForm = () => {
             )}
           />
 
-          <FormField
+          <FormFieldPassword
             control={form.control}
             name='password'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Create a password'
-                    type='password'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label='Password'
+            placeholder='Enter a password'
           />
         </div>
 

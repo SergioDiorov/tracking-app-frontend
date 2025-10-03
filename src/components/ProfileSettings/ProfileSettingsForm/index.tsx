@@ -54,8 +54,6 @@ const ProfileSettingsForm = () => {
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
       email: userData.email,
-      oldPassword: '',
-      newPassword: '',
       firstName: userData.firstName,
       lastName: userData.lastName,
       city: userData.city,
@@ -132,19 +130,6 @@ const ProfileSettingsForm = () => {
     if (values.workPreference !== userData.workPreference)
       changedValues.workPreference = values.workPreference;
 
-    if (values.oldPassword || values.newPassword) {
-      if (!values.oldPassword || !values.newPassword) {
-        errorToast('Both old and new passwords must be provided');
-        return;
-      }
-      if (values.oldPassword === values.newPassword) {
-        errorToast('New password must be different from old password');
-        return;
-      }
-      changedValues.oldPassword = values.oldPassword;
-      changedValues.newPassword = values.newPassword;
-    }
-
     if (Object.keys(changedValues).length === 0) {
       successToast('No changes detected');
       return;
@@ -180,8 +165,6 @@ const ProfileSettingsForm = () => {
   const handleResetChanges = () => {
     form.reset({
       email: userData.email,
-      oldPassword: '',
-      newPassword: '',
       firstName: userData.firstName,
       lastName: userData.lastName,
       city: userData.city,
@@ -267,7 +250,7 @@ const ProfileSettingsForm = () => {
 
         <Card className='w-full h-fit p-4'>
           <div className='grid w-full items-center gap-4 mb-4 border-b border-solid border-primary/10 pb-4'>
-            <div className='border-b border-solid border-primary/10 pb-4'>
+            <div className='border-solid border-primary/10'>
               <h6 className='text-base font-medium text-primary/90'>
                 Contact email
               </h6>
@@ -288,57 +271,16 @@ const ProfileSettingsForm = () => {
                 )}
               />
             </div>
-            <div>
-              <h6 className='text-base font-medium text-primary/90'>
-                Password
-              </h6>
-              <p className='text-xs font-medium text-primary/70 mb-3'>
-                Modify your current password.
-              </p>
-              <div className='flex flex-col md:flex-row gap-4 md:gap-3 w-full'>
-                <FormField
-                  control={form.control}
-                  name='oldPassword'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Current password</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='Set current password'
-                          type='password'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name='newPassword'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>New password</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='New password'
-                          type='password'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
           </div>
 
           <div className='grid w-full items-center gap-4'>
             <div>
-              <h6 className='text-base font-medium text-primary/90 mb-3'>
+              <h6 className='text-base font-medium text-primary/90'>
                 Personal credentials
               </h6>
+              <p className='text-xs font-medium text-primary/70 mb-3'>
+                Edit your profile information.
+              </p>
               <div className='flex flex-col md:flex-row gap-4 md:gap-3'>
                 <FormField
                   control={form.control}
