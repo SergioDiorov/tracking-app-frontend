@@ -59,7 +59,7 @@ const ProfileSettingsForm = () => {
       city: userData.city,
       age: userData.age,
       country: userData.country,
-      workPreference: userData.workPreference,
+      workPreference: userData.workPreference.toUpperCase(),
     },
   });
 
@@ -170,7 +170,7 @@ const ProfileSettingsForm = () => {
       city: userData.city,
       age: userData.age,
       country: userData.country,
-      workPreference: userData.workPreference,
+      workPreference: userData.workPreference.toUpperCase(),
     });
   };
 
@@ -387,7 +387,13 @@ const ProfileSettingsForm = () => {
                       <FormLabel>Work preference</FormLabel>
                       <FormControl>
                         <Select
-                          value={field.value}
+                          value={
+                            field.value
+                              ? field.value
+                              : userData.workPreference
+                              ? userData.workPreference.toUpperCase()
+                              : ''
+                          }
                           onChange={(value) => field.onChange(value)}
                           placeholder='Work preference'
                           options={workPreferenceList}
