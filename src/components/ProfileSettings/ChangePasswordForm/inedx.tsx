@@ -67,7 +67,7 @@ const ChangePasswordForm = () => {
   return (
     <Form {...form}>
       <form
-        className='mt-4 flex flex-col gap-4 w-full'
+        className='flex flex-col gap-4 w-full'
         onSubmit={handleSubmit(onSubmit)}
       >
         <Card className='w-full h-fit p-4'>
