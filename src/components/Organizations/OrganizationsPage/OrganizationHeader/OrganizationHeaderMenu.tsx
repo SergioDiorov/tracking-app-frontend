@@ -73,7 +73,7 @@ const OrganizationHeaderMenu = ({
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button variant='outline' size='sm' className='text-primary/70'>
             <HamburgerMenuIcon />
           </Button>

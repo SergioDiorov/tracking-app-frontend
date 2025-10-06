@@ -1,5 +1,5 @@
 // types
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { IOrganizationMemberType } from '@/interfaces/organization';
 
 // helpers
@@ -18,6 +18,7 @@ import { SquarePen, Trash } from 'lucide-react';
 export const columns = ({
   sortBy,
   sortOrder,
+  isUserOwnerOrAdmin,
   setSortBy,
   setSortOrder,
   setOpenEditMemberModal,
@@ -25,6 +26,7 @@ export const columns = ({
 }: {
   sortBy: OrganizationMembersSortByType | undefined;
   sortOrder: OrganizationMembersOrderType | undefined;
+  isUserOwnerOrAdmin: boolean;
   setSortBy: (param: OrganizationMembersSortByType) => void;
   setSortOrder: (param: OrganizationMembersOrderType) => void;
   setOpenEditMemberModal: (param: IOrganizationMemberType) => void;
@@ -146,31 +148,35 @@ export const columns = ({
       ),
       cell: ({ row }) => formatDate(row.getValue('joined')),
     },
-    {
-      accessorKey: 'edit',
-      header: '',
-      cell: ({ row }) => (
-        <>
-          <div className='flex items-center gap-1'>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenEditMemberModal(row.original);
-              }}
-            >
-              <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenDeleteMemberModal(row.original);
-              }}
-            >
-              <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-            </button>
-          </div>
-        </>
-      ),
-    },
+    ...(isUserOwnerOrAdmin
+      ? [
+          {
+            accessorKey: 'edit',
+            header: '',
+            cell: ({ row }: CellContext<IOrganizationMemberType, unknown>) => (
+              <>
+                <div className='flex items-center gap-1'>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenEditMemberModal(row.original);
+                    }}
+                  >
+                    <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenDeleteMemberModal(row.original);
+                    }}
+                  >
+                    <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+                  </button>
+                </div>
+              </>
+            ),
+          },
+        ]
+      : []),
   ];
 };

@@ -27,10 +27,12 @@ import {
 import Modal from '@/components/assets/Modal';
 import AddOrganizationEmployerForm from '@/components/Organizations/AddOrganizationEmployerForm/AddOrganizationEmployerForm';
 import DeleteMemberModal from './DeleteMemberModal';
+import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
 
 interface IEmployeesTabProps {}
 
 const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
+  const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
   const [organizationsMembers, setOrganizationsMembers] = useState<
     IOrganizationMemberType[]
   >([]);
@@ -126,6 +128,7 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
               columns={columns({
                 sortBy,
                 sortOrder,
+                isUserOwnerOrAdmin,
                 setSortBy,
                 setSortOrder,
                 setOpenEditMemberModal,

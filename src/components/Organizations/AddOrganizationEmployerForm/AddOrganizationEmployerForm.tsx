@@ -46,6 +46,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationsApi } from '@/api/organizations/organizationsApi';
 import { errorToast, successToast } from '@/helpers/toastActions';
 import { OrganizationMemberDataType } from '@/api/organizations/organizationsTypes';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface IAddOrganizationEmployerFormProps {
   organizationId: string;
@@ -207,11 +208,18 @@ const AddOrganizationEmployerForm: FC<IAddOrganizationEmployerFormProps> = ({
         <div className='w-full'>
           {isEditMode && memberData ? (
             <div className='flex items-center gap-1.5'>
-              <img
-                src={memberData.userProfile?.avatar || ''}
-                alt='Avatar'
-                className='w-full size-8 max-w-8 max-h-8'
-              />
+              <Avatar>
+                <AvatarImage
+                  src={memberData.userProfile?.avatar || ''}
+                  alt='Avatar'
+                  className='opacity-100 hover:opacity-80 transition w-full size-8 max-w-8 max-h-8 rounded-full'
+                />
+                <AvatarFallback>
+                  {memberData?.userProfile?.firstName[0] ||
+                    '' + memberData?.userProfile?.lastName[0] ||
+                    ''}
+                </AvatarFallback>
+              </Avatar>
               <p className='text-primary/90 font-medium'>
                 {memberData.userProfile?.firstName}{' '}
                 {memberData.userProfile?.lastName}

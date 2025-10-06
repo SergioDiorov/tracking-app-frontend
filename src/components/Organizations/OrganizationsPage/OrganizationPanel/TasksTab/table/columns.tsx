@@ -1,5 +1,5 @@
 // types
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { IOrganizationTaskType } from '@/interfaces/organization';
 
 // helpers
@@ -18,6 +18,7 @@ import { SquarePen, Trash } from 'lucide-react';
 export const columns = ({
   sortBy,
   sortOrder,
+  isUserOwnerOrAdmin,
   setSortBy,
   setSortOrder,
   setOpenEditTaskModal,
@@ -25,6 +26,7 @@ export const columns = ({
 }: {
   sortBy: TaskSortByType | undefined;
   sortOrder: TaskOrderType | undefined;
+  isUserOwnerOrAdmin: boolean;
   setSortBy: (param: TaskSortByType) => void;
   setSortOrder: (param: TaskOrderType) => void;
   setOpenEditTaskModal: (param: IOrganizationTaskType) => void;
@@ -149,31 +151,35 @@ export const columns = ({
       ),
       cell: ({ row }) => formatDate(row.getValue('deadline')),
     },
-    {
-      accessorKey: 'edit',
-      header: '',
-      cell: ({ row }) => (
-        <>
-          <div className='flex items-center gap-1'>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenEditTaskModal(row.original);
-              }}
-            >
-              <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenDeleteTaskModal(row.original);
-              }}
-            >
-              <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
-            </button>
-          </div>
-        </>
-      ),
-    },
+    ...(isUserOwnerOrAdmin
+      ? [
+          {
+            accessorKey: 'edit',
+            header: '',
+            cell: ({ row }: CellContext<IOrganizationTaskType, unknown>) => (
+              <>
+                <div className='flex items-center gap-1'>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenEditTaskModal(row.original);
+                    }}
+                  >
+                    <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenDeleteTaskModal(row.original);
+                    }}
+                  >
+                    <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+                  </button>
+                </div>
+              </>
+            ),
+          },
+        ]
+      : []),
   ];
 };

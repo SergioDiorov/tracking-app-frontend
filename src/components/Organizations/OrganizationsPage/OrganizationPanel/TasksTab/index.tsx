@@ -24,6 +24,7 @@ import {
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
 import DeleteTaskModal from './DeleteTaskModal';
+import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
 
 interface ITasksTabProps {}
 
@@ -31,6 +32,7 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
   const organizationId = useAppSelector(
     organizationSelectors.getOrganizationId,
   );
+  const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
 
   // state
   const [organizationTasks, setOrganizationTasks] = useState<
@@ -136,6 +138,7 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
               columns={columns({
                 sortBy,
                 sortOrder,
+                isUserOwnerOrAdmin,
                 setSortBy,
                 setSortOrder,
                 setOpenEditTaskModal,
