@@ -451,7 +451,7 @@ const AddOrganizationEmployerForm: FC<IAddOrganizationEmployerFormProps> = ({
             className='w-full h-[40px] md:h-[32px]'
             disabled={isPending}
           >
-            {isPending ? 'Loading' : 'Create'}
+            {isPending ? 'Loading' : isEditMode ? 'Edit' : 'Create'}
             {isPending && <ReloadIcon className='ml-2 h-4 w-4 animate-spin' />}
           </Button>
         </div>
