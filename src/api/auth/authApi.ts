@@ -45,6 +45,10 @@ export const authApi = {
     return instance.post<IAuthResponse>(`signIn`, data);
   },
 
+  refresh(refresh_token: string) {
+    return instance.post<IAuthResponse>(`refresh`, { refresh_token });
+  },
+
   resetPassword(data: ResetPasswordData) {
     return instance.post<ISimpleMessageResponse>(`reset-password`, data);
   }
