@@ -1,6 +1,8 @@
 'use client';
+
 // react
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
 
 // types
 import { ExtendedLogDataType } from '@/api/tasksLogs/tasksLogsTypes';
@@ -110,9 +112,12 @@ const LogItem = ({
 
       <div className='md:border-r pr-4 text-sm'>
         <p className='font-semibold text-primary/80 mb-1 w-max max-w-[250px]'>
-          {task.title}
+          {task ? task.title : 'This task has been deleted'}
         </p>
-        <div className='flex w-max items-center text-muted-foreground'>
+        <Link
+          href='/organizations'
+          className='flex w-max items-center text-muted-foreground group'
+        >
           {!!organization?.avatar && (
             <img
               src={organization.avatar}
@@ -120,10 +125,10 @@ const LogItem = ({
               className='size-[14px] rounded-full object-cover mr-1'
             />
           )}
-          <p className='min-w-fit font-medium relative top-px'>
+          <p className='min-w-fit font-medium relative top-px group-hover:underline group-hover:text-primary/50 transition'>
             {organization.name}
           </p>
-        </div>
+        </Link>
       </div>
 
       <div className='md:hidden w-full h-px bg-[#e5e7eb]' />

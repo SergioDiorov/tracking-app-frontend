@@ -19,9 +19,16 @@ import {
   IGetOrganizationMemberResponse,
   IGetOrganizationEmployersAnalyticsResponse,
   IGetOrganizationTasksAnalyticsResponse,
-  IGetOrganizationMembersForExportResponse
+  IGetOrganizationMembersForExportResponse,
+  IUpdateOrganizationTaskData,
+  IUpdateOrganizationTaskResponse,
+  IDeleteOrganizationTaskData,
+  IUpdateUserFromOrganizationData,
+  IDeleteUserFromOrganizationData,
+  IGetOrganizationTasksAnalyticsData
 } from "./organizationsTypes";
 import { objectToFormData } from "@/helpers/objectToFormData";
+import { ISimpleMessageResponse } from "@/interfaces/http";
 
 const instance = axios.create({
   baseURL: `${environment.BASE_URL}/organizations/`,
@@ -52,8 +59,18 @@ export const organizationsApi = {
   },
 
   getOrganizationMembers(data: IGetOrganizationMembersData) {
-    const { organizationId, limit, page, search, userId } = data;
-    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?limit=${limit}&page=${page}`, { params: { search, ...(userId ? { userId } : {}) } });
+    const { organizationId, limit, page, search, userId, sortBy, sortOrder } = data;
+
+    const params = new URLSearchParams();
+
+    if (limit) params.set('limit', String(limit));
+    if (page) params.set('page', String(page));
+    if (sortBy) params.set('sortBy', sortBy);
+    if (sortOrder) params.set('sortOrder', sortOrder);
+    if (userId) params.set('userId', userId);
+    if (search) params.set('search', search);
+
+    return instance.get<IGetOrganizationMembersResponse>(`members/${organizationId}?${params.toString()}`);
   },
 
   getAllOrganizationMembersForExport(organizationId: string) {
@@ -80,8 +97,24 @@ export const organizationsApi = {
     return instance.post<IAddUserToOrganizationResponse>(`${organizationId}/add`, userData);
   },
 
+  updateUserFromOrganization({ organizationId, userToUpdate, userData }: IUpdateUserFromOrganizationData) {
+    return instance.patch<IAddUserToOrganizationResponse>(`${organizationId}/member/${userToUpdate}`, userData);
+  },
+
+  deleteUserFromOrganization({ organizationId, userToDelete }: IDeleteUserFromOrganizationData) {
+    return instance.delete<ISimpleMessageResponse>(`${organizationId}/member/${userToDelete}`);
+  },
+
   createOrganizationTask({ organizationId, taskData }: ICreateOrganizationTaskData) {
     return instance.post<ICreateOrganizationResponse>(`${organizationId}/tasks/create`, taskData);
+  },
+
+  updateOrganizationTask({ organizationId, taskData, taskId }: IUpdateOrganizationTaskData) {
+    return instance.patch<IUpdateOrganizationTaskResponse>(`${organizationId}/tasks/update/${taskId}`, taskData);
+  },
+
+  deleteOrganizationTask({ organizationId, taskId }: IDeleteOrganizationTaskData) {
+    return instance.delete<ISimpleMessageResponse>(`${organizationId}/tasks/${taskId}`);
   },
 
   getOrganizationTasks(data: IGetOrganizationTasksData) {
@@ -115,7 +148,11 @@ export const organizationsApi = {
     return instance.get<IGetOrganizationEmployersAnalyticsResponse>(`${organizationId}/analytics/employers`);
   },
 
-  getOrganizationTasksAnalytics(organizationId: string) {
-    return instance.get<IGetOrganizationTasksAnalyticsResponse>(`${organizationId}/analytics/tasks`);
+  getOrganizationTasksAnalytics({ organizationId, userToSearch }: IGetOrganizationTasksAnalyticsData) {
+    const params = new URLSearchParams();
+
+    if (userToSearch) params.set('userToSearch', String(userToSearch));
+
+    return instance.get<IGetOrganizationTasksAnalyticsResponse>(`${organizationId}/analytics/tasks?${params.toString()}`,);
   },
 }

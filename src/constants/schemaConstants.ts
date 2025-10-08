@@ -30,7 +30,7 @@ export const defaultConstants = {
 export const organizationMemberConstants = {
   workHours: {
     min: 1,
-    max: 24
+    max: 100
   },
   salary: {
     min: 1,

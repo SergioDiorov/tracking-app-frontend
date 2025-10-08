@@ -1,12 +1,17 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useAppSelector } from '@/redux/hooks';
+// react
+import React, { useState } from 'react';
 
-import { organizationsApi } from '@/api/organizations/organizationsApi';
+// redux
+import { useAppSelector } from '@/redux/hooks';
 import organizationSelectors from '@/redux/organization/organizationSelectors';
 
+// api
+import { useQuery } from '@tanstack/react-query';
+import { organizationsApi } from '@/api/organizations/organizationsApi';
+
+// components
 import { Loader } from '@/components/ui/loader';
-import { AnalyticsChildTabsEnum, AnalyticsChildTabsType } from '../constants';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SalaryChart from './MembersCharts/Salary';
 import AgeChart from './MembersCharts/Age';
 import ExperienceChart from './MembersCharts/Experience';
@@ -14,13 +19,20 @@ import MonthsLoggedTime from './TasksCharts/MonthsLoggedTime';
 import Priority from './TasksCharts/Priority';
 import WorkStatus from './TasksCharts/WorkStatus';
 
-const Analytics = ({
-  activeAnalyticsChildTab,
-}: {
-  activeAnalyticsChildTab: AnalyticsChildTabsType;
-}) => {
+// helpers
+import {
+  AnalyticsChildTabsEnum,
+  analyticsChildTabsItems,
+  AnalyticsChildTabsType,
+} from '../constants';
+
+const Analytics = () => {
   const organizationId = useAppSelector(
     organizationSelectors.getOrganizationId,
+  );
+
+  const [activeTab, setActiveTab] = useState<AnalyticsChildTabsType>(
+    AnalyticsChildTabsEnum.MEMBERS,
   );
 
   // Fetch employers analytics data
@@ -33,9 +45,7 @@ const Analytics = ({
     queryFn: () =>
       organizationsApi.getOrganizationEmployersAnalytics(organizationId),
     select: (res) => res.data,
-    enabled:
-      !!organizationId &&
-      activeAnalyticsChildTab === AnalyticsChildTabsEnum.MEMBERS,
+    enabled: !!organizationId && activeTab === AnalyticsChildTabsEnum.MEMBERS,
   });
 
   // Fetch tasks analytics data
@@ -46,11 +56,9 @@ const Analytics = ({
   } = useQuery({
     queryKey: ['getOrganizationTasksAnalytics', organizationId],
     queryFn: () =>
-      organizationsApi.getOrganizationTasksAnalytics(organizationId),
+      organizationsApi.getOrganizationTasksAnalytics({ organizationId }),
     select: (res) => res.data,
-    enabled:
-      !!organizationId &&
-      activeAnalyticsChildTab === AnalyticsChildTabsEnum.TASKS,
+    enabled: !!organizationId && activeTab === AnalyticsChildTabsEnum.TASKS,
   });
 
   // Determine if any API calls are loading
@@ -68,37 +76,53 @@ const Analytics = ({
   const tasksByPriorityData = tasksAnalyticsData?.data?.tasksByPriority;
   const tasksByWorkStatusData = tasksAnalyticsData?.data?.tasksByWorkStatus;
 
-  // Show loader if any API call is loading
-  if (isLoadingApi) {
-    return (
-      <div className='w-full flex justify-center items-center h-[370px]'>
-        <Loader className='p-2' />
-      </div>
-    );
-  }
-
   return (
-    <div>
-      {activeAnalyticsChildTab === AnalyticsChildTabsEnum.MEMBERS ? (
-        <div className='flex flex-wrap lg:flex-nowrap gap-4'>
-          {!!salaryData && <SalaryChart salaryData={salaryData} />}
-          {!!ageData && <AgeChart ageData={ageData} />}
-          {!!experienceData && (
-            <ExperienceChart experienceData={experienceData} />
-          )}
+    <Tabs
+      defaultValue={AnalyticsChildTabsEnum.MEMBERS}
+      value={activeTab}
+      onValueChange={(value) => setActiveTab(value as AnalyticsChildTabsType)}
+    >
+      <TabsList className='!w-full flex`'>
+        {analyticsChildTabsItems.map((item) => (
+          <TabsTrigger
+            key={item}
+            value={item}
+            className='font-medium text-card-foreground/70 flex w-full'
+          >
+            {item}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+
+      {isLoadingApi ? (
+        <div className='w-full flex justify-center items-center h-[370px]'>
+          <Loader className='p-2' />
         </div>
       ) : (
-        <div className='flex flex-wrap gap-4'>
-          <MonthsLoggedTime tasksAnalyticsData={loggedTimeData || []} />
-          {!!tasksByPriorityData && (
-            <Priority tasksByPriorityData={tasksByPriorityData} />
-          )}
-          {!!tasksByWorkStatusData && (
-            <WorkStatus tasksByWorkStatusData={tasksByWorkStatusData} />
-          )}
-        </div>
+        <>
+          <TabsContent value={AnalyticsChildTabsEnum.MEMBERS}>
+            <div className='flex flex-wrap lg:flex-nowrap gap-4'>
+              {!!salaryData && <SalaryChart salaryData={salaryData} />}
+              {!!ageData && <AgeChart ageData={ageData} />}
+              {!!experienceData && (
+                <ExperienceChart experienceData={experienceData} />
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value={AnalyticsChildTabsEnum.TASKS}>
+            <div className='flex flex-wrap gap-4'>
+              <MonthsLoggedTime tasksAnalyticsData={loggedTimeData || []} />
+              {!!tasksByPriorityData && (
+                <Priority tasksByPriorityData={tasksByPriorityData} />
+              )}
+              {!!tasksByWorkStatusData && (
+                <WorkStatus tasksByWorkStatusData={tasksByWorkStatusData} />
+              )}
+            </div>
+          </TabsContent>
+        </>
       )}
-    </div>
+    </Tabs>
   );
 };
 

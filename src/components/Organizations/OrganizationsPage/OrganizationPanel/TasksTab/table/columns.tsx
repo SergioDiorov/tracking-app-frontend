@@ -1,95 +1,100 @@
 // types
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { IOrganizationTaskType } from '@/interfaces/organization';
 
 // helpers
 import { formatDate } from '@/helpers/formatDate';
-import { ArrowUp, ArrowDown, ArrowUpDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import {
   TaskOrderType,
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
 import { PriorityBadge } from '../../constants';
+import {
+  HeaderButton,
+  HeaderButtonSettingsType,
+} from '@/helpers/HeaderTableButton';
+import { SquarePen, Trash } from 'lucide-react';
 
 export const columns = ({
   sortBy,
   sortOrder,
+  isUserOwnerOrAdmin,
   setSortBy,
   setSortOrder,
+  setOpenEditTaskModal,
+  setOpenDeleteTaskModal,
 }: {
   sortBy: TaskSortByType | undefined;
   sortOrder: TaskOrderType | undefined;
+  isUserOwnerOrAdmin: boolean;
   setSortBy: (param: TaskSortByType) => void;
   setSortOrder: (param: TaskOrderType) => void;
+  setOpenEditTaskModal: (param: IOrganizationTaskType) => void;
+  setOpenDeleteTaskModal: (param: IOrganizationTaskType) => void;
 }): ColumnDef<IOrganizationTaskType>[] => {
-  const HeaderButton = ({
-    colKey,
-    colTitle,
-  }: {
-    colKey: TaskSortByType;
-    colTitle: string;
-  }) => {
-    const isAsc = sortBy === colKey && sortOrder === 'asc';
-
-    return (
-      <Button
-        variant='ghost'
-        className='relative -left-1 !p-1'
-        onClick={() => {
-          setSortBy(colKey);
-          setSortOrder(isAsc ? 'desc' : 'asc');
-        }}
-      >
-        {colTitle}
-        {sortBy !== colKey ? (
-          <ArrowUpDown className='ml-2 h-4 w-4 opacity-40' />
-        ) : isAsc ? (
-          <ArrowUp className='ml-2 h-4 w-4' />
-        ) : (
-          <ArrowDown className='ml-2 h-4 w-4' />
-        )}
-      </Button>
-    );
-  };
+  const settings: HeaderButtonSettingsType = {
+    sortBy,
+    sortOrder,
+    setSortBy,
+    setSortOrder,
+  } as HeaderButtonSettingsType;
 
   return [
     {
       id: 'assignee',
-      header: () => <HeaderButton colKey='assignee' colTitle='Assignee' />,
+      header: () => (
+        <HeaderButton
+          colKey='assignee'
+          colTitle='Assignee'
+          settings={settings}
+        />
+      ),
       cell: ({ row }) => {
-        const userProfile = row.original.assignedMember.userProfile;
+        const userProfile = row?.original?.assignedMember?.userProfile;
         const firstName = userProfile?.firstName || '';
         const lastName = userProfile?.lastName || '';
         const avatar = userProfile?.avatar || null;
 
         return (
           <div className='flex items-center'>
-            {avatar ? (
-              <img
-                src={avatar}
-                alt='Avatar'
-                className={
-                  'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary object-cover'
-                }
-              />
+            {userProfile ? (
+              <>
+                {avatar ? (
+                  <img
+                    src={avatar}
+                    alt='Avatar'
+                    className={
+                      'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary object-cover'
+                    }
+                  />
+                ) : (
+                  <div
+                    className={
+                      'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
+                    }
+                  >
+                    {firstName[0] + lastName[0]}
+                  </div>
+                )}
+                <span className='ml-2'>{`${firstName} ${lastName}`}</span>
+              </>
             ) : (
-              <div
-                className={
-                  'max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] rounded-full bg-secondary flex justify-center items-center text-[10px] uppercase font-bold text-primary/50'
-                }
-              >
-                {firstName[0] + lastName[0]}
-              </div>
+              <>
+                <div className='size-[30px] max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] mr-1 rounded-full bg-[#e5e7eb]' />
+                <p className='text-muted-foreground text-sm'>
+                  Asigned user was removed from organization
+                </p>
+              </>
             )}
-            <span className='ml-2'>{`${firstName} ${lastName}`}</span>
           </div>
         );
       },
     },
     {
       accessorKey: 'title',
-      header: () => <HeaderButton colKey='title' colTitle='Title' />,
+      header: () => (
+        <HeaderButton colKey='title' colTitle='Title' settings={settings} />
+      ),
       cell: ({ row }) => {
         return (
           <p className='whitespace-nowrap max-w-64 w-full truncate'>
@@ -117,7 +122,13 @@ export const columns = ({
     // },
     {
       accessorKey: 'priority',
-      header: () => <HeaderButton colKey='priority' colTitle='Priority' />,
+      header: () => (
+        <HeaderButton
+          colKey='priority'
+          colTitle='Priority'
+          settings={settings}
+        />
+      ),
       cell: ({ row }) => {
         return <PriorityBadge value={row.getValue('priority')} />;
       },
@@ -125,12 +136,50 @@ export const columns = ({
     {
       accessorKey: 'createdAt',
       cell: ({ row }) => formatDate(row.getValue('createdAt')),
-      header: () => <HeaderButton colKey='createdAt' colTitle='Added' />,
+      header: () => (
+        <HeaderButton colKey='createdAt' colTitle='Added' settings={settings} />
+      ),
     },
     {
       accessorKey: 'deadline',
-      header: () => <HeaderButton colKey='deadline' colTitle='Deadline' />,
+      header: () => (
+        <HeaderButton
+          colKey='deadline'
+          colTitle='Deadline'
+          settings={settings}
+        />
+      ),
       cell: ({ row }) => formatDate(row.getValue('deadline')),
     },
+    ...(isUserOwnerOrAdmin
+      ? [
+          {
+            accessorKey: 'edit',
+            header: '',
+            cell: ({ row }: CellContext<IOrganizationTaskType, unknown>) => (
+              <>
+                <div className='flex items-center gap-1'>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenEditTaskModal(row.original);
+                    }}
+                  >
+                    <SquarePen className='relative top-px size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenDeleteTaskModal(row.original);
+                    }}
+                  >
+                    <Trash className='size-5 text-primary/50 hover:text-primary/40 active:text-primary/20 transition' />
+                  </button>
+                </div>
+              </>
+            ),
+          },
+        ]
+      : []),
   ];
 };

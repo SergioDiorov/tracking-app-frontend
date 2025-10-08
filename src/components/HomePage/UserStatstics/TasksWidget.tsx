@@ -52,6 +52,7 @@ const TasksWidget = () => {
     refetch: refetchOrganizationTasks,
     isFetching: organizationTasksIsFetching,
     isPending: organizationTasksIsPending,
+    isFetchedAfterMount: organizationTasksIsFetchedAfterMount,
   } = useQuery({
     queryKey: ['getOrganizationTasks', organizationId],
     queryFn: () =>
@@ -162,7 +163,7 @@ const TasksWidget = () => {
               </p>
             </div>
           )}
-        {!!userTasks?.length && (
+        {!!userTasks?.length && organizationTasksIsFetchedAfterMount && (
           <div>
             {userTasks.map((item, index) => (
               <Fragment key={item.id}>

@@ -34,7 +34,7 @@ export interface IOrganizationTaskType {
   id: string,
   title: string,
   descriptopn: string,
-  assignee: string,
+  assignee: string | null,
   priority: OrganizationTaskPriorityType,
   deadline: string,
   organizationId: string,
@@ -51,7 +51,7 @@ export interface IOrganizationTaskType {
       email: string,
       avatar: string,
     }
-  }
+  } | null
 }
 
 // Organization industry 

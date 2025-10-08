@@ -135,6 +135,8 @@ const AddManuallyTimeForm = ({
 
   const selectPlaceholderStyle = 'data-[placeholder]:text-foreground/60';
 
+  const isTaskDeleted = isEditMode && !logData?.task;
+
   // fetch tasks
   const {
     data: organizationTasksData,
@@ -301,7 +303,7 @@ const AddManuallyTimeForm = ({
   useEffect(() => {
     if (isEditMode && logData) {
       setValue('organization', logData.organization.name);
-      setValue('task', logData.task.title);
+      setValue('task', logData?.task?.title || 'This task has been deleted');
       setValue('date', new Date(logData.date));
       setValue('type', logData.type);
       setValue('start', format(logData.start, 'HH:mm'));
@@ -368,7 +370,13 @@ const AddManuallyTimeForm = ({
                 </div>
                 <FormControl>
                   {isEditMode && logData ? (
-                    <Input type='text' placeholder='Task' disabled {...field} />
+                    <Input
+                      type='text'
+                      placeholder='Task'
+                      disabled
+                      {...field}
+                      className={isTaskDeleted ? '!border-0' : ''}
+                    />
                   ) : (
                     <Select
                       value={field.value}

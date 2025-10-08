@@ -1,17 +1,30 @@
-import { organizationsApi } from '@/api/organizations/organizationsApi';
-import { Loader } from '@/components/ui/loader';
+// react
+import React, { FC, useEffect, useState } from 'react';
+
+// redux
 import { useAppSelector } from '@/redux/hooks';
 import organizationSelectors from '@/redux/organization/organizationSelectors';
+
+// api
+import { organizationsApi } from '@/api/organizations/organizationsApi';
 import { useQuery } from '@tanstack/react-query';
-import React, { FC, useEffect, useState } from 'react';
+
+// components
+import { Loader } from '@/components/ui/loader';
+import Modal from '@/components/assets/Modal';
+import AddNewTaskForm from '@/components/Organizations/AddNewTaskForm/AddNewTaskForm';
+import ExpandedTaskModal from './ExpandedTaskModal/ExpandedTaskModal';
 import { DataTable } from '../EmployeesTab/table/DataTable';
 import { columns } from './table/columns';
+
+// helpers
 import { IOrganizationTaskType } from '@/interfaces/organization';
 import {
   TaskOrderType,
   TaskSortByType,
 } from '@/api/organizations/organizationsTypes';
-import ExpandedTaskModal from './ExpandedTaskModal/ExpandedTaskModal';
+import DeleteTaskModal from './DeleteTaskModal';
+import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
 
 interface ITasksTabProps {}
 
@@ -19,6 +32,9 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
   const organizationId = useAppSelector(
     organizationSelectors.getOrganizationId,
   );
+  const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
+
+  // state
   const [organizationTasks, setOrganizationTasks] = useState<
     IOrganizationTaskType[]
   >([]);
@@ -29,12 +45,18 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
   );
   const [rowDataSelected, setRowDataSelected] =
     useState<IOrganizationTaskType | null>(null);
+  const [openEditTaskModal, setOpenEditTaskModal] =
+    useState<IOrganizationTaskType | null>(null);
+  const [openDeleteTaskModal, setOpenDeleteTaskModal] =
+    useState<IOrganizationTaskType | null>(null);
 
+  // get tasks data
   const {
     data: organizationTasksData,
     isLoading: organizationTasksIsLoading,
     isFetching: organizationTasksIsFetching,
     refetch: refetchOrganizationTasks,
+    isFetchedAfterMount: organizationTasksIsFetchedAfterMount,
   } = useQuery({
     queryKey: ['getOrganizationTasks', organizationId],
     queryFn: () =>
@@ -81,7 +103,10 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
     }
   }, [sortBy, sortOrder]);
 
-  if (organizationTasksIsLoading) {
+  if (
+    (organizationTasksIsFetching || organizationTasksIsLoading) &&
+    !organizationTasksIsFetchedAfterMount
+  ) {
     return (
       <div className='h-full flex justify-center items-center'>
         <Loader />
@@ -113,8 +138,11 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
               columns={columns({
                 sortBy,
                 sortOrder,
+                isUserOwnerOrAdmin,
                 setSortBy,
                 setSortOrder,
+                setOpenEditTaskModal,
+                setOpenDeleteTaskModal,
               })}
               data={organizationTasks}
               currentPage={organizationTasksData.pagination.currentPage || 0}
@@ -132,9 +160,33 @@ const TasksTab: FC<ITasksTabProps> = ({}) => {
               taskData={rowDataSelected as IOrganizationTaskType}
             />
           )}
+          <Modal
+            open={!!openEditTaskModal}
+            onOpenChange={() => setOpenEditTaskModal(null)}
+            title='Edit task'
+            disableCancelButton
+            disableAcceptButton
+            dialogContentClassName='!overflow-visible'
+          >
+            <AddNewTaskForm
+              organizationId={openEditTaskModal?.organizationId as string}
+              closeModal={() => setOpenEditTaskModal(null)}
+              isEditMode
+              taskData={openEditTaskModal as IOrganizationTaskType}
+            />
+          </Modal>
+
+          <DeleteTaskModal
+            openDeleteTaskModal={openDeleteTaskModal}
+            setOpenDeleteTaskModal={setOpenDeleteTaskModal}
+          />
         </div>
       ) : (
-        <div>The tasks haven&apos;t been created yet</div>
+        <div className='h-full flex items-center justify-center'>
+          <p className='w-full text-center text-sm font-semibold text-card-foreground/70'>
+            The tasks haven&apos;t been created yet
+          </p>
+        </div>
       )}
     </>
   );

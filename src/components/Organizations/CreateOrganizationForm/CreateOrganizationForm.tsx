@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { Card } from '@/components/ui/card';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -189,7 +188,7 @@ const CreateOrganizationForm: FC<ICreateOrganizationFormProps> = ({
             <FormField
               control={form.control}
               name='registrationCountry'
-              render={({ field }) => (
+              render={({}) => (
                 <FormItem>
                   <FormLabel>Registration country</FormLabel>
                   <FormControl>

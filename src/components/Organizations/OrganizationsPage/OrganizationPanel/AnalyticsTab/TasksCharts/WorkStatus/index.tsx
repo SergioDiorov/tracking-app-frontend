@@ -7,15 +7,22 @@ import { handleFormatWorkStatus } from '../../../constants';
 const WorkStatus = ({
   tasksByWorkStatusData,
 }: {
-  tasksByWorkStatusData: { [key in TaskWorkStatusEnum]: number };
+  tasksByWorkStatusData: { [key in TaskWorkStatusEnum]?: number } & {
+    null?: number;
+  };
 }) => {
-  const chartData = Object.entries(tasksByWorkStatusData).map(
-    ([status, count]) => ({
-      status: handleFormatWorkStatus(status as TaskWorkStatusEnum),
-      value: count,
-      fill: '#00b6ff',
-    }),
-  );
+  const preparedData = { ...tasksByWorkStatusData };
+
+  if (preparedData['null']) {
+    preparedData.TODO = (preparedData.TODO || 0) + preparedData['null'];
+    delete preparedData['null'];
+  }
+
+  const chartData = Object.entries(preparedData).map(([status, count]) => ({
+    status: handleFormatWorkStatus(status as TaskWorkStatusEnum),
+    value: count,
+    fill: '#00b6ff',
+  }));
 
   const chartConfig = taskWorkStatus.reduce(
     (config, status) => {

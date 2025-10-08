@@ -30,7 +30,7 @@ export type ExtendedLogDataType = TaskLogType & {
   task: {
     id: string;
     title: string;
-  };
+  } | null;
   organization: {
     avatar: string | null;
     name: string;

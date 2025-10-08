@@ -1,3 +1,7 @@
+// react
+import { FC } from 'react';
+
+// components
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,13 +13,12 @@ import {
 } from '@/components/ui/dialog';
 import { Loader2Icon } from 'lucide-react';
 
-import { FC } from 'react';
-
 interface IModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title?: string;
   dialogContentClassName?: string;
+  dialogFooterClassName?: string;
   description?: string;
   cancelButtonText?: string;
   acceptButtonText?: string;
@@ -41,6 +44,7 @@ const Modal: FC<IModalProps> = ({
   disableAcceptButton,
   disableCancelButton,
   dialogContentClassName,
+  dialogFooterClassName,
   isCloseOnAccept = true,
   isActionLoading = false,
 }) => {
@@ -52,7 +56,7 @@ const Modal: FC<IModalProps> = ({
           <DialogDescription>{description}</DialogDescription>
           {children}
         </DialogHeader>
-        <DialogFooter className='gap-2'>
+        <DialogFooter className={`gap-2 ${dialogFooterClassName || ''}`}>
           {!disableCancelButton && (
             <Button
               variant='secondary'

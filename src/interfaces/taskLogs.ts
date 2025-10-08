@@ -3,7 +3,7 @@ import { WorkPreferenceType } from "@/components/auth/constants";
 export interface TaskLogType {
   id: string,
   organizationId: string,
-  taskId: string,
+  taskId: string | null,
   date: string,
   type: WorkPreferenceType,
   start: string,

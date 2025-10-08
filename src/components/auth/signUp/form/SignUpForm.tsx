@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 // ui components
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import Select from '@/components/ui/custom/select';
+import FormFieldPassword from '@/components/ui/custom/password-input';
 
 // redux
 import { useAppDispatch } from '@/redux/hooks';
@@ -110,39 +111,18 @@ const SignUpForm = () => {
           />
 
           <div className='flex flex-col md:flex-row gap-4 md:gap-2'>
-            <FormField
+            <FormFieldPassword
               control={form.control}
               name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Create a password'
-                      type='password'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Password'
+              placeholder='Create a password'
             />
-            <FormField
+
+            <FormFieldPassword
               control={form.control}
               name='confirmPassword'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='Confirm new password'
-                      type='password'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Confirm password'
+              placeholder='Confirm a password'
             />
           </div>
         </div>
@@ -203,7 +183,7 @@ const SignUpForm = () => {
               <FormField
                 control={form.control}
                 name='country'
-                render={({ field }) => (
+                render={({}) => (
                   <FormItem>
                     <FormLabel>Country</FormLabel>
                     <FormControl>

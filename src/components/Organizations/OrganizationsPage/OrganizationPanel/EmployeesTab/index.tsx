@@ -20,14 +20,33 @@ import { columns } from './table/columns';
 // components
 import { DataTable } from './table/DataTable';
 import { Loader } from '@/components/ui/loader';
+import {
+  OrganizationMembersOrderType,
+  OrganizationMembersSortByType,
+} from '@/api/organizations/organizationsTypes';
+import Modal from '@/components/assets/Modal';
+import AddOrganizationEmployerForm from '@/components/Organizations/AddOrganizationEmployerForm/AddOrganizationEmployerForm';
+import DeleteMemberModal from './DeleteMemberModal';
+import { useIsUserOwnerOrAdmin } from '@/hooks/useOrganizationMemberOwnerOrAdmin';
 
 interface IEmployeesTabProps {}
 
 const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
+  const isUserOwnerOrAdmin = useIsUserOwnerOrAdmin();
   const [organizationsMembers, setOrganizationsMembers] = useState<
     IOrganizationMemberType[]
   >([]);
   const [paginationPage, setPaginationPage] = useState<number>(1);
+  const [sortBy, setSortBy] = useState<
+    OrganizationMembersSortByType | undefined
+  >(undefined);
+  const [sortOrder, setSortOrder] = useState<
+    OrganizationMembersOrderType | undefined
+  >(undefined);
+  const [openEditMemberModal, setOpenEditMemberModal] =
+    useState<IOrganizationMemberType | null>(null);
+  const [openDeleteMemberModal, setOpenDeleteMemberModal] =
+    useState<IOrganizationMemberType | null>(null);
 
   const membersLimit = 10;
 
@@ -42,6 +61,8 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
         organizationId,
         page: paginationPage,
         limit: membersLimit,
+        sortBy,
+        sortOrder,
       }),
     select: (res) => res.data,
     enabled: !!organizationId,
@@ -68,6 +89,12 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
   useEffect(() => {
     organizationsMembersResponse.refetch();
   }, [paginationPage]);
+
+  useEffect(() => {
+    if (sortBy && sortOrder) {
+      organizationsMembersResponse.refetch();
+    }
+  }, [sortBy, sortOrder]);
 
   if (organizationsMembersResponse.isLoading) {
     return (
@@ -98,7 +125,15 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
             }`}
           >
             <DataTable
-              columns={columns}
+              columns={columns({
+                sortBy,
+                sortOrder,
+                isUserOwnerOrAdmin,
+                setSortBy,
+                setSortOrder,
+                setOpenEditMemberModal,
+                setOpenDeleteMemberModal,
+              })}
               data={organizationsMembers}
               currentPage={
                 organizationsMembersResponse.data?.pagination.currentPage || 0
@@ -111,9 +146,32 @@ const EmployeesTab: FC<IEmployeesTabProps> = ({}) => {
               setPreviousPage={handleSetPreviousPage}
             />
           </div>
+          <Modal
+            open={!!openEditMemberModal}
+            onOpenChange={() => setOpenEditMemberModal(null)}
+            title='Edit employer infotmation'
+            disableCancelButton
+            disableAcceptButton
+            dialogContentClassName='!overflow-visible'
+          >
+            <AddOrganizationEmployerForm
+              organizationId={organizationId}
+              closeModal={() => setOpenEditMemberModal(null)}
+              isEditMode
+              memberData={openEditMemberModal || undefined}
+            />
+          </Modal>
+          <DeleteMemberModal
+            openDeleteMemberModal={openDeleteMemberModal}
+            setOpenDeleteMemberModal={setOpenDeleteMemberModal}
+          />
         </div>
       ) : (
-        <div>No employeers in company</div>
+        <div className='h-full flex items-center justify-center'>
+          <p className='w-full text-center text-sm font-semibold text-card-foreground/70'>
+            No employeers in company
+          </p>
+        </div>
       )}
     </>
   );

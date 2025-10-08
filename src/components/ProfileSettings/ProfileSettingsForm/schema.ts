@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { lettersAndSpacesRegex } from '@/constants/regex';
-import { defaultConstants, emailConstants, nameConstants, passwordConstants } from '@/constants/schemaConstants';
+import { defaultConstants, emailConstants, nameConstants } from '@/constants/schemaConstants';
 
 export const profileSettingsSchema = z.object({
   email: z
@@ -11,18 +11,6 @@ export const profileSettingsSchema = z.object({
     .max(emailConstants.maxLength, { message: 'Email is too long' })
     .trim()
     .optional(),
-  oldPassword: z
-    .string()
-    .optional()
-    .refine(val => !val || (val.length >= passwordConstants.minLength && val.length <= passwordConstants.maxLength), {
-      message: `Password must be at least ${passwordConstants.minLength} characters long`,
-    }),
-  newPassword: z
-    .string()
-    .optional()
-    .refine(val => !val || (val.length >= passwordConstants.minLength && val.length <= passwordConstants.maxLength), {
-      message: `Password must be at least ${passwordConstants.minLength} characters long`,
-    }),
   firstName: z
     .string()
     .min(nameConstants.minLength, { message: 'First name is required' })
@@ -63,22 +51,5 @@ export const profileSettingsSchema = z.object({
     .max(defaultConstants.maxLength, { message: 'Work preference is too long' })
     .trim(),
 })
-// .refine(data => {
-//   if (!data.oldPassword?.length && !data.newPassword?.length) {
-//     return true
-//   }
-//   if (data.oldPassword || data.newPassword) {
-//     if (!data.oldPassword || !data.newPassword) {
-//       return false;
-//     }
-//     if (data.oldPassword === data.newPassword) {
-//       return false;
-//     }
-//   }
-//   return true;
-// }, {
-//   message: 'Other password field must be filled with different password',
-//   path: ['newPassword'],
-// });
 
 export type ProfileSchemaType = z.infer<typeof profileSettingsSchema>

@@ -8,7 +8,8 @@ import {
   OrganizationUserPositionType,
   OrganizationUserRoleType,
   OrganizationUserTypeType,
-  TaskWorkStatusEnum
+  TaskWorkStatusEnum,
+  TaskWorkStatusType
 } from "@/interfaces/organization";
 import { IProfileType } from "@/interfaces/response";
 
@@ -22,10 +23,17 @@ export interface IGetOrganizationMembersResponse extends IResponsePagination<{
   members: IOrganizationMemberType[];
 }> { }
 
+
+export type OrganizationMembersSortByType = 'joined' | 'position' | 'workHours' | 'salary' | 'type' | 'workExperienceMonth' | 'role' | 'firstName' | 'age' | 'country';
+export type OrganizationMembersOrderType = 'asc' | 'desc';
+
+
 export interface IGetOrganizationMembersData extends IPaginationData {
   organizationId: string;
-  search?: string
-  userId?: string
+  search?: string;
+  userId?: string;
+  sortBy?: OrganizationMembersSortByType;
+  sortOrder?: OrganizationMembersOrderType;
 }
 
 // GetOrganizationMembersForExport
@@ -75,6 +83,18 @@ export interface ICreateOrganizationData {
   file: File | null;
 }
 
+// OrganizationMemberDataType
+export type OrganizationMemberDataType = {
+  email: string;
+  position: OrganizationUserPositionType;
+  workSchedule: string;
+  type: OrganizationUserTypeType;
+  role: OrganizationUserRoleType;
+  workHours: number;
+  salary: number;
+  workExperienceMonth: number;
+}
+
 // AddUserToOrganization
 export interface IAddUserToOrganizationResponse extends IMessageResponse<{
   member: IOrganizationMemberType;
@@ -82,16 +102,23 @@ export interface IAddUserToOrganizationResponse extends IMessageResponse<{
 
 export interface IAddUserToOrganizationData {
   organizationId: string;
-  userData: {
-    email: string;
-    position: OrganizationUserPositionType;
-    workSchedule: string;
-    type: OrganizationUserTypeType;
-    role: OrganizationUserRoleType;
-    workHours: number;
-    salary: number;
-    workExperienceMonth: number;
-  }
+  userData: OrganizationMemberDataType
+}
+
+// UpdateUserFromOrganization
+export interface IAddUserToOrganizationResponse extends IMessageResponse<{
+  member: IOrganizationMemberType;
+}> { }
+
+export interface IUpdateUserFromOrganizationData {
+  organizationId: string;
+  userToUpdate: string;
+  userData: Partial<Omit<OrganizationMemberDataType, 'email'>>
+}
+
+export interface IDeleteUserFromOrganizationData {
+  organizationId: string;
+  userToDelete: string;
 }
 
 // GetOrganizationTasks
@@ -126,15 +153,34 @@ export interface IGetOrganizationTasksProgressData {
 
 
 // CreateOrganizationTasks
+export type CreateOrganizationTaskParamsType = {
+  title: string;
+  descriptopn: string;
+  assignee: string;
+  priority: string;
+  deadline: string;
+}
+
 export interface ICreateOrganizationTaskData {
   organizationId: string;
-  taskData: {
-    title: string;
-    descriptopn: string;
-    assignee: string;
-    priority: string;
-    deadline: string;
-  }
+  taskData: CreateOrganizationTaskParamsType
+}
+
+// UpdateOrganizationTasks
+export interface IUpdateOrganizationTaskData {
+  organizationId: string;
+  taskId: string;
+  taskData: Partial<CreateOrganizationTaskParamsType & { workStatus?: TaskWorkStatusType }>;
+}
+
+export interface IUpdateOrganizationTaskResponse extends IMessageResponse<{
+  task: IOrganizationTaskType;
+}> { }
+
+// DeleteOrganizationTasks
+export interface IDeleteOrganizationTaskData {
+  organizationId: string;
+  taskId: string;
 }
 
 // GetOrganizationEmployersAnalytics
@@ -145,6 +191,8 @@ export interface IGetOrganizationEmployersAnalyticsResponse extends IResponse<{
 }> { }
 
 // GetOrganizationTasksAnalytics
+export interface IGetOrganizationTasksAnalyticsData { organizationId: string; userToSearch?: string }
+
 export interface IGetOrganizationTasksAnalyticsResponse extends IResponse<{
   loggedTime: { month: string, hours: number }[],
   tasksByPriority: { [key in OrganizationTaskPriorityEnum]: number }

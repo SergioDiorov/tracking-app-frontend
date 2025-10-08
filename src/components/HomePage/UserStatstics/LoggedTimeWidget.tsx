@@ -21,6 +21,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAppSelector } from '@/redux/hooks';
 import organizationSelectors from '@/redux/organization/organizationSelectors';
 import { useMyProgressContext } from '@/context/MyProgress/useMyProgressContext';
+import userSelectors from '@/redux/user/userSelectors';
 
 const chartConfig = {
   logged: {
@@ -34,11 +35,18 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const LoggedTimeWidget = () => {
+  //context
   const { isTaskLogAdded, setIsTaskLogAdded } = useMyProgressContext();
 
+  // selectors
+  const userId = useAppSelector(userSelectors.getUserId);
   const organizationId = useAppSelector(
     organizationSelectors.getOrganizationId,
   );
+  const organizationMemberData = useAppSelector(
+    organizationSelectors.getOrganizationMemberData,
+  );
+  const userWorkHours = organizationMemberData?.workHours || 0;
 
   // Fetch tasks analytics data
   const {
@@ -48,7 +56,10 @@ const LoggedTimeWidget = () => {
   } = useQuery({
     queryKey: ['getOrganizationTasksAnalytics', organizationId],
     queryFn: () =>
-      organizationsApi.getOrganizationTasksAnalytics(organizationId),
+      organizationsApi.getOrganizationTasksAnalytics({
+        organizationId,
+        userToSearch: userId,
+      }),
     select: (res) => res.data,
     enabled: !!organizationId,
   });
@@ -63,7 +74,7 @@ const LoggedTimeWidget = () => {
     );
 
     const loggedHours = currentMonthData?.hours || 0;
-    const remainingHours = Math.max(40 - loggedHours, 0);
+    const remainingHours = Math.max(userWorkHours - loggedHours, 0);
 
     return [
       { name: 'logged', value: loggedHours, fill: '#7c97d1' },
@@ -80,9 +91,14 @@ const LoggedTimeWidget = () => {
 
   return (
     <div className='flex flex-col items-center'>
-      <h6 className='tracking-tight text-xl font-semibold text-card-foreground/70 h-[45px] flex items-center justify-center -mb-4'>
-        Logged Hours
-      </h6>
+      <div className=' relative h-[45px] flex items-center justify-center -mb-4'>
+        <h6 className='tracking-tight text-xl font-semibold text-card-foreground/70'>
+          Logged Hours
+        </h6>
+        <span className='absolute text-[11px] -bottom-2 font-semibold text-card-foreground/60'>
+          (per month)
+        </span>
+      </div>
 
       <ChartContainer
         config={chartConfig}
@@ -119,7 +135,7 @@ const LoggedTimeWidget = () => {
                       >
                         <tspan>{logged}</tspan>
                         <tspan> of </tspan>
-                        <tspan>40</tspan>
+                        <tspan>{userWorkHours}</tspan>
                       </text>
                     );
                   }
