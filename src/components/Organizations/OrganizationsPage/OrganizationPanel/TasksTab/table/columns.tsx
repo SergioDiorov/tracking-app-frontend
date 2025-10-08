@@ -80,7 +80,7 @@ export const columns = ({
               </>
             ) : (
               <>
-                <div className='size-[30px] mr-1 rounded-full bg-[#e5e7eb]' />
+                <div className='size-[30px] max-w-[30px] max-h-[30px] min-w-[30px] min-h-[30px] mr-1 rounded-full bg-[#e5e7eb]' />
                 <p className='text-muted-foreground text-sm'>
                   Asigned user was removed from organization
                 </p>
